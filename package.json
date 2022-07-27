@@ -2,6 +2,7 @@
   "devDependencies": {
     "@types/express": "^4.17.13",
     "@types/jasmine": "^4.0.0",
+    "@types/mssql": "^8.0.3",
     "@types/node": "^17.0.23",
     "@types/sharp": "^0.30.0",
     "@types/supertest": "^2.0.12",
@@ -33,7 +34,10 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "dotenv": "^16.0.1",
     "express": "^4.17.3",
+    "msnodesqlv8": "^2.6.0",
+    "mssql": "^8.1.2",
     "sharp": "^0.30.3"
   }
 }
