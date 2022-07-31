@@ -14,14 +14,6 @@ export type t1 = {
     salary: number
 }
 
-// const sqlConfig = {
-//     user: 'sa',
-//     password: 'Admin$ABS2022',
-//     database: 'ABS-System',
-//     server: '192.168.1.43',
-//     driver: 'msnodesqlv8',
-// }
-
 export class Test {
     async index(): Promise<t1[]> {
         try {
