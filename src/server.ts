@@ -1,7 +1,7 @@
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import express from 'express';
-import test_Routes from './Handler/test';
+import test_Routes from './Controllers/test';
 
 const app: express.Application = express();
 const address: string = 'localhost';

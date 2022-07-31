@@ -1,4 +1,4 @@
-import { Test } from './../Models/test';
+import { Test } from '../Models/test';
 import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 

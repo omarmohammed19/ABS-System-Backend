@@ -1,7 +1,7 @@
 
 import dotenv from "dotenv";
 import * as sql from "mssql/msnodesqlv8";
-import { sqlConfig } from "../database";
+import { sqlConfig } from "../Config/database";
 
 dotenv.config();
 
