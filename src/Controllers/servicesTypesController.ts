@@ -72,7 +72,7 @@ export class ServicesTypesController {
       pool.close();
       return 'Service type updated successfully';
     } catch (error) {
-      throw new Error(`The service type with ID : ${service.ID} is not found ${error}`);
+      throw new Error(`Could not update the service type ${error}`);
     }
   }
 }

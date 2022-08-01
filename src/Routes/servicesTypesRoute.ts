@@ -9,7 +9,7 @@ async function getServicesTypesByID(req: Request, res: Response) {
     const servicesTypes = await service.getServiceTypesByID(Number(req.params.id));
     res.status(200).json(servicesTypes);
   } catch (error) {
-    res.status(500).json('Could not get servicesTypes');
+    res.status(500).json('Could not get the service type');
   }
 }
 async function addServicesTypes(req: Request, res: Response) {
@@ -17,7 +17,7 @@ async function addServicesTypes(req: Request, res: Response) {
     const servicesTypes = await service.addServicesTypes(req.body);
     res.status(200).json(servicesTypes);
   } catch (error) {
-    res.status(500).json('Could not add servicesTypes');
+    res.status(500).json('Could not add a new service type');
   }
 }
 async function getServicesTypes(req: Request, res: Response) {
@@ -25,7 +25,7 @@ async function getServicesTypes(req: Request, res: Response) {
     const servicesTypes = await service.getServicesTypes();
     res.status(200).json(servicesTypes);
   } catch (error) {
-    res.status(500).json('Could not get servicesTypes');
+    res.status(500).json('Could not get services types');
   }
 }
 async function deleteServicesTypes(req: Request, res: Response) {
@@ -33,7 +33,7 @@ async function deleteServicesTypes(req: Request, res: Response) {
     const servicesTypes = await service.deleteServicesTypes(Number(req.params.id));
     res.status(200).json(servicesTypes);
   } catch (error) {
-    res.status(500).json('Could not delete servicesTypes');
+    res.status(500).json('Could not delete the service types');
   }
 }
 async function updateServicesTypes(req: Request, res: Response) {
@@ -44,7 +44,7 @@ async function updateServicesTypes(req: Request, res: Response) {
     });
     res.status(200).json(servicesTypes);
   } catch (error) {
-    res.status(500).json('The service type is not found');
+    res.status(404).json('The service type is not found');
   }
 }
 const servicesTypes_endpoints = (app: express.Application) => {
