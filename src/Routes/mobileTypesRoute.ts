@@ -14,7 +14,7 @@ async function getMobileTypes(req: Request, res: Response) {
         const mobileTypes = await m1.index();
         res.status(200).json(mobileTypes);
     } catch (error) {
-        res.status(500).json("Could not get mobileTypes");
+        res.status(400).json("Could not get mobileTypes");
     }
 }
 
@@ -24,7 +24,7 @@ async function addMobileType(req: Request, res: Response) {
         console.log(mobileType);
         res.status(200).json(mobileType);
     } catch (error) {
-        res.status(500).json("Could not add mobileType");
+        res.status(400).json("Could not add mobileType");
     }
 }
 
@@ -38,7 +38,7 @@ async function updateMobileType(req: Request, res: Response) {
         console.log(mobileType);
         res.status(200).json(mobileType);
     } catch (error) {
-        res.status(500).json("Could not update mobileType");
+        res.status(400).json("Could not update mobileType");
         console.log(error);
     }
 }
@@ -50,7 +50,7 @@ async function deleteMobileType(req: Request, res: Response) {
         console.log(mobileType);
         res.status(200).json(mobileType);
     } catch (error) {
-        res.status(500).json("Could not delete mobileType");
+        res.status(400).json("Could not delete mobileType");
     }
 }
 
@@ -61,7 +61,7 @@ async function getMobileTypeByID(req: Request, res: Response) {
         console.log(mobileType);
         res.status(200).json(mobileType);
     } catch (error) {
-        res.status(500).json("Could not get mobileType");
+        res.status(400).json("Could not get mobileType");
     }
 }
 
@@ -69,12 +69,12 @@ async function getMobileTypeByID(req: Request, res: Response) {
 
 
 
-const mobileTypes_Routes = (app: express.Application) => {
-    app.get('/mobileTypes/get', getMobileTypes);
-    app.post('/mobileTypes/add', addMobileType);
-    app.put('/mobileTypes/update/:id', updateMobileType);
-    app.delete('/mobileTypes/delete/:id', deleteMobileType);
-    app.get('/mobileTypes/get/:id', getMobileTypeByID);
+const mobileTypesRoutes = (app: express.Application) => {
+    app.get('/mobileTypes', getMobileTypes);
+    app.post('/mobileTypes', addMobileType);
+    app.put('/mobileTypes/:id', updateMobileType);
+    app.delete('/mobileTypes/:id', deleteMobileType);
+    app.get('/mobileTypes/:id', getMobileTypeByID);
 }
 
-export default mobileTypes_Routes;
+export default mobileTypesRoutes;

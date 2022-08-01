@@ -1,90 +1,89 @@
 import dotenv from 'dotenv';
 import * as sql from "mssql/msnodesqlv8";
 import { sqlConfig } from "../Config/database";
-import { MobileType } from '../Models/mobileTypes';
+import { PaymentMethod } from '../Models/paymentMethods';
 
 
 dotenv.config();
 
-export class mobileTypesController {
 
-    async index(): Promise<MobileType[]> {
+export class PaymentMethodsController {
+
+    async index(): Promise<PaymentMethod[]> {
         try {
             //@ts-ignore
             const pool = await new sql.ConnectionPool(sqlConfig).connect();
             const result = await pool.request()
-                .execute("p_GetmobileTypes");
+                .execute("p_GetpaymentMethods");
             pool.close();
             return result.recordset;
         } catch (error) {
-            throw new Error(`Could not get mobileTypes ${error}`);
+            throw new Error(`Could not get paymentMethods ${error}`);
         }
     }
 
-    async addMobileType(mob: MobileType): Promise<MobileType> {
+    async addPaymentMethod(pm: PaymentMethod): Promise<PaymentMethod> {
         try {
             //@ts-ignore
             const pool = await new sql.ConnectionPool(sqlConfig).connect();
             const result = await pool.request()
-                .input('mobileType', sql.VarChar, mob.mobileType)
-                .execute("p_SavemobileTypes");
-            console.log(mob);
+                .input('paymentMethodType', sql.NVarChar, pm.paymentMethodType)
+                .execute("p_SavepaymentMethods");
             pool.close();
             return result.recordset[0];
         } catch (error) {
-            throw new Error(`Could not add mobileType ${error}`);
+            throw new Error(`Could not add paymentMethods ${error}`);
         }
     }
 
-    async updateMobileType(mt: MobileType): Promise<string> {
+    async updatePaymentMethod(pm: PaymentMethod): Promise<string> {
         try {
             //@ts-ignore
             const pool = await new sql.ConnectionPool(sqlConfig).connect();
             const result = await pool.request()
-                .input('ID', sql.BigInt, mt.ID)
-                .input('mobileType', sql.VarChar, mt.mobileType)
-                .execute("p_UpdatemobileTypes");
+                .input('ID', sql.BigInt, pm.ID)
+                .input('paymentMethodType', sql.NVarChar, pm.paymentMethodType)
+                .execute("p_UpdatepaymentMethods");
             pool.close();
             console.log(result);
             return "Updated";
         } catch (error) {
-            throw new Error(`Could not update mobileType ${error}`);
+            throw new Error(`Could not update paymentMethods ${error}`);
         }
     }
 
-    async deleteMobileType(id: number): Promise<string> {
-        try {
-            //@ts-ignore
-            const pool = await new sql.ConnectionPool(sqlConfig).connect();
-            const result = await pool.request()
-                .input('id', sql.Int, id)
-                .execute("p_DeletemobileTypes");
-            pool.close();
-            console.log(result);
-            if (result.returnValue === 0) {
-
-                return "Deleted";
-            }
-            else {
-                throw new Error(`Could not delete mobileType `);
-            }
-        } catch (error) {
-            throw new Error(`Could not delete mobileType ${error}`);
-        }
-    }
-
-
-    async getMobileType(id: number): Promise<MobileType> {
+    async deletePaymentMethod(id: number): Promise<string> {
         try {
             //@ts-ignore
             const pool = await new sql.ConnectionPool(sqlConfig).connect();
             const result = await pool.request()
                 .input('ID', sql.BigInt, id)
-                .execute("p_GetmobileTypesByID");
+                .execute("p_DeletepaymentMethods");
+            pool.close();
+            if (result.returnValue === 0) {
+
+                return "Deleted";
+            }
+            else {
+                throw new Error(`Could not delete paymentMethods `);
+            }
+        } catch (error) {
+            throw new Error(`Could not delete paymentMethods ${error}`);
+        }
+    }
+
+    async getPaymentMethodByID(id: number): Promise<PaymentMethod> {
+        try {
+            //@ts-ignore
+            const pool = await new sql.ConnectionPool(sqlConfig).connect();
+            const result = await pool.request()
+                .input('ID', sql.BigInt, id)
+                .execute("p_GetpaymentMethodsByID");
             pool.close();
             return result.recordset[0];
         } catch (error) {
-            throw new Error(`Could not get mobileType ${error}`);
+            throw new Error(`Could not get paymentMethods ${error}`);
         }
     }
+
 }
