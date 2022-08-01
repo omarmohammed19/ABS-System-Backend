@@ -1,5 +1,6 @@
 {
   "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
     "@types/express": "^4.17.13",
     "@types/jasmine": "^4.0.0",
     "@types/mssql": "^8.0.3",
@@ -27,13 +28,14 @@
     "lint": "eslint   src/**/*.ts",
     "jasmine": "jasmine",
     "test": "npm run build && npm run jasmine",
-    "start": "nodemon src/index.ts"
+    "start": "set ENV=dev && nodemon src/server.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "dotenv": "^16.0.1",
     "express": "^4.17.3",
     "msnodesqlv8": "^2.6.0",

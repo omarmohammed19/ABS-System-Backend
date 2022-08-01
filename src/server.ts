@@ -1,7 +1,9 @@
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import express from 'express';
-import test_Routes from './Controllers/test';
+import addressRouter from './Routes/AddressesRoute';
+import addressTypeRouter from './Routes/addressTypesRoute';
+import bankDetailsRouter from './Routes/bankDetailsRoute';
 
 const app: express.Application = express();
 const address: string = 'localhost';
@@ -9,7 +11,9 @@ const address: string = 'localhost';
 dotenv.config();
 
 app.use(bodyParser.json());
-test_Routes(app);
+addressRouter(app);
+addressTypeRouter(app);
+bankDetailsRouter(app);
 
 
 app.listen(process.env.PORT, () => {
