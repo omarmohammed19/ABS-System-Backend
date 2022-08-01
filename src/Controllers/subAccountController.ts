@@ -57,9 +57,9 @@ export class subAccountController {
       pool.close();
       if (result.returnValue === 0) {
         console.log(result);
-        return 'SubAccount deleted successfully';
+        return 'Sub-account deleted successfully';
       } else {
-        return 'SubAccount not found';
+        return 'Sub-account not found';
       }
     } catch (error) {
       console.log(error);
