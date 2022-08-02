@@ -34,7 +34,7 @@ export class subAccountController {
       pool.close();
       return result.recordset[0];
     } catch (error) {
-      throw new Error(`Could not add subAccount ${error}`);
+      throw new Error(`Could not add sub-account ${error}`);
     }
   }
   async getSubAccount(): Promise<subAccount[]> {
@@ -46,7 +46,7 @@ export class subAccountController {
       pool.close();
       return result.recordset;
     } catch (error) {
-      throw new Error(`Could not get orders ${error}`);
+      throw new Error(`Could not get sub-accounts ${error}`);
     }
   }
   async deleteSubAccount(id: number): Promise<string> {
@@ -63,7 +63,7 @@ export class subAccountController {
       }
     } catch (error) {
       console.log(error);
-      throw new Error(`Could not delete the subAccount ${error}`);
+      throw new Error(`Could not delete the sub-account ${error}`);
     }
   }
   async updateSubAccount(subAccount: subAccount): Promise<string> {
@@ -80,10 +80,10 @@ export class subAccountController {
         .input('productTypeID', sql.Int, subAccount.productTypeID)
         .execute('[dbo].[p_UpdatesubAccount]');
       pool.close();
-      return 'Sub account updated successfully';
+      return 'Sub-account updated successfully';
     } catch (error) {
       console.log(error);
-      throw new Error(`Could not update the sub account ${error}`);
+      throw new Error(`Could not update the sub-account ${error}`);
     }
   }
 }
