@@ -6,5 +6,5 @@ dotenv.config();
 
 export interface NearestBranch {
     ID?: number,
-    brancheID: number
+    branchID: number
 }

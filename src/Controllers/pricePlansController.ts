@@ -79,7 +79,7 @@ export class PricePlansController {
         }
     }
 
-    async getPricePlanByID(id: number): Promise<PricePlan> {
+    async getPricePlanByID(id: number): Promise<PricePlan[]> {
         try {
             //@ts-ignore
             const pool = await new sql.ConnectionPool(sqlConfig).connect();
@@ -87,7 +87,7 @@ export class PricePlansController {
                 .input('ID', sql.BigInt, id)
                 .execute("p_GetpricePlansByID");
             pool.close();
-            return result.recordset[0];
+            return result.recordset;
         } catch (error) {
             throw new Error(`Could not get pricePlans ${error}`);
         }

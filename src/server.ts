@@ -9,6 +9,8 @@ import paymentMethodsRoutes from './Routes/paymentMethodsRoutes';
 import pricePlansRoutes from './Routes/pricePlansRoutes';
 import productRoutes from './Routes/productRoutes';
 import salesChannelsRoutes from './Routes/salesChannelsRoutes';
+import salesChannelTypeRoutes from './Routes/salesChannelTypeRoutes';
+import servicesRoutes from './Routes/ServicesRoutes';
 
 const app: express.Application = express();
 const address: string = 'localhost';
@@ -24,6 +26,9 @@ paymentMethodsRoutes(app);
 pricePlansRoutes(app);
 productRoutes(app);
 salesChannelsRoutes(app);
+salesChannelTypeRoutes(app);
+servicesRoutes(app);
+
 
 
 

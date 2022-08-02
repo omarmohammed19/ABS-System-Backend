@@ -1,90 +1,89 @@
 import dotenv from 'dotenv';
 import * as sql from "mssql/msnodesqlv8";
 import { sqlConfig } from "../Config/database";
-import { NearestBranch } from '../Models/nearestBranch';
+import { Services } from '../Models/Services';
 
 
 dotenv.config();
 
 
-export class NearestBranchController {
+export class ServicesController {
 
-    async index(): Promise<NearestBranch[]> {
+    async index(): Promise<Services[]> {
         try {
             //@ts-ignore
             const pool = await new sql.ConnectionPool(sqlConfig).connect();
             const result = await pool.request()
-                .execute("p_GetnearestBranch");
+                .execute("p_GetServices");
             pool.close();
             return result.recordset;
         } catch (error) {
-            throw new Error(`Could not get nearestBranch ${error}`);
+            throw new Error(`Could not get Services ${error}`);
         }
     }
 
-    async addNearestBranch(nb: NearestBranch): Promise<NearestBranch> {
+    async addService(ser: Services): Promise<Services> {
         try {
             //@ts-ignore
             const pool = await new sql.ConnectionPool(sqlConfig).connect();
             const result = await pool.request()
-                .input('branchID', sql.Int, nb.branchID)
-                .execute("p_SavenearestBranch");
-            console.log(nb);
+                .input('subAccountID', sql.Int, ser.subAccountID)
+                .input('serviceTypeID', sql.Int, ser.serviceTypeID)
+                .execute("p_SaveServices");
             pool.close();
             return result.recordset[0];
         } catch (error) {
-            throw new Error(`Could not add nearestBranch ${error}`);
+            throw new Error(`Could not add Service ${error}`);
         }
     }
 
-    async updateNearestBranch(nb: NearestBranch): Promise<string> {
+    async updateService(ser: Services): Promise<string> {
         try {
             //@ts-ignore
             const pool = await new sql.ConnectionPool(sqlConfig).connect();
             const result = await pool.request()
-                .input('ID', sql.BigInt, nb.ID)
-                .input('branchID', sql.Int, nb.branchID)
-                .execute("p_UpdatenearestBranch");
+                .input('ID', sql.BigInt, ser.ID)
+                .input('subAccountID', sql.Int, ser.subAccountID)
+                .input('serviceTypeID', sql.Int, ser.serviceTypeID)
+                .execute("p_UpdateServices");
             pool.close();
-            console.log(result);
             return "Updated";
         } catch (error) {
-            throw new Error(`Could not update nearestBranch ${error}`);
+            throw new Error(`Could not update Service ${error}`);
         }
     }
 
-    async deleteNearestBranch(id: number): Promise<string> {
+    async deleteService(id: number): Promise<string> {
         try {
             //@ts-ignore
             const pool = await new sql.ConnectionPool(sqlConfig).connect();
             const result = await pool.request()
-                .input('ID', sql.Int, id)
-                .execute("p_DeletenearestBranch");
+                .input('ID', sql.BigInt, id)
+                .execute("p_DeleteServices");
             pool.close();
             if (result.returnValue === 0) {
 
                 return "Deleted";
             }
             else {
-                throw new Error(`Could not delete nearestBranch `);
+                throw new Error(`Could not delete paymentMethods `);
             }
         } catch (error) {
-            throw new Error(`Could not delete nearestBranch ${error}`);
+            throw new Error(`Could not delete Service ${error}`);
         }
     }
 
-    async getNearestBranch(id: number): Promise<NearestBranch> {
+    async getServiceByID(id: number): Promise<Services> {
         try {
             //@ts-ignore
             const pool = await new sql.ConnectionPool(sqlConfig).connect();
             const result = await pool.request()
-                .input('ID', sql.Int, id)
-                .execute("p_GetnearestBranchByID");
+                .input('ID', sql.BigInt, id)
+                .execute("p_GetServicesByID");
             pool.close();
             return result.recordset[0];
         } catch (error) {
-            throw new Error(`Could not get nearestBranch ${error}`);
+            throw new Error(`Could not get Service ${error}`);
         }
     }
-
 }

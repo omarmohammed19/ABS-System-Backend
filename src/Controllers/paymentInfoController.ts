@@ -82,7 +82,7 @@ export class PaymentInfoController {
         }
     }
 
-    async getPaymentInfoByID(id: number, paymentMethodID: number): Promise<PaymentInfo> {
+    async getPaymentInfoByID(id: number, paymentMethodID: number): Promise<PaymentInfo[]> {
         try {
             //@ts-ignore
             const pool = await new sql.ConnectionPool(sqlConfig).connect();
@@ -91,7 +91,7 @@ export class PaymentInfoController {
                 .input('paymentMethodID', sql.Int, paymentMethodID)
                 .execute("p_GetpaymentInfoByID");
             pool.close();
-            return result.recordset[0];
+            return result.recordset;
         } catch (error) {
             throw new Error(`Could not get paymentInfo ${error}`);
         }

@@ -31,7 +31,7 @@ async function updateNearestBranch(req: Request, res: Response) {
     try {
         const nb: NearestBranch = {
             ID: Number(req.params.id),
-            brancheID: Number(req.body.brancheID)
+            branchID: Number(req.body.branchID)
         }
         const nearestBranch = await n1.updateNearestBranch(nb);
         res.status(200).json(nearestBranch);
