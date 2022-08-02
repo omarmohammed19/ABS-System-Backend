@@ -71,7 +71,6 @@ const updateAddress = async (req: Request, res: Response) => {
 const deleteAddress = async (req: Request, res: Response) => {
     try {
         const result = await addressesController.delete(Number(req.params.id));
-        console.log(result);
         res.json(result);
     } catch (error) {
         res.status(400)
