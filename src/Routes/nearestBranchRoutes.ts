@@ -20,7 +20,6 @@ async function getAllNearestBranch(req: Request, res: Response) {
 async function addNearestBranch(req: Request, res: Response) {
     try {
         const nearestBranch = await n1.addNearestBranch(req.body);
-        console.log(nearestBranch);
         res.status(200).json(nearestBranch);
     } catch (error) {
         res.status(400).json("Could not add nearestBranch");
@@ -35,7 +34,6 @@ async function updateNearestBranch(req: Request, res: Response) {
             brancheID: Number(req.body.brancheID)
         }
         const nearestBranch = await n1.updateNearestBranch(nb);
-        console.log(nearestBranch);
         res.status(200).json(nearestBranch);
     } catch (error) {
         res.status(400).json("Could not update nearestBranch");
@@ -48,7 +46,6 @@ async function deleteNearestBranch(req: Request, res: Response) {
     try {
         const id = parseInt(req.params.id);
         const nearestBranch = await n1.deleteNearestBranch(id);
-        console.log(nearestBranch);
         res.status(200).json(nearestBranch);
     } catch (error) {
         res.status(400).json("Could not delete nearestBranch");
@@ -60,7 +57,6 @@ async function getNearestBranchByID(req: Request, res: Response) {
     try {
         const id = parseInt(req.params.id);
         const nearestBranch = await n1.getNearestBranch(id);
-        console.log(nearestBranch);
         res.status(200).json(nearestBranch);
     } catch (error) {
         res.status(400).json("Could not get nearestBranch");

@@ -20,7 +20,6 @@ async function getAllPricePlans(req: Request, res: Response) {
 async function addPricePlan(req: Request, res: Response) {
     try {
         const pricePlan = await pp.addPricePlan(req.body);
-        console.log(pricePlan);
         res.status(200).json(pricePlan);
     } catch (error) {
         res.status(400).json("Could not add pricePlans");
@@ -39,7 +38,6 @@ async function updatePricePlan(req: Request, res: Response) {
             numberOfShipments: Number(req.body.numberOfShipments)
         }
         const pricePlan = await pp.updatePricePlan(p);
-        console.log(pricePlan);
         res.status(200).json(pricePlan);
     } catch (error) {
         res.status(400).json("Could not update pricePlans");
@@ -51,7 +49,6 @@ async function deletePricePlan(req: Request, res: Response) {
     try {
         const id = Number(req.params.id);
         const pricePlan = await pp.deletePricePlan(id);
-        console.log(pricePlan);
         res.status(200).json(pricePlan);
     } catch (error) {
         res.status(400).json("Could not delete pricePlans");
@@ -63,7 +60,6 @@ async function getPricePlansByID(req: Request, res: Response) {
     try {
         const id = Number(req.params.id);
         const pricePlan = await pp.getPricePlanByID(id);
-        console.log(pricePlan);
         res.status(200).json(pricePlan);
     } catch (error) {
         res.status(400).json("Could not get pricePlans");

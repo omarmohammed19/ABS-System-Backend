@@ -1,71 +1,63 @@
 import dotenv from 'dotenv';
 import * as sql from "mssql/msnodesqlv8";
 import { sqlConfig } from "../Config/database";
-import { PricePlan } from '../Models/pricePlans';
+import { Product } from '../Models/Products';
 
 
 dotenv.config();
 
 
-export class PricePlansController {
+export class ProductsController {
 
-    async index(): Promise<PricePlan[]> {
+    async index(): Promise<Product[]> {
         try {
             //@ts-ignore
             const pool = await new sql.ConnectionPool(sqlConfig).connect();
             const result = await pool.request()
-                .execute("p_GetpricePlans");
+                .execute("p_GetProducts");
             pool.close();
             return result.recordset;
         } catch (error) {
-            throw new Error(`Could not get pricePlans ${error}`);
+            throw new Error(`Could not get Products ${error}`);
         }
     }
 
-    async addPricePlan(pp: PricePlan): Promise<string> {
+    async addProduct(pro: Product): Promise<Product> {
         try {
             //@ts-ignore
             const pool = await new sql.ConnectionPool(sqlConfig).connect();
             const result = await pool.request()
-                .input('fromZoneID', sql.Int, pp.fromZoneID)
-                .input('toZoneID', sql.Int, pp.toZoneID)
-                .input('price', sql.Int, pp.price)
-                .input('pricePlanID', sql.Int, pp.pricePlanID)
-                .input('numberOfShipments', sql.Int, pp.numberOfShipments)
-                .execute("p_SavepricePlans");
+                .input('productName', sql.NVarChar, pro.productName)
+                .execute("p_SaveProducts");
             pool.close();
             return result.recordset[0];
         } catch (error) {
-            throw new Error(`Could not add pricePlans ${error}`);
+            throw new Error(`Could not add Product ${error}`);
         }
     }
 
-    async updatePricePlan(pp: PricePlan): Promise<string> {
+    async updateProduct(pro: Product): Promise<string> {
         try {
             //@ts-ignore
             const pool = await new sql.ConnectionPool(sqlConfig).connect();
             const result = await pool.request()
-                .input('ID', sql.BigInt, pp.ID)
-                .input('fromZoneID', sql.Int, pp.fromZoneID)
-                .input('toZoneID', sql.Int, pp.toZoneID)
-                .input('price', sql.Int, pp.price)
-                .input('pricePlanID', sql.Int, pp.pricePlanID)
-                .input('numberOfShipments', sql.Int, pp.numberOfShipments)
-                .execute("p_UpdatepricePlans");
+                .input('ID', sql.BigInt, pro.ID)
+                .input('productName', sql.NVarChar, pro.productName)
+                .execute("p_UpdateProducts");
             pool.close();
             return "Updated";
         } catch (error) {
-            throw new Error(`Could not update pricePlans ${error}`);
+            throw new Error(`Could not update Product ${error}`);
         }
     }
 
-    async deletePricePlan(id: number): Promise<string> {
+    async deleteProduct(id: number): Promise<string> {
         try {
             //@ts-ignore
             const pool = await new sql.ConnectionPool(sqlConfig).connect();
             const result = await pool.request()
                 .input('ID', sql.BigInt, id)
-                .execute("p_DeletepricePlans");
+                .execute("p_DeleteProducts");
             pool.close();
             if (result.returnValue === 0) {
 
@@ -75,22 +67,22 @@ export class PricePlansController {
                 throw new Error(`Could not delete paymentMethods `);
             }
         } catch (error) {
-            throw new Error(`Could not delete pricePlans ${error}`);
+            throw new Error(`Could not delete Product ${error}`);
         }
     }
 
-    async getPricePlanByID(id: number): Promise<PricePlan> {
+    async getProductByID(id: number): Promise<Product> {
         try {
             //@ts-ignore
             const pool = await new sql.ConnectionPool(sqlConfig).connect();
             const result = await pool.request()
                 .input('ID', sql.BigInt, id)
-                .execute("p_GetpricePlansByID");
+                .execute("p_GetProductsByID");
             pool.close();
             return result.recordset[0];
         } catch (error) {
-            throw new Error(`Could not get pricePlans ${error}`);
+            throw new Error(`Could not get Product ${error}`);
         }
     }
-
 }
+

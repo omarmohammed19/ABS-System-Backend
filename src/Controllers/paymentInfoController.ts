@@ -9,11 +9,13 @@ dotenv.config();
 
 export class PaymentInfoController {
 
-    async index(): Promise<PaymentInfo[]> {
+
+    async index(paymentMethodID: number): Promise<PaymentInfo[]> {
         try {
             //@ts-ignore
             const pool = await new sql.ConnectionPool(sqlConfig).connect();
             const result = await pool.request()
+                .input('paymentMethodID', sql.Int, paymentMethodID)
                 .execute("p_GetpaymentInfo");
             pool.close();
             return result.recordset;
@@ -80,12 +82,13 @@ export class PaymentInfoController {
         }
     }
 
-    async getPaymentInfoByID(id: number): Promise<PaymentInfo> {
+    async getPaymentInfoByID(id: number, paymentMethodID: number): Promise<PaymentInfo> {
         try {
             //@ts-ignore
             const pool = await new sql.ConnectionPool(sqlConfig).connect();
             const result = await pool.request()
                 .input('ID', sql.BigInt, id)
+                .input('paymentMethodID', sql.Int, paymentMethodID)
                 .execute("p_GetpaymentInfoByID");
             pool.close();
             return result.recordset[0];

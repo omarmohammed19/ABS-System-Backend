@@ -35,7 +35,6 @@ async function updatePaymentMethod(req: Request, res: Response) {
             paymentMethodType: req.body.paymentMethodType
         }
         const paymentMethod = await pm.updatePaymentMethod(pmt);
-        console.log(paymentMethod);
         res.status(200).json(paymentMethod);
     } catch (error) {
         res.status(400).json("Could not update paymentMethods");
@@ -47,7 +46,6 @@ async function deletePaymentMethod(req: Request, res: Response) {
     try {
         const id = parseInt(req.params.id);
         const paymentMethod = await pm.deletePaymentMethod(id);
-        console.log(paymentMethod);
         res.status(200).json(paymentMethod);
     } catch (error) {
         res.status(400).json("Could not delete paymentMethods");
@@ -59,7 +57,6 @@ async function getPaymentMethodByID(req: Request, res: Response) {
     try {
         const id = parseInt(req.params.id);
         const paymentMethod = await pm.getPaymentMethodByID(id);
-        console.log(paymentMethod);
         res.status(200).json(paymentMethod);
     } catch (error) {
         res.status(400).json("Could not get paymentMethods");

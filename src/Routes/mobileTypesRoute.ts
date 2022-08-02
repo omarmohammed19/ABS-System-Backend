@@ -21,7 +21,6 @@ async function getMobileTypes(req: Request, res: Response) {
 async function addMobileType(req: Request, res: Response) {
     try {
         const mobileType = await m1.addMobileType(req.body);
-        console.log(mobileType);
         res.status(200).json(mobileType);
     } catch (error) {
         res.status(400).json("Could not add mobileType");
@@ -35,7 +34,6 @@ async function updateMobileType(req: Request, res: Response) {
             mobileType: req.body.mobileType
         }
         const mobileType = await m1.updateMobileType(mt);
-        console.log(mobileType);
         res.status(200).json(mobileType);
     } catch (error) {
         res.status(400).json("Could not update mobileType");
@@ -47,7 +45,6 @@ async function deleteMobileType(req: Request, res: Response) {
     try {
         const id = parseInt(req.params.id);
         const mobileType = await m1.deleteMobileType(id);
-        console.log(mobileType);
         res.status(200).json(mobileType);
     } catch (error) {
         res.status(400).json("Could not delete mobileType");
@@ -58,7 +55,6 @@ async function getMobileTypeByID(req: Request, res: Response) {
     try {
         const id = parseInt(req.params.id);
         const mobileType = await m1.getMobileType(id);
-        console.log(mobileType);
         res.status(200).json(mobileType);
     } catch (error) {
         res.status(400).json("Could not get mobileType");

@@ -1,71 +1,69 @@
 import dotenv from 'dotenv';
 import * as sql from "mssql/msnodesqlv8";
 import { sqlConfig } from "../Config/database";
-import { PricePlan } from '../Models/pricePlans';
+import { SalesChannel } from '../Models/salesChannels';
 
 
 dotenv.config();
 
 
-export class PricePlansController {
+export class SalesChannelsController {
 
-    async index(): Promise<PricePlan[]> {
+    async index(): Promise<SalesChannel[]> {
         try {
             //@ts-ignore
             const pool = await new sql.ConnectionPool(sqlConfig).connect();
             const result = await pool.request()
-                .execute("p_GetpricePlans");
+                .execute("p_GetsalesChannels");
             pool.close();
             return result.recordset;
         } catch (error) {
-            throw new Error(`Could not get pricePlans ${error}`);
+            throw new Error(`Could not get SalesChannels ${error}`);
         }
     }
 
-    async addPricePlan(pp: PricePlan): Promise<string> {
+    async addSalesChannel(sc: SalesChannel): Promise<SalesChannel> {
         try {
             //@ts-ignore
             const pool = await new sql.ConnectionPool(sqlConfig).connect();
             const result = await pool.request()
-                .input('fromZoneID', sql.Int, pp.fromZoneID)
-                .input('toZoneID', sql.Int, pp.toZoneID)
-                .input('price', sql.Int, pp.price)
-                .input('pricePlanID', sql.Int, pp.pricePlanID)
-                .input('numberOfShipments', sql.Int, pp.numberOfShipments)
-                .execute("p_SavepricePlans");
+                .input('salesChannelName', sql.NVarChar, sc.salesChannelName)
+                .input('companyInfoID', sql.Int, sc.companyInfoID)
+                .input('salesChannelTypeID', sql.Int, sc.salesChannelTypeID)
+                .input('salesChannelURL', sql.NVarChar, sc.salesChannelURL)
+                .execute("p_SavesalesChannels");
             pool.close();
             return result.recordset[0];
         } catch (error) {
-            throw new Error(`Could not add pricePlans ${error}`);
+            throw new Error(`Could not add SalesChannel ${error}`);
         }
     }
 
-    async updatePricePlan(pp: PricePlan): Promise<string> {
+    async updateSalesChannel(sc: SalesChannel): Promise<string> {
         try {
             //@ts-ignore
             const pool = await new sql.ConnectionPool(sqlConfig).connect();
             const result = await pool.request()
-                .input('ID', sql.BigInt, pp.ID)
-                .input('fromZoneID', sql.Int, pp.fromZoneID)
-                .input('toZoneID', sql.Int, pp.toZoneID)
-                .input('price', sql.Int, pp.price)
-                .input('pricePlanID', sql.Int, pp.pricePlanID)
-                .input('numberOfShipments', sql.Int, pp.numberOfShipments)
-                .execute("p_UpdatepricePlans");
+                .input('ID', sql.BigInt, sc.ID)
+                .input('salesChannelName', sql.NVarChar, sc.salesChannelName)
+                .input('companyInfoID', sql.Int, sc.companyInfoID)
+                .input('salesChannelTypeID', sql.Int, sc.salesChannelTypeID)
+                .input('salesChannelURL', sql.NVarChar, sc.salesChannelURL)
+                .execute("p_UpdatesalesChannels");
             pool.close();
             return "Updated";
         } catch (error) {
-            throw new Error(`Could not update pricePlans ${error}`);
+            throw new Error(`Could not update SalesChannel ${error}`);
         }
     }
 
-    async deletePricePlan(id: number): Promise<string> {
+    async deleteSalesChannel(id: number): Promise<string> {
         try {
             //@ts-ignore
             const pool = await new sql.ConnectionPool(sqlConfig).connect();
             const result = await pool.request()
                 .input('ID', sql.BigInt, id)
-                .execute("p_DeletepricePlans");
+                .execute("p_DeletesalesChannels");
             pool.close();
             if (result.returnValue === 0) {
 
@@ -75,22 +73,21 @@ export class PricePlansController {
                 throw new Error(`Could not delete paymentMethods `);
             }
         } catch (error) {
-            throw new Error(`Could not delete pricePlans ${error}`);
+            throw new Error(`Could not delete SalesChannel ${error}`);
         }
     }
 
-    async getPricePlanByID(id: number): Promise<PricePlan> {
+    async getSalesChannelByID(id: number): Promise<SalesChannel> {
         try {
             //@ts-ignore
             const pool = await new sql.ConnectionPool(sqlConfig).connect();
             const result = await pool.request()
                 .input('ID', sql.BigInt, id)
-                .execute("p_GetpricePlansByID");
+                .execute("p_GetsalesChannelsByID");
             pool.close();
             return result.recordset[0];
         } catch (error) {
-            throw new Error(`Could not get pricePlans ${error}`);
+            throw new Error(`Could not get SalesChannel ${error}`);
         }
     }
-
 }

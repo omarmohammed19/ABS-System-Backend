@@ -26,7 +26,7 @@ export class mobileTypesController {
             //@ts-ignore
             const pool = await new sql.ConnectionPool(sqlConfig).connect();
             const result = await pool.request()
-                .input('mobileType', sql.VarChar, mob.mobileType)
+                .input('mobileType', sql.NVarChar, mob.mobileType)
                 .execute("p_SavemobileTypes");
             console.log(mob);
             pool.close();
@@ -42,7 +42,7 @@ export class mobileTypesController {
             const pool = await new sql.ConnectionPool(sqlConfig).connect();
             const result = await pool.request()
                 .input('ID', sql.BigInt, mt.ID)
-                .input('mobileType', sql.VarChar, mt.mobileType)
+                .input('mobileType', sql.NVarChar, mt.mobileType)
                 .execute("p_UpdatemobileTypes");
             pool.close();
             console.log(result);
