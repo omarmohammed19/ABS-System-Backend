@@ -1,7 +1,6 @@
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import express from 'express';
-import test_Routes from './Controllers/test';
 import mobileTypes_Routes from './Routes/mobileTypesRoute';
 import nearestBranchRoutes from './Routes/nearestBranchRoutes';
 import paymentInfoRoutes from './Routes/paymentInfoRoutes';
@@ -46,7 +45,6 @@ dotenv.config();
 
 app.use(bodyParser.json());
 
-test_Routes(app);
 mobileTypes_Routes(app);
 nearestBranchRoutes(app);
 paymentInfoRoutes(app);
