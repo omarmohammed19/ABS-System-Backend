@@ -11,6 +11,33 @@ import productRoutes from './Routes/productRoutes';
 import salesChannelsRoutes from './Routes/salesChannelsRoutes';
 import salesChannelTypeRoutes from './Routes/salesChannelTypeRoutes';
 import servicesRoutes from './Routes/ServicesRoutes';
+import servicesTypes_endpoints from './Routes/servicesTypesRoute';
+import subAccount_endpoints from './Routes/subAccountRoute';
+import telephoneNumber_endpoints from './Routes/telephoneNumberRoute';
+import telephoneTypes_endpoints from './Routes/telephoneTypesRoute';
+import walletDetails_endpoints from './Routes/walletDetailsRoute';
+import webUser_endpoints from './Routes/webUsersRoute';
+import Zones_endpoints from './Routes/zonesRoute';
+import custInfo_router from './Routes/custInfoRoute';
+import deliverylocations_Route from './Routes/deliverylocationsRoutes';
+import emails_Route from './Routes/EmailsRoute';
+import emailTypes_Route from './Routes/emailTypesRoute';
+import governorates_Route from './Routes/GovernorateRoute';
+import legalPapers_Route from './Routes/legalPapersRoutes';
+import legalPaperType_Route from './Routes/legalPaperTypeRoute';
+import mainAccount_Route from './Routes/mainAccountRoute';
+import mobileCash_Route from './Routes/mobileCashRoutr';
+import mobileNumber_Route from './Routes/mobileNumberRoute';
+import addressRouter from './Routes/AddressesRoute';
+import addressTypeRouter from './Routes/addressTypesRoute';
+import bankDetailsRouter from './Routes/bankDetailsRoute';
+import bankNamesRouter from './Routes/bankNamesRoute';
+import branchesRouter from './Routes/BranchesRoute';
+import citiesRouter from './Routes/CitiesRoute';
+import companyInfoRouter from './Routes/companyInfoRoute';
+import contactPersonRouter from './Routes/contactPersonRoute';
+import contactPersonTypesRouter from './Routes/contactPersonTypesRoute';
+import countriesRouter from './Routes/CountriesRoute';
 
 const app: express.Application = express();
 const address: string = 'localhost';
@@ -18,6 +45,7 @@ const address: string = 'localhost';
 dotenv.config();
 
 app.use(bodyParser.json());
+
 test_Routes(app);
 mobileTypes_Routes(app);
 nearestBranchRoutes(app);
@@ -28,12 +56,36 @@ productRoutes(app);
 salesChannelsRoutes(app);
 salesChannelTypeRoutes(app);
 servicesRoutes(app);
-
-
-
+servicesTypes_endpoints(app);
+subAccount_endpoints(app);
+telephoneNumber_endpoints(app);
+telephoneTypes_endpoints(app);
+walletDetails_endpoints(app);
+webUser_endpoints(app);
+Zones_endpoints(app);
+custInfo_router(app);
+deliverylocations_Route(app);
+emails_Route(app);
+emailTypes_Route(app);
+governorates_Route(app);
+legalPapers_Route(app);
+legalPaperType_Route(app);
+mainAccount_Route(app);
+mobileCash_Route(app);
+mobileNumber_Route(app);
+addressRouter(app);
+addressTypeRouter(app);
+bankDetailsRouter(app);
+bankNamesRouter(app);
+branchesRouter(app);
+citiesRouter(app);
+companyInfoRouter(app);
+contactPersonRouter(app);
+contactPersonTypesRouter(app);  
+countriesRouter(app);
 
 app.listen(process.env.PORT, () => {
-    console.log(`Server running on port http://${address}:${process.env.PORT}`);
+  console.log(`Server running on port http://${address}:${process.env.PORT}`);
 });
 
 export default app;
