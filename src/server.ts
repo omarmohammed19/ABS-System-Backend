@@ -1,6 +1,7 @@
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import express from 'express';
+
 import custInfo_router from './Routes/custInfoRoute';
 import deliverylocations_Route from './Routes/deliverylocationsRoutes';
 import emails_Route from './Routes/EmailsRoute';
@@ -11,8 +12,9 @@ import legalPaperType_Route from './Routes/legalPaperTypeRoute';
 import mainAccount_Route from './Routes/mainAccountRoute';
 import mobileCash_Route from './Routes/mobileCashRoutr';
 import mobileNumber_Route from './Routes/mobileNumberRoute';
-
-
+import addressRouter from './Routes/AddressesRoute';
+import addressTypeRouter from './Routes/addressTypesRoute';
+import bankDetailsRouter from './Routes/bankDetailsRoute';
 
 const app: express.Application = express();
 const address: string = 'localhost';
@@ -31,7 +33,9 @@ legalPaperType_Route(app);
 mainAccount_Route(app);
 mobileCash_Route(app);
 mobileNumber_Route(app);
-
+addressRouter(app);
+addressTypeRouter(app);
+bankDetailsRouter(app);
 
 
 app.listen(process.env.PORT, () => {

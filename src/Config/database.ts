@@ -17,6 +17,7 @@ export const sqlConfig = {
     driver: 'msnodesqlv8',
 }
 
+
 export default sqlConfig;
 
 
