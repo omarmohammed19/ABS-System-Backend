@@ -1,6 +1,16 @@
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import express from 'express';
+import test_Routes from './Controllers/test';
+import mobileTypes_Routes from './Routes/mobileTypesRoute';
+import nearestBranchRoutes from './Routes/nearestBranchRoutes';
+import paymentInfoRoutes from './Routes/paymentInfoRoutes';
+import paymentMethodsRoutes from './Routes/paymentMethodsRoutes';
+import pricePlansRoutes from './Routes/pricePlansRoutes';
+import productRoutes from './Routes/productRoutes';
+import salesChannelsRoutes from './Routes/salesChannelsRoutes';
+import salesChannelTypeRoutes from './Routes/salesChannelTypeRoutes';
+import servicesRoutes from './Routes/ServicesRoutes';
 import servicesTypes_endpoints from './Routes/servicesTypesRoute';
 import subAccount_endpoints from './Routes/subAccountRoute';
 import telephoneNumber_endpoints from './Routes/telephoneNumberRoute';
@@ -35,6 +45,17 @@ const address: string = 'localhost';
 dotenv.config();
 
 app.use(bodyParser.json());
+
+test_Routes(app);
+mobileTypes_Routes(app);
+nearestBranchRoutes(app);
+paymentInfoRoutes(app);
+paymentMethodsRoutes(app);
+pricePlansRoutes(app);
+productRoutes(app);
+salesChannelsRoutes(app);
+salesChannelTypeRoutes(app);
+servicesRoutes(app);
 servicesTypes_endpoints(app);
 subAccount_endpoints(app);
 telephoneNumber_endpoints(app);
