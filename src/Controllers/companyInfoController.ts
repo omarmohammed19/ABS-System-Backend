@@ -69,7 +69,7 @@ export class companyInfoController{
             //@ts-ignore
             const pool = await new sql.ConnectionPool(sqlConfig).connect();
             const result = await pool.request()
-                .input("ID", sql.BigInt, id)
+                .input("companyID", sql.BigInt, id)
                 .execute('[dbo].[p_DeletecompanyInfo]');
             pool.close();
             if(result.returnValue === 0){
