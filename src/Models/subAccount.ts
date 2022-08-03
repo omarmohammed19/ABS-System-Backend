@@ -9,4 +9,5 @@ export interface subAccount {
   pricePlanID: number;
   paymentMethodID: number;
   productTypeID: number;
+  registerationDate: Date;
 }

@@ -10,5 +10,6 @@ export interface PricePlan {
     toZoneID: number,
     price: number
     pricePlanID: number,
-    numberOfShipments: number
+    numberOfShipments: number,
+    pricePlanNameID: number
 }

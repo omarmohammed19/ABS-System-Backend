@@ -43,6 +43,7 @@ export class mainAccountController {
                 .input("salesManID", sql.Int, mainAccount.salesManID)
                 .input("custInfoID", sql.Int, mainAccount.custInfoID)
                 .input("companyInfoID", sql.Int, mainAccount.companyInfoID)
+                .input("registerationDate", sql.Date, mainAccount.registerationDate)
                 .execute("p_SaveMainAccount");
             return result.recordset[0];
         }
@@ -62,6 +63,7 @@ export class mainAccountController {
                 .input("salesManID", sql.Int, mainAccount.salesManID)
                 .input("custInfoID", sql.Int, mainAccount.custInfoID)
                 .input("companyInfoID", sql.Int, mainAccount.companyInfoID)
+                .input("registerationDate", sql.Date, mainAccount.registerationDate)
                 .execute("p_UpdateMainAccount");
             return result.recordset;
         }
