@@ -7,7 +7,7 @@ dotenv.config();
 
 const bankdetailsController = new bankDetailsController();
 
-const getAll = async (req: Request, res: Response) => {
+const getAll = async (_req: Request, res: Response) => {
     try {
         const result = await bankdetailsController.index();
         res.json(result);

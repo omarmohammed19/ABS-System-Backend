@@ -40,6 +40,7 @@ async function updateSubAccount(req: Request, res: Response) {
   try {
     const subAccount = await sub.updateSubAccount({
       ID: Number(req.params.id),
+      mainAccountNumber: req.body.mainAccountNumber,
       subAccountName: req.body.subAccountName,
       accountNumber: req.body.accountNumber,
       pricePlanID: req.body.pricePlanID,
