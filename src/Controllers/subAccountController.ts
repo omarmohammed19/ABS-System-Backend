@@ -6,6 +6,7 @@ import { subAccount } from '../Models/subAccount';
 dotenv.config();
 
 export class subAccountController {
+
   async getSubAccountByID(id: number): Promise<subAccount[]> {
     try {
       //@ts-ignore
@@ -24,8 +25,9 @@ export class subAccountController {
       const pool = await new sql.ConnectionPool(sqlConfig).connect();
       const result = await pool
         .request()
+        .input('mainAccountNumber', sql.NVarChar, subAccount.mainAccountNumber)
         .input('subAccountName', sql.NVarChar, subAccount.subAccountName)
-        .input('accountNumber', sql.Int, subAccount.accountNumber)
+        .input('accountNumber', sql.NVarChar, subAccount.accountNumber)
         .input('pricePlanID', sql.Int, subAccount.pricePlanID)
         .input('paymentMethodID', sql.Int, subAccount.paymentMethodID)
         .input('productTypeID', sql.Int, subAccount.productTypeID)
@@ -73,8 +75,9 @@ export class subAccountController {
       const result = await pool
         .request()
         .input('ID', sql.BigInt, subAccount.ID)
+        .input('mainAccountNumber', sql.NVarChar, subAccount.mainAccountNumber)
         .input('subAccountName', sql.NVarChar, subAccount.subAccountName)
-        .input('accountNumber', sql.Int, subAccount.accountNumber)
+        .input('accountNumber', sql.NVarChar, subAccount.accountNumber)
         .input('pricePlanID', sql.Int, subAccount.pricePlanID)
         .input('paymentMethodID', sql.Int, subAccount.paymentMethodID)
         .input('productTypeID', sql.Int, subAccount.productTypeID)

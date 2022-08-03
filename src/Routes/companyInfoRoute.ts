@@ -7,7 +7,7 @@ dotenv.config();
 
 const companyinfoController = new companyInfoController();
 
-const getAll = async (req: Request, res: Response) => {
+const getAll = async (_req: Request, res: Response) => {
     try {
         const result = await companyinfoController.index();
         res.json(result);
@@ -41,7 +41,7 @@ const addCompanyInfo = async (req: Request, res: Response) => {
 }
 
 const updateCompanyInfo = async (req: Request, res: Response) => {
-    
+
     try {
         const companyInfo: CompanyInfo = {
             ID: Number(req.params.id),

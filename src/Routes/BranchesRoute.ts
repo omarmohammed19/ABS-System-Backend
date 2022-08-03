@@ -7,7 +7,7 @@ dotenv.config();
 
 const branchesController = new BranchesController();
 
-const getAll = async (req: Request, res: Response) => {
+const getAll = async (_req: Request, res: Response) => {
     try {
         const result = await branchesController.index();
         res.json(result);

@@ -7,7 +7,7 @@ dotenv.config();
 
 const addresstypesController = new addressTypesController();
 
-const getAll = async (req: Request, res: Response) => {
+const getAll = async (_req: Request, res: Response) => {
     try {
         const result = await addresstypesController.index();
         res.json(result);
