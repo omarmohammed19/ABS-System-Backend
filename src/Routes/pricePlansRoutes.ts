@@ -7,7 +7,7 @@ const pricePlansRouter = express.Router();
 const pp = new PricePlansController();
 
 
-async function getAllPricePlans(req: Request, res: Response) {
+async function getAllPricePlans(_req: Request, res: Response) {
     try {
         const pricePlans = await pp.index();
         res.status(200).json(pricePlans);
@@ -35,7 +35,8 @@ async function updatePricePlan(req: Request, res: Response) {
             toZoneID: Number(req.body.toZoneID),
             price: Number(req.body.price),
             pricePlanID: Number(req.body.pricePlanID),
-            numberOfShipments: Number(req.body.numberOfShipments)
+            numberOfShipments: Number(req.body.numberOfShipments),
+            pricePlanNameID: Number(req.body.pricePlanNameID)
         }
         const pricePlan = await pp.updatePricePlan(p);
         res.status(200).json(pricePlan);
