@@ -52,6 +52,7 @@ export class PricePlansController {
                 .input('price', sql.Int, pp.price)
                 .input('pricePlanID', sql.Int, pp.pricePlanID)
                 .input('numberOfShipments', sql.Int, pp.numberOfShipments)
+                .input('pricePlanNameID', sql.Int, pp.pricePlanNameID)
                 .execute("p_UpdatepricePlans");
             pool.close();
             return "Updated";
