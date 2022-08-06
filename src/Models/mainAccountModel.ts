@@ -9,5 +9,5 @@ export interface mainAccountModel {
     salesManID: number,
     custInfoID: number,
     companyInfoID: number,
-    registerationDate: Date;
+    registrationDate: Date;
 }

@@ -31,7 +31,7 @@ export class subAccountController {
         .input('pricePlanID', sql.Int, subAccount.pricePlanID)
         .input('paymentMethodID', sql.Int, subAccount.paymentMethodID)
         .input('productTypeID', sql.Int, subAccount.productTypeID)
-        .input("registerationDate", sql.Date, subAccount.registerationDate)
+        .input("registrationDate", sql.Date, subAccount.registrationDate)
         .execute('[dbo].[p_SavesubAccount]');
       console.log(subAccount);
       pool.close();
@@ -82,7 +82,7 @@ export class subAccountController {
         .input('pricePlanID', sql.Int, subAccount.pricePlanID)
         .input('paymentMethodID', sql.Int, subAccount.paymentMethodID)
         .input('productTypeID', sql.Int, subAccount.productTypeID)
-        .input("registerationDate", sql.Date, subAccount.registerationDate)
+        .input("registrationDate", sql.Date, subAccount.registrationDate)
         .execute('[dbo].[p_UpdatesubAccount]');
       pool.close();
       return 'Sub-account updated successfully';

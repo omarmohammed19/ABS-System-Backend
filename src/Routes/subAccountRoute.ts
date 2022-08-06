@@ -46,7 +46,7 @@ async function updateSubAccount(req: Request, res: Response) {
       pricePlanID: req.body.pricePlanID,
       paymentMethodID: req.body.paymentMethodID,
       productTypeID: req.body.productTypeID,
-      registerationDate: req.body.registerationDate,
+      registrationDate: req.body.registrationDate,
     });
     res.status(200).json(subAccount);
   } catch (error) {
