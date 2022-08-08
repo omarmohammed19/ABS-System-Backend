@@ -37,7 +37,7 @@ export class ServicesController {
         }
     }
 
-    async updateService(ser: Services): Promise<string> {
+    async updateService(ser: Services): Promise<Services> {
         try {
             //@ts-ignore
             const pool = await new sql.ConnectionPool(sqlConfig).connect();
@@ -47,7 +47,7 @@ export class ServicesController {
                 .input('serviceTypeID', sql.Int, ser.serviceTypeID)
                 .execute("p_UpdateServices");
             pool.close();
-            return "Updated";
+            return result.output.result;
         } catch (error) {
             throw new Error(`Could not update Service ${error}`);
         }
