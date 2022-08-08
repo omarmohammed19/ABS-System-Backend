@@ -37,14 +37,25 @@ import companyInfoRouter from './Routes/companyInfoRoute';
 import contactPersonRouter from './Routes/contactPersonRoute';
 import contactPersonTypesRouter from './Routes/contactPersonTypesRoute';
 import countriesRouter from './Routes/CountriesRoute';
+import cors from 'cors'
+import register_router from './Routes/RegisterRoute';
+
+const corsOptions = {
+  origin: "http://localhost:3001",
+  credentials: true,
+  optionSuccessStatus: 200
+}
 
 const app: express.Application = express();
 const address: string = 'localhost';
 
 dotenv.config();
 
+app.use(cors(corsOptions))
+
 app.use(bodyParser.json());
 
+register_router(app);
 mobileTypes_Routes(app);
 nearestBranchRoutes(app);
 paymentInfoRoutes(app);
@@ -81,6 +92,8 @@ companyInfoRouter(app);
 contactPersonRouter(app);
 contactPersonTypesRouter(app);
 countriesRouter(app);
+
+
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port http://${address}:${process.env.PORT}`);

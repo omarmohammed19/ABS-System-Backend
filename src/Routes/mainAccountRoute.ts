@@ -44,7 +44,8 @@ const updateMainAccount = async (req: Request, res: Response) => {
                 accountNumber: req.body.accountNumber,
                 salesManID: req.body.salesManID,
                 custInfoID: req.body.custInfoID,
-                companyInfoID: req.body.companyInfoID
+                companyInfoID: req.body.companyInfoID,
+                registrationDate: req.body.registrationDate,
             }
         );
         res.json(result);

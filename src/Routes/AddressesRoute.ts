@@ -7,7 +7,7 @@ dotenv.config();
 
 const addressesController = new AddressesController();
 
-const getAll = async (req: Request, res: Response) => {
+const getAll = async (_req: Request, res: Response) => {
     try {
         const result = await addressesController.index();
         res.json(result);
