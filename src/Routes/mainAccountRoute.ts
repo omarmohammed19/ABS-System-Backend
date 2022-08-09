@@ -41,7 +41,6 @@ const updateMainAccount = async (req: Request, res: Response) => {
             {
                 ID: parseInt(req.params.id),
                 mainAccountName: req.body.mainAccountName,
-                accountNumber: req.body.accountNumber,
                 salesManID: req.body.salesManID,
                 custInfoID: req.body.custInfoID,
                 companyInfoID: req.body.companyInfoID,
