@@ -17,9 +17,9 @@ export interface Register {
   mainAccountName: string;
   mainAccountNumber: number;
   productTypeID: number;
-    custContactFirstName: string;
-    custContactLastName: string;
-    custContactPersonTypeID: number;
+  custContactFirstName: string;
+  custContactLastName: string;
+  custContactPersonTypeID: number;
   salesChannelName: string;
   salesChannelTypeID: number;
   salesChannelURL: string;
@@ -34,6 +34,8 @@ export interface Register {
   companyBuildingNumber: number;
   companyCityID: number;
   companyPostalCode: number;
+  nationalID: string;
+  commercialRegister: string;
   //
   pickupFirstName: string;
   pickupLastName: string;

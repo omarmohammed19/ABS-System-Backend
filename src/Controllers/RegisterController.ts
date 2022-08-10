@@ -15,12 +15,12 @@ export class RegisterController {
     try {
       //@ts-ignore
       const hashedPassword = await bcrypt.hashSync(register.webUserPassword + pepper, parseInt(SALT_ROUNDS));
-                  //@ts-ignore
-                  const accountNumberHashed = await bcrypt.hashSync(register.accountNumber + pepper, parseInt(SALT_ROUNDS));
-                  //@ts-ignore
-                  const IBANHashed = await bcrypt.hashSync(register.IBAN + pepper, parseInt(SALT_ROUNDS));
-                  //@ts-ignore
-                  const swiftCodeHashed = await bcrypt.hashSync(register.swiftCode + pepper, parseInt(SALT_ROUNDS));
+      //@ts-ignore
+      const accountNumberHashed = await bcrypt.hashSync(register.accountNumber + pepper, parseInt(SALT_ROUNDS));
+      //@ts-ignore
+      const IBANHashed = await bcrypt.hashSync(register.IBAN + pepper, parseInt(SALT_ROUNDS));
+      //@ts-ignore
+      const swiftCodeHashed = await bcrypt.hashSync(register.swiftCode + pepper, parseInt(SALT_ROUNDS));
       //@ts-ignore
       const pool = await new sql.ConnectionPool(sqlConfig).connect();
       const result = await pool
@@ -58,6 +58,8 @@ export class RegisterController {
         .input('companyBuildingNumber', sql.Int, register.companyBuildingNumber)
         .input('companyCityID', sql.Int, register.companyCityID)
         .input('companyPostalCode', sql.Int, register.companyPostalCode)
+        .input('nationalID', sql.Int, register.nationalID)
+        .input('commercialRegister', sql.Int, register.commercialRegister)
         .input('pickupFirstName', sql.NVarChar, register.pickupFirstName)
         .input('pickupLastName', sql.NVarChar, register.pickupLastName)
         // .input('pickupContactPersonTypeID', sql.Int, register.pickupContactPersonTypeID)
