@@ -36,6 +36,7 @@ export interface Register {
   companyPostalCode: number;
   nationalID: string;
   commercialRegister: string;
+  ServicesIDs: string;
   //
   pickupFirstName: string;
   pickupLastName: string;
