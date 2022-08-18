@@ -39,6 +39,9 @@ import contactPersonTypesRouter from './Routes/contactPersonTypesRoute';
 import countriesRouter from './Routes/CountriesRoute';
 import cors from 'cors'
 import register_router from './Routes/RegisterRoute';
+import uploadFileRouter from './Routes/uploadFilesRoute';
+import handleLoginRouter from './Routes/authRoute';
+import verifyJWT from './Middlewares/verifyJWT';
 
 const corsOptions = {
   origin: "http://localhost:3001",
@@ -87,11 +90,16 @@ addressTypeRouter(app);
 bankDetailsRouter(app);
 bankNamesRouter(app);
 branchesRouter(app);
-citiesRouter(app);
 companyInfoRouter(app);
 contactPersonRouter(app);
 contactPersonTypesRouter(app);
 countriesRouter(app);
+uploadFileRouter(app);
+handleLoginRouter(app);
+
+// app.use(verifyJWT);
+citiesRouter(app);
+
 
 
 
