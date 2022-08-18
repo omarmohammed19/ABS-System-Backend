@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express'
 import dotenv from 'dotenv';
 import { City } from '../Models/CitiesModel';
 import { CitiesController } from '../Controllers/CitiesController';
+import  verifyJWT  from '../Middlewares/verifyJWT';
 
 dotenv.config();
 
@@ -67,11 +68,11 @@ const deleteCity = async (req: Request, res: Response) => {
 }
 
 const citiesRouter = (app: express.Application) => {
-    app.post('/city', addCity);
+    app.post('/city',verifyJWT, addCity);
     app.get('/city/:id', getCityByID);
     app.get('/city', getAll);
-    app.put('/city/:id', updateCity);
-    app.delete('/city/:id', deleteCity);
+    app.put('/city/:id',verifyJWT, updateCity);
+    app.delete('/city/:id',verifyJWT, deleteCity);
 }
 
 export default citiesRouter;
