@@ -39,6 +39,7 @@ import contactPersonTypesRouter from './Routes/contactPersonTypesRoute';
 import countriesRouter from './Routes/CountriesRoute';
 import cors from 'cors';
 import register_router from './Routes/RegisterRoute';
+import pricePlanNameRoutes from './Routes/pricePlanNameRoute';
 
 const corsOptions = {
   origin: 'http://localhost:3001',
@@ -91,6 +92,7 @@ companyInfoRouter(app);
 contactPersonRouter(app);
 contactPersonTypesRouter(app);
 countriesRouter(app);
+pricePlanNameRoutes(app);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port http://${address}:${process.env.PORT}`);
