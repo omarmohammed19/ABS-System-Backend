@@ -93,6 +93,9 @@ contactPersonRouter(app);
 contactPersonTypesRouter(app);
 countriesRouter(app);
 pricePlanNameRoutes(app);
+citiesRouter(app);
+pricePlanNameRoutes(app);
+citiesRouter(app);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port http://${address}:${process.env.PORT}`);
