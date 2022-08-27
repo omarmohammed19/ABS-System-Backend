@@ -13,6 +13,7 @@ async function getWebUsersByID(req: Request, res: Response) {
   }
 }
 
+
 async function addWebUser(req: Request, res: Response) {
   try {
     const user = await webUser.addWebUser(req.body);

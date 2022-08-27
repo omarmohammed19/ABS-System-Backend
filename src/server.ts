@@ -37,22 +37,24 @@ import companyInfoRouter from './Routes/companyInfoRoute';
 import contactPersonRouter from './Routes/contactPersonRoute';
 import contactPersonTypesRouter from './Routes/contactPersonTypesRoute';
 import countriesRouter from './Routes/CountriesRoute';
-import cors from 'cors'
+import cors from 'cors';
 import register_router from './Routes/RegisterRoute';
 import customers_router from './Routes/CustomersController';
+import pricePlanNameRoutes from './Routes/pricePlanNameRoute';
+
 
 const corsOptions = {
-  origin: "http://localhost:3001",
+  origin: 'http://localhost:3001',
   credentials: true,
-  optionSuccessStatus: 200
-}
+  optionSuccessStatus: 200,
+};
 
 const app: express.Application = express();
 const address: string = 'localhost';
 
 dotenv.config();
 
-app.use(cors(corsOptions))
+app.use(cors(corsOptions));
 
 app.use(bodyParser.json());
 
@@ -88,13 +90,15 @@ addressTypeRouter(app);
 bankDetailsRouter(app);
 bankNamesRouter(app);
 branchesRouter(app);
-citiesRouter(app);
 companyInfoRouter(app);
 contactPersonRouter(app);
 contactPersonTypesRouter(app);
 countriesRouter(app);
 customers_router(app);
-
+pricePlanNameRoutes(app);
+citiesRouter(app);
+pricePlanNameRoutes(app);
+citiesRouter(app);
 
 
 app.listen(process.env.PORT, () => {
