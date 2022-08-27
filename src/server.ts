@@ -39,6 +39,7 @@ import contactPersonTypesRouter from './Routes/contactPersonTypesRoute';
 import countriesRouter from './Routes/CountriesRoute';
 import cors from 'cors'
 import register_router from './Routes/RegisterRoute';
+import customers_router from './Routes/CustomersController';
 
 const corsOptions = {
   origin: "http://localhost:3001",
@@ -92,6 +93,7 @@ companyInfoRouter(app);
 contactPersonRouter(app);
 contactPersonTypesRouter(app);
 countriesRouter(app);
+customers_router(app);
 
 
 
