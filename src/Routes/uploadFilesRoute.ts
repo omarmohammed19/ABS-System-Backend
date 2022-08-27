@@ -1,30 +1,24 @@
-import express, { Request, Response, Router } from 'express';
+import { Router } from 'express';
 import upload from '../Controllers/uploadFilesController';
+// const imageController = require('../controllers/imageController');
+const imageRouter = Router();
 import fs from 'fs';
 
-async function uploadFile(req: Request, res: Response) {
-    upload.single('file')
+imageRouter.post('/single',upload.single('file'), (req, res) => {
     //@ts-ignore
-    res.json({ success: true, url: req.body.file });
-}
+    res.json({success: true , url : res.req.file.path});
+})
 
-async function uploadMultipleFile(req: Request, res: Response) {
-    upload.array('files', 12)
+imageRouter.post('/multiple',upload.array('files', 12), (req, res) => {
     res.send('Multiple files uploaded');
-}
+})
 
-async function getFiles(req: Request, res: Response) {
+imageRouter.get('/getImage', (req, res) => {
     fs.readFile('uploads/' + req.query.name, (err, data) => {
         if (err) throw err;
         res.writeHead(200);
         res.end(data);
     })
-}
+})
 
-const uploadFileRouter = (app: express.Application) => {
-    app.post('/file', uploadFile);
-    app.post('/file', uploadMultipleFile);
-    app.get('/file', getFiles);
-}
-
-export default uploadFileRouter;
+export default imageRouter;

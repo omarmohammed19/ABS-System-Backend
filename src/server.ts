@@ -40,6 +40,7 @@ import countriesRouter from './Routes/CountriesRoute';
 import cors from 'cors';
 import register_router from './Routes/RegisterRoute';
 import pricePlanNameRoutes from './Routes/pricePlanNameRoute';
+import imageRouter from './Routes/uploadFilesRoute';
 
 const corsOptions = {
   origin: 'http://localhost:3001',
@@ -96,6 +97,7 @@ pricePlanNameRoutes(app);
 citiesRouter(app);
 pricePlanNameRoutes(app);
 citiesRouter(app);
+app.use('/images', imageRouter);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port http://${address}:${process.env.PORT}`);
