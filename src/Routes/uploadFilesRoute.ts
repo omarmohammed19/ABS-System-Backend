@@ -5,9 +5,8 @@ const imageRouter = Router();
 import fs from 'fs';
 
 imageRouter.post('/single',upload.single('file'), (req, res) => {
-    console.log(res);
     //@ts-ignore
-    res.json({success: true , url : res.req.file.path});
+    res.json({success: true});
 })
 
 imageRouter.post('/multiple',upload.array('files', 12), (req, res) => {
