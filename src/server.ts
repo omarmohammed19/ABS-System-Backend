@@ -39,9 +39,9 @@ import contactPersonTypesRouter from './Routes/contactPersonTypesRoute';
 import countriesRouter from './Routes/CountriesRoute';
 import cors from 'cors';
 import register_router from './Routes/RegisterRoute';
-import customers_router from './Routes/CustomersController';
+import customers_router from './Routes/CustomersRoutes';
 import pricePlanNameRoutes from './Routes/pricePlanNameRoute';
-import customers_router from './Routes/CustomersController';
+
 
 
 const corsOptions = {
