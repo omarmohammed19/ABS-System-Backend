@@ -40,11 +40,13 @@ async function updateSubAccount(req: Request, res: Response) {
   try {
     const subAccount = await sub.updateSubAccount({
       ID: Number(req.params.id),
+      mainAccountNumber: req.body.mainAccountNumber,
       subAccountName: req.body.subAccountName,
       accountNumber: req.body.accountNumber,
       pricePlanID: req.body.pricePlanID,
       paymentMethodID: req.body.paymentMethodID,
       productTypeID: req.body.productTypeID,
+      registrationDate: req.body.registrationDate,
     });
     res.status(200).json(subAccount);
   } catch (error) {

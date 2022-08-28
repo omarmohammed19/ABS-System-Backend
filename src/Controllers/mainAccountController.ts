@@ -39,10 +39,10 @@ export class mainAccountController {
             const pool = await new sql.ConnectionPool(sqlConfig).connect();
             const result = await pool.request()
                 .input("mainAccountName", sql.NVarChar, mainAccount.mainAccountName)
-                .input("accountNumber", sql.Int, mainAccount.accountNumber)
                 .input("salesManID", sql.Int, mainAccount.salesManID)
                 .input("custInfoID", sql.Int, mainAccount.custInfoID)
                 .input("companyInfoID", sql.Int, mainAccount.companyInfoID)
+                .input("registrationDate", sql.Date, mainAccount.registrationDate)
                 .execute("p_SaveMainAccount");
             return result.recordset[0];
         }
@@ -58,10 +58,10 @@ export class mainAccountController {
             const result = await pool.request()
                 .input("ID", sql.Int, mainAccount.ID)
                 .input("mainAccountName", sql.NVarChar, mainAccount.mainAccountName)
-                .input("accountNumber", sql.Int, mainAccount.accountNumber)
                 .input("salesManID", sql.Int, mainAccount.salesManID)
                 .input("custInfoID", sql.Int, mainAccount.custInfoID)
                 .input("companyInfoID", sql.Int, mainAccount.companyInfoID)
+                .input("registrationDate", sql.Date, mainAccount.registrationDate)
                 .execute("p_UpdateMainAccount");
             return result.recordset;
         }

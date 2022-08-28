@@ -18,6 +18,7 @@ export class webUsersController {
       throw new Error(`Could not get the user ${error}`);
     }
   }
+  
   async addWebUser(user: webUsers): Promise<webUsers> {
     try {
       //@ts-ignore
@@ -39,7 +40,6 @@ export class webUsersController {
       //@ts-ignore
       const pool = await new sql.ConnectionPool(sqlConfig).connect();
       const result = await pool.request().execute('[dbo].[p_GetwebUsers]');
-      console.log(result);
       pool.close();
       return result.recordset;
     } catch (error) {
