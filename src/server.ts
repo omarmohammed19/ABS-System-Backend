@@ -39,9 +39,8 @@ import contactPersonTypesRouter from './Routes/contactPersonTypesRoute';
 import countriesRouter from './Routes/CountriesRoute';
 import cors from 'cors';
 import register_router from './Routes/RegisterRoute';
-import customers_router from './Routes/CustomersController';
+import customers_router from './Routes/CustomersRoutes';
 import pricePlanNameRoutes from './Routes/pricePlanNameRoute';
-import imageRouter from './Routes/uploadFilesRoute';
 
 
 const corsOptions = {
@@ -100,7 +99,6 @@ pricePlanNameRoutes(app);
 citiesRouter(app);
 pricePlanNameRoutes(app);
 citiesRouter(app);
-app.use('/images', imageRouter);
 
 
 app.listen(process.env.PORT, () => {
