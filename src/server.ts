@@ -41,6 +41,7 @@ import cors from 'cors';
 import register_router from './Routes/RegisterRoute';
 import customers_router from './Routes/CustomersRoutes';
 import pricePlanNameRoutes from './Routes/pricePlanNameRoute';
+import imageRouter from './Routes/uploadFilesRoute';
 
 
 
@@ -101,6 +102,7 @@ citiesRouter(app);
 pricePlanNameRoutes(app);
 citiesRouter(app);
 customers_router(app);
+app.use('/images', imageRouter);
 
 
 app.listen(process.env.PORT, () => {
