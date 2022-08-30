@@ -15,11 +15,15 @@ imageRouter.post('/multiple',upload.array('files', 12), (req, res) => {
 })
 
 imageRouter.get('/getImage', (req, res) => {
+  try {
     fs.readFile('uploads/' + req.query.name, (err, data) => {
-        if (err) throw err;
-        res.writeHead(200);
-        res.end(data);
-    })
-})
+      // if (err) throw err;
+      res.writeHead(200);
+      res.end(data);
+    });
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 export default imageRouter;
