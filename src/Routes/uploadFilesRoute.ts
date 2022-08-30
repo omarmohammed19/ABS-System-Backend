@@ -6,8 +6,9 @@ import fs from 'fs';
 
 imageRouter.post('/single',upload.single('file'), (req, res) => {
     //@ts-ignore
-    res.json({success: true});
+    res.json({success: true , url: res.req.file.path});
 })
+
 
 imageRouter.post('/multiple',upload.array('files', 12), (req, res) => {
     res.send('Multiple files uploaded');
