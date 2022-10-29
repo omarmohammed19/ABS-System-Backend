@@ -15,7 +15,7 @@ const handleLogin = async (req: Request, res: Response) => {
         return res.sendStatus(401); //Unauthorized 
     }
     //@ts-ignore
-    if(result.isEnabled === false) {
+    if (result.isEnabled === false) {
         return res.sendStatus(403); //Forbidden
     }
     // evaluate password 
@@ -24,13 +24,15 @@ const handleLogin = async (req: Request, res: Response) => {
         if (match) {
             const id = result.ID;
             const name = result.userName;
+            const role = result.Roles;
             const message = "success";
             // create JWTs
             const accessToken = jwt.sign(
                 {
                     "UserInfo": {
                         "id": id,
-                        "name": name
+                        "name": name,
+                        "role": role
                     }
                 },
                 //@ts-ignore
@@ -38,7 +40,7 @@ const handleLogin = async (req: Request, res: Response) => {
             );
             // set cookies
             res.cookie('jwt', accessToken, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 });
-            res.json({ id, name , accessToken, message,});
+            res.json({ id, name, accessToken, message, });
         } else {
             console.log('Username or password is incorrect');
             return res.sendStatus(401);

@@ -4,14 +4,14 @@ import upload from '../Controllers/uploadFilesController';
 const imageRouter = Router();
 import fs from 'fs';
 
-imageRouter.post('/single',upload.single('file'), (req, res) => {
-    //@ts-ignore
-    res.json({success: true , url: res.req.file?.filename});
+imageRouter.post('/single', upload.single('file'), (req, res) => {
+  //@ts-ignore
+  res.json({ success: true, url: res.req.file?.filename });
 })
 
 
-imageRouter.post('/multiple',upload.array('files', 12), (req, res) => {
-    res.send('Multiple files uploaded');
+imageRouter.post('/multiple', upload.array('files', 12), (req, res) => {
+  res.send('Multiple files uploaded');
 })
 
 imageRouter.get('/getImage', (req, res) => {
