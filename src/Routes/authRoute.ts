@@ -25,6 +25,7 @@ const handleLogin = async (req: Request, res: Response) => {
             const id = result.ID;
             const name = result.userName;
             const role = result.Roles;
+            const subAccountID = result.subAccountID;
             const message = "success";
             // create JWTs
             const accessToken = jwt.sign(
@@ -32,7 +33,8 @@ const handleLogin = async (req: Request, res: Response) => {
                     "UserInfo": {
                         "id": id,
                         "name": name,
-                        "role": role
+                        "role": role,
+                        "subAccountID": subAccountID
                     }
                 },
                 //@ts-ignore
@@ -52,8 +54,22 @@ const handleLogin = async (req: Request, res: Response) => {
 
 }
 
+const getUserInfo = async (req: Request, res: Response) => {
+    const result = await authcontroller.getUserInfo(Number(req.params.subAccountID));
+    try {
+        if (result) {
+            res.status(200).json(result);
+        } else {
+            return res.sendStatus(404);
+        }
+    } catch (error) {
+        return res.sendStatus(400);
+    }
+}
+
 const handleLoginRouter = (app: express.Application) => {
     app.post('/auth', handleLogin);
+    app.get('/auth/:subAccountID', getUserInfo);
 }
 
 export default handleLoginRouter;

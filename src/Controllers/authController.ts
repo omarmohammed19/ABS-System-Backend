@@ -16,4 +16,14 @@ export class authController {
             .execute('[dbo].[p_GetwebUsersByUsername]');
         return result.recordset[0];
     }
+
+    async getUserInfo(subAccountID: number): Promise<webUsers> {
+        //@ts-ignore
+        const pool = await new sql.ConnectionPool(sqlConfig).connect();
+        const result = await pool.request()
+            .input("subAccountID", sql.Int, subAccountID)
+            .execute('[dbo].[p_GetcustInfoOnLogin]');
+
+        return result.recordset[0];
+    }
 }
