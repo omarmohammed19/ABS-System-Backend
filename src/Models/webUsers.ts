@@ -6,4 +6,5 @@ export interface webUsers {
   userName: string;
   webUserPassword: string;
   Roles: number;
+  subAccountID: number;
 }

@@ -48,6 +48,7 @@ async function updateWebUser(req: Request, res: Response) {
       userName: req.body.userName,
       webUserPassword: req.body.webUserPassword,
       Roles: Number(req.body.Roles),
+      subAccountID: Number(req.body.subAccountID),
     });
     res.status(200).json(user);
   } catch (error) {
