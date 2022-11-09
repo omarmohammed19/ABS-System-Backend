@@ -11,7 +11,8 @@ const addConversation = async (req: Request, res: Response) => {
 
     try {
         const conversation: Conversation = {
-            MemberID: req.body.MemberID,
+            MemberID1: req.body.MemberID1,
+            MemberID2: req.body.MemberID2,
         }
         const result = await conversationsController.create(conversation);
         res.json(result);

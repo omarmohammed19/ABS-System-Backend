@@ -39,30 +39,16 @@ export class ConversationsController {
             //@ts-ignore
             const pool = await new sql.ConnectionPool(sqlConfig).connect();
             const result = await pool.request()
-                .input("MemberID", sql.BigInt, C.MemberID)
+                .input("MemberID1", sql.BigInt, C.MemberID1)
+                .input("MemberID2", sql.BigInt, C.MemberID2)
                 .execute('[dbo].[p_SaveConversations]');
             pool.close();
             return result.recordset[0];
         }
         catch (err) {
-            throw new Error(`Could not add new Conversation ${C.conversattionID}. Error: ${err}`)
+            throw new Error(`Could not add new Conversation Error: ${err}`)
         }
     }
 
-    // async update(C: Conversation): Promise<string> {
-    //     try {
-    //         //@ts-ignore
-    //         const pool = await new sql.ConnectionPool(sqlConfig).connect();
-    //         const result = await pool.request()
-    //             .input("ID", sql.BigInt, C.conversattionID)
-    //             .input("memberID1", sql.BigInt, C.memberID1)
-    //             .input("memberID2", sql.BigInt, C.memberID2)
-    //             .execute('[dbo].[p_UpdateConversations]');
-    //         pool.close();
-    //         return result.recordset[0];
-    //     }
-    //     catch (err) {
-    //         throw new Error(`Could not update Conversation ${C.conversattionID}. Error: ${err}`)
-    //     }
-    // }
+
 }

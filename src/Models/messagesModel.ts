@@ -4,7 +4,7 @@ dotenv.config();
 
 export interface messages {
     MessageID?: number,
-    conversationID: number
-    senderID: string,
+    ConversationID: number
+    SenderID: number,
     Text: string
 }

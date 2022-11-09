@@ -43,6 +43,8 @@ import customers_router from './Routes/CustomersRoutes';
 import pricePlanNameRoutes from './Routes/pricePlanNameRoute';
 import imageRouter from './Routes/uploadFilesRoute';
 import handleLoginRouter from './Routes/authRoute';
+import conversationRouter from './Routes/ChatRoutes/conversationRoute';
+import messageRouter from './Routes/ChatRoutes/messagesRoutes';
 
 
 const corsOptions = {
@@ -102,6 +104,9 @@ citiesRouter(app);
 pricePlanNameRoutes(app);
 citiesRouter(app);
 handleLoginRouter(app);
+conversationRouter(app);
+messageRouter(app);
+
 app.use('/images', imageRouter);
 
 
