@@ -124,4 +124,16 @@ export class webUsersController {
       throw new Error(`Could not get the user ${error}`);
     }
   }
+
+  async getRolesByID(id: number): Promise<webUsers[]> {
+    try {
+      //@ts-ignore
+      const pool = await new sql.ConnectionPool(sqlConfig).connect();
+      const result = await pool.request().input('ID', sql.BigInt, id).execute('[dbo].[p_GetRolesByID]');
+      pool.close();
+      return result.recordset;
+    } catch (error) {
+      throw new Error(`Could not get the user ${error}`);
+    }
+  }
 }
