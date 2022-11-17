@@ -19,6 +19,7 @@ async function addNews(req: Request, res: Response) {
         const newsItem = await news.addNews(req.body);
         res.status(200).json(newsItem);
     } catch (error) {
+        console.log(error);
         res.status(500).json('Could not add a new news');
     }
 }
@@ -26,7 +27,6 @@ async function addNews(req: Request, res: Response) {
 async function index(req: Request, res: Response) {
     try {
         const newsItem = await news.index();
-        console.log(newsItem)
         res.status(200).json(newsItem);
     } catch (error) {
         res.status(500).json('Could not get the news');

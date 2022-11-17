@@ -35,16 +35,15 @@ export class NewsController {
         }
     }
 
-    async addNews(news: News): Promise<News> {
+    async addNews(news: News): Promise<News[]> {
         try {
             //@ts-ignore
             const pool = await new sql.ConnectionPool(sqlConfig).connect();
             const result = await pool.request()
                 .input('News', sql.NVarChar, news.News)
                 .execute("p_SaveNews");
-            console.log(news);
             pool.close();
-            return result.recordset[0];
+            return result.recordset;
         } catch (error) {
             throw new Error(`Could not add News ${error}`);
         }
