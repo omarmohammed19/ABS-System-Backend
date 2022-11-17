@@ -45,6 +45,7 @@ import imageRouter from './Routes/uploadFilesRoute';
 import handleLoginRouter from './Routes/authRoute';
 import conversationRouter from './Routes/ChatRoutes/conversationRoute';
 import messageRouter from './Routes/ChatRoutes/messagesRoutes';
+import newsRoutes from './Routes/NewsRoutes';
 
 
 const corsOptions = {
@@ -106,6 +107,7 @@ citiesRouter(app);
 handleLoginRouter(app);
 conversationRouter(app);
 messageRouter(app);
+newsRoutes(app);
 
 app.use('/images', imageRouter);
 
