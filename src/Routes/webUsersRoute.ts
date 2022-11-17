@@ -83,6 +83,15 @@ async function checkUsername(req: Request, res: Response) {
   }
 }
 
+async function getRolesByID(req: Request, res: Response) {
+  try {
+    const user = await webUser.getRolesByID(Number(req.params.id));
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json('Could not get the user');
+  }
+}
+
 const webUser_endpoints = (app: express.Application) => {
   app.get('/webUser/get/:id', getWebUsersByID);
   app.get('/webUser/get', getWebUsers);
@@ -92,6 +101,7 @@ const webUser_endpoints = (app: express.Application) => {
   app.put('/webUser/activate/:id', activateUser);
   app.put('/webUser/deactivate/:id', deactivateUser);
   app.post('/webUser/checkusername', checkUsername);
+  app.get('/webUser/getroles/:id', getRolesByID);
 };
 
 export default webUser_endpoints;
