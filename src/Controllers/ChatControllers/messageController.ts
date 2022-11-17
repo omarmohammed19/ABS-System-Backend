@@ -20,14 +20,14 @@ export class MessageController {
         }
     }
 
-    async getMessageByID(id: number): Promise<messages> {
+    async getMessageByID(id: number): Promise<messages[]> {
         try {
             //@ts-ignore
             const pool = await new sql.ConnectionPool(sqlConfig).connect();
             const result = await pool.request()
-                .input("ID", sql.BigInt, id)
-                .execute('[dbo].[p_GetMessagesByID]');
-            return result.recordset[0];
+                .input("ConversationID", sql.BigInt, id)
+                .execute('[dbo].[p_GetMessageByID]');
+            return result.recordset;
         }
         catch (err) {
             throw new Error(`Could not get all Messages. Error: ${err}`)

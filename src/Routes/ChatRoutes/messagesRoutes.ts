@@ -33,21 +33,20 @@ const addMessage = async (req: Request, res: Response) => {
 //     }
 // }
 
-// const getMessageByID = async (req: Request, res: Response) => {
+const getMessageByID = async (req: Request, res: Response) => {
 
-//     try {
-//         const result = await messageController.getMessageByID(req.params.id);
-//         res.json(result);
-//     } catch (error) {
-//         res.status(400)
-//         res.json(error)
-//     }
-// }
+    try {
+        const result = await messageController.getMessageByID(Number(req.params.id));
+        res.json(result);
+    } catch (error) {
+        res.status(400)
+        res.json(error)
+    }
+}
 
 const messageRouter = (app: express.Application) => {
     app.post('/message', addMessage);
-    // app.get('/message', getMessages);
-    // app.get('/message/:id', getMessageByID);
+    app.get('/message/:id', getMessageByID);
 }
 
 export default messageRouter;
