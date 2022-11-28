@@ -74,17 +74,26 @@ async function deactivateNews(req: Request, res: Response) {
     }
 }
 
+async function getActiveNews(req: Request, res: Response) {
+    try {
+        const newsItem = await news.getActiveNews();
+        console.log("newsItem");
+        res.status(200).json(newsItem);
+    } catch (error) {
+        res.status(500).json('Could not get the news');
+    }
+}
+
 
 const newsRoutes = (app: express.Application) => {
     app.get('/news', index);
+    app.get('/news/active', getActiveNews);
     app.post('/news', addNews);
     app.put('/news/:id', updateNews);
     app.delete('/news/:id', deleteNews);
     app.get('/news/:id', getNewsByID);
     app.put('/news/activate/:id', activateNews);
     app.put('/news/deactivate/:id', deactivateNews);
-
-
 }
 
 

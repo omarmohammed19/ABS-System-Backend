@@ -108,4 +108,17 @@ export class NewsController {
         }
     }
 
+    async getActiveNews(): Promise<News[]> {
+        try {
+            //@ts-ignore
+            const pool = await new sql.ConnectionPool(sqlConfig).connect();
+            const result = await pool.request()
+                .execute("p_GetActiveNews");
+            pool.close();
+            return result.recordset;
+        } catch (error) {
+            throw new Error(`Could not get News ${error}`);
+        }
+    }
+
 }
