@@ -79,4 +79,33 @@ export class NewsController {
             throw new Error(`Could not delete News ${error}`);
         }
     }
+
+    async activateNews(id: number): Promise<string> {
+        try {
+            //@ts-ignore
+            const pool = await new sql.ConnectionPool(sqlConfig).connect();
+            const result = await pool.request()
+                .input('ID', sql.Int, id)
+                .execute("p_ActivateNews");
+            pool.close();
+            return "Activated";
+        } catch (error) {
+            throw new Error(`Could not activate News ${error}`);
+        }
+    }
+
+    async deactivateNews(id: number): Promise<string> {
+        try {
+            //@ts-ignore
+            const pool = await new sql.ConnectionPool(sqlConfig).connect();
+            const result = await pool.request()
+                .input('ID', sql.Int, id)
+                .execute("p_DeactivateNews");
+            pool.close();
+            return "Deactivated";
+        } catch (error) {
+            throw new Error(`Could not deactivate News ${error}`);
+        }
+    }
+
 }
