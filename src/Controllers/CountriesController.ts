@@ -57,7 +57,6 @@ export class CountriesController{
                 .input("countryName", sql.NVarChar, C.countryName)
                 .execute('[dbo].[p_UpdateCountries]');
             pool.close();
-            console.log(result);
             return "Country updated successfully";
         }
         catch (err) {

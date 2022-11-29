@@ -28,7 +28,6 @@ export class mobileTypesController {
             const result = await pool.request()
                 .input('mobileType', sql.NVarChar, mob.mobileType)
                 .execute("p_SavemobileTypes");
-            console.log(mob);
             pool.close();
             return result.recordset[0];
         } catch (error) {
@@ -45,7 +44,6 @@ export class mobileTypesController {
                 .input('mobileType', sql.NVarChar, mt.mobileType)
                 .execute("p_UpdatemobileTypes");
             pool.close();
-            console.log(result);
             return "Updated";
         } catch (error) {
             throw new Error(`Could not update mobileType ${error}`);
@@ -60,7 +58,6 @@ export class mobileTypesController {
                 .input('id', sql.Int, id)
                 .execute("p_DeletemobileTypes");
             pool.close();
-            console.log(result);
             if (result.returnValue === 0) {
 
                 return "Deleted";

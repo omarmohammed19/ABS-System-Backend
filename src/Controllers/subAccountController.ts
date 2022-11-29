@@ -12,7 +12,6 @@ export class subAccountController {
       //@ts-ignore
       const pool = await new sql.ConnectionPool(sqlConfig).connect();
       const result = await pool.request().input('ID', sql.BigInt, id).execute('[dbo].[p_GetsubAccountByID]');
-      //   console.log(result);
       pool.close();
       return result.recordset;
     } catch (error) {
@@ -33,7 +32,6 @@ export class subAccountController {
         .input('productTypeID', sql.Int, subAccount.productTypeID)
         .input("registrationDate", sql.Date, subAccount.registrationDate)
         .execute('[dbo].[p_SavesubAccount]');
-      console.log(subAccount);
       pool.close();
       return result.recordset[0];
     } catch (error) {
@@ -45,7 +43,6 @@ export class subAccountController {
       //@ts-ignore
       const pool = await new sql.ConnectionPool(sqlConfig).connect();
       const result = await pool.request().execute('[dbo].[p_GetsubAccount]');
-      console.log(result);
       pool.close();
       return result.recordset;
     } catch (error) {
@@ -59,7 +56,6 @@ export class subAccountController {
       const result = await pool.request().input('ID', sql.BigInt, id).execute('[dbo].[p_DeletesubAccount]');
       pool.close();
       if (result.returnValue === 0) {
-        console.log(result);
         return 'Sub-account deleted successfully';
       } else {
         return 'Sub-account not found';

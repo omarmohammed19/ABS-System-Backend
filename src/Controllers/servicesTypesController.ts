@@ -11,7 +11,6 @@ export class ServicesTypesController {
       //@ts-ignore
       const pool = await new sql.ConnectionPool(sqlConfig).connect();
       const result = await pool.request().input('ID', sql.BigInt, id).execute('[dbo].[p_GetservicesTypesByID]');
-      //   console.log(result);
       pool.close();
 
       return result.recordset;
@@ -24,7 +23,6 @@ export class ServicesTypesController {
       //@ts-ignore
       const pool = await new sql.ConnectionPool(sqlConfig).connect();
       const result = await pool.request().input('serviceType', sql.NVarChar, service.serviceType).execute('[dbo].[p_SaveservicesTypes]');
-      console.log(service);
       pool.close();
       return result.recordset[0];
     } catch (error) {
@@ -36,7 +34,6 @@ export class ServicesTypesController {
       //@ts-ignore
       const pool = await new sql.ConnectionPool(sqlConfig).connect();
       const result = await pool.request().execute('[dbo].[p_GetservicesTypes]');
-      console.log(result);
       pool.close();
       return result.recordset;
     } catch (error) {
@@ -68,7 +65,6 @@ export class ServicesTypesController {
         .input('ID', sql.BigInt, service.ID)
         .input('serviceType', sql.NVarChar, service.serviceType)
         .execute('[dbo].[p_UpdateservicesTypes]');
-      console.log(result);
       pool.close();
       return 'Service type updated successfully';
     } catch (error) {

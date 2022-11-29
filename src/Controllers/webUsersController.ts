@@ -11,7 +11,6 @@ export class webUsersController {
       //@ts-ignore
       const pool = await new sql.ConnectionPool(sqlConfig).connect();
       const result = await pool.request().input('ID', sql.BigInt, id).execute('[dbo].[p_GetwebUsersByID]');
-      //   console.log(result);
       pool.close();
       return result.recordset;
     } catch (error) {
@@ -28,7 +27,6 @@ export class webUsersController {
         .input('userName', sql.NVarChar, user.userName)
         .input('webUserPassword', sql.NVarChar, user.webUserPassword)
         .execute('[dbo].[p_SavewebUsers]');
-      console.log(user);
       pool.close();
       return result.recordset[0];
     } catch (error) {
@@ -53,7 +51,6 @@ export class webUsersController {
       const result = await pool.request().input('ID', sql.BigInt, id).execute('[dbo].[p_DeletewebUsers]');
       pool.close();
       if (result.returnValue === 0) {
-        console.log(result);
         return 'The user deleted successfully';
       } else {
         return 'The user could not be deleted';
@@ -73,7 +70,6 @@ export class webUsersController {
         .input('webUserPassword', sql.NVarChar, user.webUserPassword)
         .input('Roles', sql.Int, user.Roles)
         .execute('[dbo].[p_UpdatewebUsers]');
-      console.log(user);
       pool.close();
       return result.recordset[0];
     } catch (error) {

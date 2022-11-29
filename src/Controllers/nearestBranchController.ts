@@ -29,7 +29,6 @@ export class NearestBranchController {
             const result = await pool.request()
                 .input('branchID', sql.Int, nb.branchID)
                 .execute("p_SavenearestBranch");
-            console.log(nb);
             pool.close();
             return result.recordset[0];
         } catch (error) {
@@ -46,7 +45,6 @@ export class NearestBranchController {
                 .input('branchID', sql.Int, nb.branchID)
                 .execute("p_UpdatenearestBranch");
             pool.close();
-            console.log(result);
             return "Updated";
         } catch (error) {
             throw new Error(`Could not update nearestBranch ${error}`);

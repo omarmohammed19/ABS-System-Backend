@@ -77,7 +77,6 @@ async function deactivateNews(req: Request, res: Response) {
 async function getActiveNews(req: Request, res: Response) {
     try {
         const newsItem = await news.getActiveNews();
-        console.log("newsItem");
         res.status(200).json(newsItem);
     } catch (error) {
         res.status(500).json('Could not get the news');

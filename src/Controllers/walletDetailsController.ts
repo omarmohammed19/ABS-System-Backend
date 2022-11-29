@@ -11,7 +11,6 @@ export class walletDetailsController {
       //@ts-ignore
       const pool = await new sql.ConnectionPool(sqlConfig).connect();
       const result = await pool.request().input('ID', sql.Int, id).execute('[dbo].[p_GetwalletDetailsByID]');
-      //   console.log(result);
       pool.close();
       return result.recordset;
     } catch (error) {
@@ -27,7 +26,6 @@ export class walletDetailsController {
         .input('walletNumber', sql.NVarChar, wallet.walletNumber)
         .input('mobileNumber', sql.NVarChar, wallet.mobileNumber)
         .execute('[dbo].[p_SavewalletDetails]');
-      console.log(wallet);
       pool.close();
       return result.recordset[0];
     } catch (error) {
@@ -39,7 +37,6 @@ export class walletDetailsController {
       //@ts-ignore
       const pool = await new sql.ConnectionPool(sqlConfig).connect();
       const result = await pool.request().execute('[dbo].[p_GetwalletDetails]');
-      console.log(result);
       pool.close();
       return result.recordset;
     } catch (error) {
@@ -53,7 +50,6 @@ export class walletDetailsController {
       const result = await pool.request().input('ID', sql.Int, id).execute('[dbo].[p_DeletewalletDetails]');
       pool.close();
       if (result.returnValue === 0) {
-        console.log(result);
         return 'The wallet details deleted successfully';
       } else {
         return 'The wallet details could not be deleted';
@@ -72,7 +68,6 @@ export class walletDetailsController {
         .input('mobileNumber', sql.NVarChar, wallet.mobileNumber)
         .input('walletNumber', sql.NVarChar, wallet.walletNumber)
         .execute('[dbo].[p_UpdatewalletDetails]');
-      console.log(wallet);
       pool.close();
       return result.recordset[0];
     } catch (error) {

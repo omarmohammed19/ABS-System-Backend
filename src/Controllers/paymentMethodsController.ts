@@ -45,7 +45,6 @@ export class PaymentMethodsController {
                 .input('paymentMethodType', sql.NVarChar, pm.paymentMethodType)
                 .execute("p_UpdatepaymentMethods");
             pool.close();
-            console.log(result);
             return "Updated";
         } catch (error) {
             throw new Error(`Could not update paymentMethods ${error}`);
