@@ -59,7 +59,6 @@ export class NewsController {
                 .input('Active', sql.NVarChar, news.Active)
                 .execute("p_UpdateNews");
             pool.close();
-            console.log(result);
             return "Updated";
         } catch (error) {
             throw new Error(`Could not update News ${error}`);

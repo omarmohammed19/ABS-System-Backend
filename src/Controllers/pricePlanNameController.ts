@@ -36,7 +36,6 @@ export class pricePlanNameController {
       const pool = await new sql.ConnectionPool(sqlConfig).connect();
       const result = await pool.request().input('ID', sql.BigInt, ppn.ID).input('Name', sql.NVarChar, ppn.Name).execute('p_UpdatepricePlanName');
       pool.close();
-      console.log(result);
       return 'Updated';
     } catch (error) {
       throw new Error(`Could not update pricePlanName ${error}`);
@@ -49,7 +48,6 @@ export class pricePlanNameController {
       const pool = await new sql.ConnectionPool(sqlConfig).connect();
       const result = await pool.request().input('ID', sql.BigInt, id).execute('p_DeletepricePlanName');
       pool.close();
-      console.log(result);
       return 'Deleted';
     } catch (error) {
       throw new Error(`Could not delete pricePlanName ${error}`);

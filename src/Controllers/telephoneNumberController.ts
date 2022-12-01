@@ -11,7 +11,6 @@ export class telephoneNumberController {
       //@ts-ignore
       const pool = await new sql.ConnectionPool(sqlConfig).connect();
       const result = await pool.request().input('ID', sql.BigInt, id).execute('[dbo].[p_GettelephoneNumberByID]');
-      //   console.log(result);
       pool.close();
       return result.recordset;
     } catch (error) {
@@ -30,7 +29,6 @@ export class telephoneNumberController {
         .input('contactPersonID', sql.Int, telephoneNumber.contactPersonID)
         .input('telephoneTypeID', sql.Int, telephoneNumber.telephoneTypeID)
         .execute('[dbo].[p_SavetelephoneNumber]');
-      console.log(telephoneNumber);
       pool.close();
       return result.recordset[0];
     } catch (error) {
@@ -42,7 +40,6 @@ export class telephoneNumberController {
       //@ts-ignore
       const pool = await new sql.ConnectionPool(sqlConfig).connect();
       const result = await pool.request().execute('[dbo].[p_GettelephoneNumber]');
-      console.log(result);
       pool.close();
       return result.recordset;
     } catch (error) {
@@ -56,7 +53,6 @@ export class telephoneNumberController {
       const result = await pool.request().input('ID', sql.BigInt, id).execute('[dbo].[p_DeletetelephoneNumber]');
       pool.close();
       if (result.returnValue === 0) {
-        console.log(result);
         return 'Telephone number deleted successfully';
       } else {
         return 'Telephone number is not found';
@@ -78,7 +74,6 @@ export class telephoneNumberController {
         .input('contactPersonID', sql.Int, telephoneNumber.contactPersonID)
         .input('telephoneTypeID', sql.Int, telephoneNumber.telephoneTypeID)
         .execute('[dbo].[p_UpdatetelephoneNumber]');
-      console.log(telephoneNumber);
       pool.close();
       return result.recordset[0];
     } catch (error) {

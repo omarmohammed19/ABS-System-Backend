@@ -11,7 +11,6 @@ export class telephoneTypesController {
       //@ts-ignore
       const pool = await new sql.ConnectionPool(sqlConfig).connect();
       const result = await pool.request().input('ID', sql.BigInt, id).execute('[dbo].[p_GettelephoneTypesByID]');
-      //   console.log(result);
       pool.close();
       return result.recordset;
     } catch (error) {
@@ -23,7 +22,6 @@ export class telephoneTypesController {
       //@ts-ignore
       const pool = await new sql.ConnectionPool(sqlConfig).connect();
       const result = await pool.request().input('telephoneType', sql.NVarChar, telephoneType.telephoneType).execute('[dbo].[p_SavetelephoneTypes]');
-      console.log(telephoneType);
       pool.close();
       return result.recordset[0];
     } catch (error) {
@@ -35,7 +33,6 @@ export class telephoneTypesController {
       //@ts-ignore
       const pool = await new sql.ConnectionPool(sqlConfig).connect();
       const result = await pool.request().execute('[dbo].[p_GettelephoneTypes]');
-      console.log(result);
       pool.close();
       return result.recordset;
     } catch (error) {
@@ -49,7 +46,6 @@ export class telephoneTypesController {
       const result = await pool.request().input('ID', sql.BigInt, id).execute('[dbo].[p_DeletetelephoneTypes]');
       pool.close();
       if (result.returnValue === 0) {
-        console.log(result);
         return 'Telephone type deleted successfully';
       } else {
         return 'Telephone type could not be deleted';
@@ -67,7 +63,6 @@ export class telephoneTypesController {
         .input('ID', sql.BigInt, telephoneType.ID)
         .input('telephoneType', sql.NVarChar, telephoneType.telephoneType)
         .execute('[dbo].[p_UpdatetelephoneTypes]');
-      console.log(telephoneType);
       pool.close();
       return result.recordset[0];
     } catch (error) {
