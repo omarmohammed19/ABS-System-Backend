@@ -54,6 +54,8 @@ async function updateZone(req: Request, res: Response) {
   }
 }
 
+
+
 const Zones_endpoints = (app: express.Application) => {
   app.get('/Zones/get/:id', getZonesByID);
   app.get('/Zones/get', getZones);

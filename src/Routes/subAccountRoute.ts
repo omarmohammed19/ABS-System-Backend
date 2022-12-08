@@ -53,9 +53,22 @@ async function updateSubAccount(req: Request, res: Response) {
     res.status(404).json('The sub-account is not found');
   }
 }
+
+
+async function getPaymentMethodByID(req: Request, res: Response) {
+  try {
+    const paymentMethod = await sub.getPaymentMethodByID(Number(req.params.id));
+    res.status(200).json(paymentMethod);
+  } catch (error) {
+    res.status(500).json('Could not get the payment method');
+  }
+}
+
+
 const subAccount_endpoints = (app: express.Application) => {
   app.get('/subaccount/get/:id', getSubAccountByID);
   app.get('/subaccount/get', getSubAccount);
+  app.get('/subaccount/paymentmethod/:id', getPaymentMethodByID);
   app.post('/subaccount/add', addSubAccount);
   app.delete('/subaccount/delete/:id', deleteSubAccount);
   app.put('/subaccount/update/:id', updateSubAccount);
