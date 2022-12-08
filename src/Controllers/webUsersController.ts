@@ -2,8 +2,13 @@ import dotenv from 'dotenv';
 import * as sql from 'mssql/msnodesqlv8';
 import { sqlConfig } from '../Config/database';
 import { webUsers } from '../Models/webUsers';
+import bcrypt from "bcrypt";
 
 dotenv.config();
+const {
+  SALT_ROUNDS,
+  pepper
+} = process.env
 
 export class webUsersController {
   async getWebUsersByID(id: number): Promise<webUsers[]> {
@@ -130,6 +135,39 @@ export class webUsersController {
       return result.recordset;
     } catch (error) {
       throw new Error(`Could not get the user ${error}`);
+    }
+  }
+
+  async getMembersBysubAccountID(id: number): Promise<webUsers[]> {
+    try {
+      //@ts-ignore
+      const pool = await new sql.ConnectionPool(sqlConfig).connect();
+      const result = await pool.request().input('subaccountID', sql.Int, id).execute('[dbo].[p_GetMembersBysubaccountID]');
+      pool.close();
+      return result.recordset;
+    } catch (error) {
+      throw new Error(`Could not get the user ${error}`);
+    }
+  }
+
+  async addNewMember(user: webUsers): Promise<webUsers[]> {
+    try {
+      //@ts-ignore
+      const hashedPassword = await bcrypt.hashSync(user.webUserPassword + pepper, parseInt(SALT_ROUNDS));
+      //@ts-ignore
+      const pool = await new sql.ConnectionPool(sqlConfig).connect();
+      const result = await pool
+        .request()
+        .input('subAccountID', sql.Int, user.subAccountID)
+        .input('userName', sql.NVarChar, user.userName)
+        .input('webUserPassword', sql.NVarChar, hashedPassword)
+        .input('Roles', sql.Int, user.Roles)
+        .execute('[dbo].[p_SaveNewMember]');
+      pool.close();
+      return result.recordset;
+    } catch (error) {
+      console.log(error);
+      throw new Error(`Could not add a new user ${error}`);
     }
   }
 }

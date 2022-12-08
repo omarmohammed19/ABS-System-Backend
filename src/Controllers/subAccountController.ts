@@ -87,4 +87,16 @@ export class subAccountController {
       throw new Error(`Could not update the sub-account ${error}`);
     }
   }
+
+  async getPaymentMethodByID(id: number): Promise<subAccount> {
+    try {
+      //@ts-ignore
+      const pool = await new sql.ConnectionPool(sqlConfig).connect();
+      const result = await pool.request().input('subaccountID', sql.BigInt, id).execute('[dbo].[p_GetpaymentMethodsBysubaccountID]');
+      pool.close();
+      return result.recordset[0];
+    } catch (error) {
+      throw new Error(`Could not get payment method ${error}`);
+    }
+  }
 }

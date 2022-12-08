@@ -46,6 +46,7 @@ import handleLoginRouter from './Routes/authRoute';
 import conversationRouter from './Routes/ChatRoutes/conversationRoute';
 import messageRouter from './Routes/ChatRoutes/messagesRoutes';
 import newsRoutes from './Routes/NewsRoutes';
+import rolesRoutes from './Routes/RolesRoute';
 
 
 const corsOptions = {
@@ -108,6 +109,7 @@ handleLoginRouter(app);
 conversationRouter(app);
 messageRouter(app);
 newsRoutes(app);
+rolesRoutes(app);
 
 app.use('/images', imageRouter);
 

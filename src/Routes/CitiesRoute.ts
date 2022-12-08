@@ -66,10 +66,20 @@ const deleteCity = async (req: Request, res: Response) => {
     }
 }
 
+const getCitiesByZoneID = async (req: Request, res: Response) => {
+    try {
+        const city = await citiesController.getCitiesByZoneID(Number(req.params.id));
+        res.status(200).json(city);
+    } catch (error) {
+        res.status(500).json('Could not get the cities');
+    }
+}
+
 const citiesRouter = (app: express.Application) => {
     app.post('/city', addCity);
     app.get('/city/:id', getCityByID);
     app.get('/city', getAll);
+    app.get('/city/zone/:id', getCitiesByZoneID);
     app.put('/city/:id', updateCity);
     app.delete('/city/:id', deleteCity);
 }
