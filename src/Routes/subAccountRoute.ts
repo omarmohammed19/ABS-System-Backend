@@ -54,34 +54,21 @@ async function updateSubAccount(req: Request, res: Response) {
   }
 }
 
-async function updatePricePlan(req: Request, res: Response) {
+async function getPaymentMethodByID(req: Request, res: Response) {
   try {
-    const subAccount = await sub.updatePricePlan({
-      ID: Number(req.params.id),
-      pricePlanID: req.body.pricePlanID,
-    });
-    res.status(200).json(subAccount);
+    const paymentMethod = await sub.getPaymentMethodByID(Number(req.params.id));
+    res.status(200).json(paymentMethod);
   } catch (error) {
-    res.status(404).json('The sub-account is not found');
-  }
-}
-
-async function getMaxPricePlanID(req: Request, res: Response) {
-  try {
-    const subAccount = await sub.getMaxPricePlanID();
-    res.status(200).json(subAccount);
-  } catch (error) {
-    res.status(500).json('Could not get the max price plan ID');
+    res.status(500).json('Could not get the payment method');
   }
 }
 
 const subAccount_endpoints = (app: express.Application) => {
   app.get('/subaccount/get/:id', getSubAccountByID);
   app.get('/subaccount/get', getSubAccount);
-  app.get('/subaccount/max', getMaxPricePlanID);
+  app.get('/subaccount/paymentmethod/:id', getPaymentMethodByID);
   app.post('/subaccount/add', addSubAccount);
   app.delete('/subaccount/delete/:id', deleteSubAccount);
   app.put('/subaccount/update/:id', updateSubAccount);
-  app.put('/subaccount/updatePricePlan/:id', updatePricePlan);
 };
 export default subAccount_endpoints;

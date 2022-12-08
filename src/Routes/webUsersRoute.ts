@@ -92,10 +92,32 @@ async function getRolesByID(req: Request, res: Response) {
   }
 }
 
+async function getMembersBysubAccountID(req: Request, res: Response) {
+  try {
+    const user = await webUser.getMembersBysubAccountID(Number(req.params.id));
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json('Could not get the user');
+  }
+}
+
+async function addNewMember(req: Request, res: Response) {
+  try {
+    const user = await webUser.addNewMember(req.body);
+    res.status(200).json(user);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json('Could not add a new user');
+  }
+}
+
+
 const webUser_endpoints = (app: express.Application) => {
   app.get('/webUser/get/:id', getWebUsersByID);
   app.get('/webUser/get', getWebUsers);
+  app.get('/webUser/getMembers/:id', getMembersBysubAccountID);
   app.post('/webUser/add', addWebUser);
+  app.post('/webUser/addNewMember', addNewMember);
   app.delete('/webUser/delete/:id', deleteWebUser);
   app.put('/webUser/update/:id', updateWebUser);
   app.put('/webUser/activate/:id', activateUser);

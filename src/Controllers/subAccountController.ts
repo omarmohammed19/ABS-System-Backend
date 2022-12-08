@@ -87,32 +87,15 @@ export class subAccountController {
     }
   }
 
-  async updatePricePlan(subAccount: subAccount): Promise<string> {
+  async getPaymentMethodByID(id: number): Promise<subAccount> {
     try {
       //@ts-ignore
       const pool = await new sql.ConnectionPool(sqlConfig).connect();
-      const result = await pool
-        .request()
-        .input('ID', sql.BigInt, subAccount.ID)
-        .input('pricePlanID', sql.Int, subAccount.pricePlanID)
-        .execute('[dbo].[p_UpdatePricePlanInSubaccount]');
+      const result = await pool.request().input('subaccountID', sql.BigInt, id).execute('[dbo].[p_GetpaymentMethodsBysubaccountID]');
       pool.close();
-      return 'Price plan updated successfully';
+      return result.recordset[0];
     } catch (error) {
-      console.log(error);
-      throw new Error(`Could not update the price plan ${error}`);
-    }
-  }
-
-  async getMaxPricePlanID(): Promise<Number> {
-    try {
-      //@ts-ignore
-      const pool = await new sql.ConnectionPool(sqlConfig).connect();
-      const result = await pool.request().execute('[dbo].[p_GetMaxPricePlanID]');
-      pool.close();
-      return result.recordset[0].ID;
-    } catch (error) {
-      throw new Error(`Could not get max price plan id ${error}`);
+      throw new Error(`Could not get payment method${error}`);
     }
   }
 }
