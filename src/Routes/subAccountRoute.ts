@@ -53,11 +53,35 @@ async function updateSubAccount(req: Request, res: Response) {
     res.status(404).json('The sub-account is not found');
   }
 }
+
+async function updatePricePlan(req: Request, res: Response) {
+  try {
+    const subAccount = await sub.updatePricePlan({
+      ID: Number(req.params.id),
+      pricePlanID: req.body.pricePlanID,
+    });
+    res.status(200).json(subAccount);
+  } catch (error) {
+    res.status(404).json('The sub-account is not found');
+  }
+}
+
+async function getMaxPricePlanID(req: Request, res: Response) {
+  try {
+    const subAccount = await sub.getMaxPricePlanID();
+    res.status(200).json(subAccount);
+  } catch (error) {
+    res.status(500).json('Could not get the max price plan ID');
+  }
+}
+
 const subAccount_endpoints = (app: express.Application) => {
   app.get('/subaccount/get/:id', getSubAccountByID);
   app.get('/subaccount/get', getSubAccount);
+  app.get('/subaccount/max', getMaxPricePlanID);
   app.post('/subaccount/add', addSubAccount);
   app.delete('/subaccount/delete/:id', deleteSubAccount);
   app.put('/subaccount/update/:id', updateSubAccount);
+  app.put('/subaccount/updatePricePlan/:id', updatePricePlan);
 };
 export default subAccount_endpoints;

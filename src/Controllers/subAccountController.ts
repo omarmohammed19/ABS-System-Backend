@@ -6,7 +6,6 @@ import { subAccount } from '../Models/subAccount';
 dotenv.config();
 
 export class subAccountController {
-
   async getSubAccountByID(id: number): Promise<subAccount[]> {
     try {
       //@ts-ignore
@@ -30,7 +29,7 @@ export class subAccountController {
         .input('pricePlanID', sql.Int, subAccount.pricePlanID)
         .input('paymentMethodID', sql.Int, subAccount.paymentMethodID)
         .input('productTypeID', sql.Int, subAccount.productTypeID)
-        .input("registrationDate", sql.Date, subAccount.registrationDate)
+        .input('registrationDate', sql.Date, subAccount.registrationDate)
         .execute('[dbo].[p_SavesubAccount]');
       pool.close();
       return result.recordset[0];
@@ -78,13 +77,42 @@ export class subAccountController {
         .input('pricePlanID', sql.Int, subAccount.pricePlanID)
         .input('paymentMethodID', sql.Int, subAccount.paymentMethodID)
         .input('productTypeID', sql.Int, subAccount.productTypeID)
-        .input("registrationDate", sql.Date, subAccount.registrationDate)
+        .input('registrationDate', sql.Date, subAccount.registrationDate)
         .execute('[dbo].[p_UpdatesubAccount]');
       pool.close();
       return 'Sub-account updated successfully';
     } catch (error) {
       console.log(error);
       throw new Error(`Could not update the sub-account ${error}`);
+    }
+  }
+
+  async updatePricePlan(subAccount: subAccount): Promise<string> {
+    try {
+      //@ts-ignore
+      const pool = await new sql.ConnectionPool(sqlConfig).connect();
+      const result = await pool
+        .request()
+        .input('ID', sql.BigInt, subAccount.ID)
+        .input('pricePlanID', sql.Int, subAccount.pricePlanID)
+        .execute('[dbo].[p_UpdatePricePlanInSubaccount]');
+      pool.close();
+      return 'Price plan updated successfully';
+    } catch (error) {
+      console.log(error);
+      throw new Error(`Could not update the price plan ${error}`);
+    }
+  }
+
+  async getMaxPricePlanID(): Promise<Number> {
+    try {
+      //@ts-ignore
+      const pool = await new sql.ConnectionPool(sqlConfig).connect();
+      const result = await pool.request().execute('[dbo].[p_GetMaxPricePlanID]');
+      pool.close();
+      return result.recordset[0].ID;
+    } catch (error) {
+      throw new Error(`Could not get max price plan id ${error}`);
     }
   }
 }
