@@ -61,6 +61,7 @@ export class RegisterController {
         .input('nationalID', sql.NVarChar, register.nationalID)
         .input('commercialRegister', sql.NVarChar, register.commercialRegister)
         .input('ServicesIDs', sql.NVarChar, register.ServicesIDs)
+        .input('salesChannelsIDs', sql.NVarChar, register.salesChannelsIDs)
         .input('pickupFirstName', sql.NVarChar, register.pickupFirstName)
         .input('pickupLastName', sql.NVarChar, register.pickupLastName)
         // .input('pickupContactPersonTypeID', sql.Int, register.pickupContactPersonTypeID)
