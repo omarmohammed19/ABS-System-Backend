@@ -11,13 +11,13 @@ const {
 } = process.env
 
 export class webUsersController {
-  async getWebUsersByID(id: number): Promise<webUsers[]> {
+  async getWebUsersByID(id: number): Promise<webUsers> {
     try {
       //@ts-ignore
       const pool = await new sql.ConnectionPool(sqlConfig).connect();
       const result = await pool.request().input('ID', sql.BigInt, id).execute('[dbo].[p_GetwebUsersByID]');
       pool.close();
-      return result.recordset;
+      return result.recordset[0];
     } catch (error) {
       throw new Error(`Could not get the user ${error}`);
     }
@@ -168,6 +168,22 @@ export class webUsersController {
     } catch (error) {
       console.log(error);
       throw new Error(`Could not add a new user ${error}`);
+    }
+  }
+
+  async updateImage(user: webUsers): Promise<webUsers[]> {
+    try {
+      //@ts-ignore
+      const pool = await new sql.ConnectionPool(sqlConfig).connect();
+      const result = await pool
+        .request()
+        .input('ID', sql.BigInt, user.ID)
+        .input('Avatar', sql.NVarChar, user.Avatar)
+        .execute('[dbo].[p_UpdatewebUsersImage]');
+      pool.close();
+      return result.recordset;
+    } catch (error) {
+      throw new Error(`Could not update the user ${error}`);
     }
   }
 }
