@@ -20,7 +20,7 @@ const handleLogin = async (req: Request, res: Response) => {
     }
     // evaluate password 
     try {
-        const match = await bcrypt.compareSync(req.body.password + process.env.pepper, result.webUserPassword);
+        const match = await bcrypt.compareSync(req.body.password + process.env.pepper, result.webUserPassword ? result.webUserPassword : "");
         if (match) {
             const id = result.ID;
             const name = result.userName;

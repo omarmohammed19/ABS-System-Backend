@@ -80,4 +80,17 @@ export class custInfoController {
         }
     }
 
+    async getUserInfo(id: number): Promise<custInfoModel> {
+        try {
+            //@ts-ignore
+            const pool = await new sql.ConnectionPool(sqlConfig).connect();
+            const result = await pool.request()
+                .input("subAccountID", sql.Int, id)
+                .execute("p_GetUserInfoBysubAccountID");
+            return result.recordset[0];
+        }
+        catch (error) {
+            throw new Error(`Could not get client ${error}`);
+        }
+    }
 }

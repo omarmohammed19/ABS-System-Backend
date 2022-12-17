@@ -47,6 +47,16 @@ const addAddress = async (req: Request, res: Response) => {
     }
 }
 
+const getBusinessLocations = async (req: Request, res: Response) => {
+    try {
+        const result = await addressesController.getBusinessLocations(Number(req.params.id));
+        res.json(result);
+    } catch (error) {
+        res.status(400)
+        res.json(error)
+    }
+}
+
 const updateAddress = async (req: Request, res: Response) => {
     try {
         const address: Address = {
@@ -82,6 +92,7 @@ const addressRouter = (app: express.Application) => {
     app.post('/address', addAddress);
     app.get('/address/:id', getAddressByID);
     app.get('/address', getAll);
+    app.get('/businessLocations/:id', getBusinessLocations);
     app.put('/address/:id', updateAddress);
     app.delete('/address/:id', deleteAddress);
 }

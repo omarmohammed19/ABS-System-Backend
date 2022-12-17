@@ -49,6 +49,7 @@ async function updateWebUser(req: Request, res: Response) {
       webUserPassword: req.body.webUserPassword,
       Roles: Number(req.body.Roles),
       subAccountID: Number(req.body.subAccountID),
+      Avatar: req.body.Avatar,
     });
     res.status(200).json(user);
   } catch (error) {
@@ -111,6 +112,18 @@ async function addNewMember(req: Request, res: Response) {
   }
 }
 
+async function updateImage(req: Request, res: Response) {
+  try {
+    const user = await webUser.updateImage({
+      ID: Number(req.params.id),
+      Avatar: req.body.Avatar,
+    });
+    res.status(200).json(user);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json('Could not update image');
+  }
+}
 
 const webUser_endpoints = (app: express.Application) => {
   app.get('/webUser/get/:id', getWebUsersByID);
@@ -121,6 +134,7 @@ const webUser_endpoints = (app: express.Application) => {
   app.delete('/webUser/delete/:id', deleteWebUser);
   app.put('/webUser/update/:id', updateWebUser);
   app.put('/webUser/activate/:id', activateUser);
+  app.put('/webUser/updateImage/:id', updateImage);
   app.put('/webUser/deactivate/:id', deactivateUser);
   app.post('/webUser/checkusername', checkUsername);
   app.get('/webUser/getroles/:id', getRolesByID);
