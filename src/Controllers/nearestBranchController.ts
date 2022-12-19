@@ -85,4 +85,18 @@ export class NearestBranchController {
         }
     }
 
+    async getNearestBranchBysubAccountID(subAccountID: number): Promise<NearestBranch> {
+        try {
+            //@ts-ignore
+            const pool = await new sql.ConnectionPool(sqlConfig).connect();
+            const result = await pool.request()
+                .input('subAccountID', sql.Int, subAccountID)
+                .execute("p_GetnearestBranchBysubAccountID");
+            pool.close();
+            return result.recordset[0];
+        } catch (error) {
+            throw new Error(`Could not get nearestBranch ${error}`);
+        }
+    }
+
 }

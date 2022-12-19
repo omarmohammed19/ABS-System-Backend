@@ -77,10 +77,10 @@ export class bankDetailsController {
             const result = await pool.request()
                 .input("bankDetailID", sql.BigInt, B.bankDetailID)
                 .input("accountHolderName", sql.NVarChar, B.accountHolderName)
-                .input("accountNumber", sql.NVarChar, accountNumberHashed)
+                .input("accountNumber", sql.NVarChar, B.accountNumber)
                 .input("bankNameID", sql.Int, B.bankNameID)
-                .input("IBAN", sql.NVarChar, IBANHashed)
-                .input("swiftCode", sql.NVarChar, swiftCodeHashed)
+                .input("IBAN", sql.NVarChar, B.IBAN)
+                .input("swiftCode", sql.NVarChar, B.swiftCode)
                 .execute('[dbo].[p_UpdatebankDetails]');
             pool.close();
             return "BankDetails updated successfully";
@@ -107,6 +107,19 @@ export class bankDetailsController {
         }
         catch (err) {
             throw new Error(`Could not delete BankDetails ${id}. Error: ${err}`)
+        }
+    }
+    async getBankDetailsBysubAccountID(subAccountID: number): Promise<BankDetails> {
+        try {
+            //@ts-ignore
+            const pool = await new sql.ConnectionPool(sqlConfig).connect();
+            const result = await pool.request()
+                .input("subAccountID", sql.BigInt, subAccountID)
+                .execute('[dbo].[p_GetbankDetailsBysubAccountID]');
+            return result.recordset[0];
+        }
+        catch (err) {
+            throw new Error(`Could not get all BankDetails. Error: ${err}`)
         }
     }
 }
