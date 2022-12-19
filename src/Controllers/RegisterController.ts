@@ -89,7 +89,7 @@ export class RegisterController {
         // .input('returnMobileTypeID2', sql.Int, register.returnMobileTypeID2)
         // .input('returnEmailTypeID', sql.Int, register.returnEmailTypeID)
         .input('returnEmail', sql.NVarChar, register.returnEmail)
-        .input('returnLocationName', sql.Int, register.returnLocationName)
+        .input('returnLocationName', sql.NVarChar, register.returnLocationName)
         // .input('returnAddressID', sql.Int, register.returnAddressID)
         // .input('returnAddressTypeID', sql.Int, register.returnAddressTypeID)
         .input('returnStreetName', sql.NVarChar, register.returnStreetName)
