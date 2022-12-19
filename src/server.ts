@@ -47,6 +47,7 @@ import conversationRouter from './Routes/ChatRoutes/conversationRoute';
 import messageRouter from './Routes/ChatRoutes/messagesRoutes';
 import newsRoutes from './Routes/NewsRoutes';
 import rolesRoutes from './Routes/RolesRoute';
+import mail_route from './Routes/mailRoute';
 
 
 const corsOptions = {
@@ -110,6 +111,7 @@ conversationRouter(app);
 messageRouter(app);
 newsRoutes(app);
 rolesRoutes(app);
+mail_route(app);
 
 app.use('/images', imageRouter);
 

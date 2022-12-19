@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import { webUsersController } from '../Controllers/webUsersController';
+import bcrypt from 'bcrypt';
 
 const webUserRouter = express.Router();
 const webUser = new webUsersController();
@@ -125,19 +126,50 @@ async function updateImage(req: Request, res: Response) {
   }
 }
 
+async function changePassword(req: Request, res: Response) {
+  try {
+    const user = await webUser.getPasswordByID(Number(req.params.id));
+    const match = await bcrypt.compareSync(req.body.oldPassword + process.env.pepper, user.webUserPassword ? user.webUserPassword : '');
+    console.log(match);
+
+    if (req.body.oldPassword == req.body.newPassword) {
+      res.status(203).json('New password cannot be the same as old password');
+      return;
+    }
+
+    if (match) {
+      const user = await webUser.updatePassword({
+        ID: Number(req.params.id),
+        webUserPassword: req.body.newPassword,
+      });
+      res.status(200).json('Password has been changed');
+    }
+    else {
+      res.status(202).json('Old password is incorrect');
+      return;
+    }
+
+  } catch (error) {
+    res.status(500).json('Could not get the user');
+  }
+}
+
 const webUser_endpoints = (app: express.Application) => {
   app.get('/webUser/get/:id', getWebUsersByID);
   app.get('/webUser/get', getWebUsers);
   app.get('/webUser/getMembers/:id', getMembersBysubAccountID);
+  app.get('/webUser/getroles/:id', getRolesByID);
   app.post('/webUser/add', addWebUser);
   app.post('/webUser/addNewMember', addNewMember);
-  app.delete('/webUser/delete/:id', deleteWebUser);
+  app.post('/webUser/checkusername', checkUsername);
   app.put('/webUser/update/:id', updateWebUser);
   app.put('/webUser/activate/:id', activateUser);
   app.put('/webUser/updateImage/:id', updateImage);
   app.put('/webUser/deactivate/:id', deactivateUser);
-  app.post('/webUser/checkusername', checkUsername);
-  app.get('/webUser/getroles/:id', getRolesByID);
+  app.put('/webUser/changePassword/:id', changePassword);
+  app.delete('/webUser/delete/:id', deleteWebUser);
+
+
 };
 
 export default webUser_endpoints;
