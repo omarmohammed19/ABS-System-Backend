@@ -19,6 +19,18 @@ export class mobileNumberController {
         }
     }
 
+    async checkMobiles(mobile: string): Promise<mobileNumbersModel[]> {
+        try {
+            //@ts-ignore
+            const pool = await new sql.ConnectionPool(sqlConfig).connect();
+            const result = await pool.request().input('mobile', sql.NVarChar, mobile).execute('[dbo].[p_checkMobiles]');
+            pool.close();
+            return result.recordset;
+        } catch (error) {
+            throw new Error(`Could not get the user ${error}`);
+        }
+    }
+
     async get(id: number): Promise<mobileNumbersModel> {
         try {
             //@ts-ignore
