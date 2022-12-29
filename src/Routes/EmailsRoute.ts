@@ -63,9 +63,20 @@ const deleteEmails = async (req: Request, res: Response) => {
     }
 }
 
+const checkEmails = async (req: Request, res: Response) => {
+    try {
+        const email = req.body.email;
+        const result = await makeEmailsRoute.checkEmails(email);
+        res.json(result);
+    } catch (error) {
+        res.status(500).send
+    }
+}
+
 const emails_Route = (app: express.Application) => {
     app.get('/emails', getEmails);
     app.get('/emails/:id', getEmailsById);
+    app.post('/checkemails', checkEmails);
     app.post('/emails', addEmails);
     app.put('/emails/:id', updateEmails);
     app.delete('/emails/:id', deleteEmails);

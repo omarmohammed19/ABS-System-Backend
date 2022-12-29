@@ -19,6 +19,18 @@ export class emailsController {
         }
     }
 
+    async checkEmails(email: string): Promise<emailsModel[]> {
+        try {
+            //@ts-ignore
+            const pool = await new sql.ConnectionPool(sqlConfig).connect();
+            const result = await pool.request().input('email', sql.NVarChar, email).execute('[dbo].[p_checkEmails]');
+            pool.close();
+            return result.recordset;
+        } catch (error) {
+            throw new Error(`Could not get the user ${error}`);
+        }
+    }
+
     async get(id: number): Promise<emailsModel> {
         try {
             //@ts-ignore
