@@ -53,9 +53,19 @@ async function updateWalletDetails(req: Request, res: Response) {
   }
 }
 
+async function getWalletDetailsBysubAccountID(req: Request, res: Response) {
+  try {
+    const walletDetails = await wallet.getWalletDetailsBysubAccountID(Number(req.params.id));
+    res.status(200).json(walletDetails);
+  } catch (error) {
+    res.status(500).json('Could not get the wallet details');
+  }
+}
+
 const walletDetails_endpoints = (app: express.Application) => {
   app.get('/walletDetails/get/:id', getWalletDetailsByID);
   app.get('/walletDetails/get', getWalletDetails);
+  app.get('/walletDetails/getBySubAccountID/:id', getWalletDetailsBysubAccountID);
   app.post('/walletDetails/add', addWalletDetail);
   app.delete('/walletDetails/delete/:id', deleteWalletDetails);
   app.put('/walletDetails/update/:id', updateWalletDetails);

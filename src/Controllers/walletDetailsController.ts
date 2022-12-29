@@ -74,4 +74,16 @@ export class walletDetailsController {
       throw new Error(`Could not update the wallet details ${error}`);
     }
   }
+
+  async getWalletDetailsBysubAccountID(subAccountID: number): Promise<walletDetails> {
+    try {
+      //@ts-ignore
+      const pool = await new sql.ConnectionPool(sqlConfig).connect();
+      const result = await pool.request().input('subAccountID', sql.Int, subAccountID).execute('[dbo].[p_GetwalletDetailsBysubAccountID]');
+      pool.close();
+      return result.recordset[0];
+    } catch (error) {
+      throw new Error(`Could not get the wallet details ${error}`);
+    }
+  }
 }

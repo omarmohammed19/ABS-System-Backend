@@ -11,6 +11,7 @@ const register = async (req: Request, res: Response) => {
         const result = await makeRegisterRoute.create(req.body);
         res.json(result);
     } catch (error) {
+        console.log(error);
         res.status(500).send(error);
     }
 };

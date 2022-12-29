@@ -61,9 +61,20 @@ const deleteMobileCash = async (req: Request, res: Response) => {
     }
 }
 
+const getMobileCashBysubAccountID = async (req: Request, res: Response) => {
+    try {
+        const result = await makeMobileCashRoute.getMobileCashBysubAccountID(Number(req.params.id));
+        res.json(result);
+    }
+    catch (error) {
+        res.status(500).send(error);
+    }
+}
+
 const mobileCash_Route = (app: express.Application) => {
     app.get('/mobileCashs', getMobileCashs);
     app.get('/mobileCash/:id', getMobileCashById);
+    app.get('/mobileCashBySubAccountID/:id', getMobileCashBysubAccountID);
     app.post('/mobileCash', addMobileCash);
     app.put('/mobileCash/:id', updateMobileCash);
     app.delete('/mobileCash/:id', deleteMobileCash);

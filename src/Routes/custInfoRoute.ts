@@ -63,9 +63,19 @@ const deletecustInfo = async (req: Request, res: Response) => {
     }
 }
 
+const getUserInfo = async (req: Request, res: Response) => {
+    try {
+        const result = await makeCustInfoRoute.getUserInfo(Number(req.params.id));
+        res.json(result);
+    } catch (error) {
+        res.status(500).send
+    }
+}
+
 const custInfo_router = (app: express.Application) => {
     app.get('/custInfo', getcustInfo);
     app.get('/custInfo/:id', getcustInfoById);
+    app.get('/custInfo/user/:id', getUserInfo);
     app.post('/custInfo', addcustInfo);
     app.put('/custInfo/:id', updatecustInfo);
     app.delete('/custInfo/:id', deletecustInfo);

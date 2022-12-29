@@ -72,10 +72,21 @@ const deleteBankDetails = async (req: Request, res: Response) => {
     }
 }
 
+const getBankDetailsBysubAccountID = async (req: Request, res: Response) => {
+    try {
+        const result = await bankdetailsController.getBankDetailsBysubAccountID(Number(req.params.id));
+        res.json(result);
+    } catch (error) {
+        res.status(400)
+        res.json(error)
+    }
+}
+
 const bankDetailsRouter = (app: express.Application) => {
     app.post('/bankDetails', addBankDetails);
     app.get('/bankDetails/:id', getBankDetailsByID);
     app.get('/bankDetails', getAll);
+    app.get('/bankDetails/subAccount/:id', getBankDetailsBysubAccountID);
     app.put('/bankDetails/:id', updateBankDetails);
     app.delete('/bankDetails/:id', deleteBankDetails);
 }

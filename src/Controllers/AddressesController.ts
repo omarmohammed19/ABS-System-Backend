@@ -99,5 +99,19 @@ export class AddressesController {
         }
     }
 
+    async getBusinessLocations(id: number): Promise<Address[]> {
+        try {
+            //@ts-ignore
+            const pool = await new sql.ConnectionPool(sqlConfig).connect();
+            const result = await pool.request()
+                .input("subAccountID", sql.Int, id)
+                .execute('[dbo].[p_GetBusinessLoactionsBysubAccountID]');
+            return result.recordset;
+        }
+        catch (err) {
+            throw new Error(`Could not get all Addresses. Error: ${err}`)
+        }
+    }
+
 }
 
