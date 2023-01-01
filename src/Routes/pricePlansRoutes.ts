@@ -59,12 +59,23 @@ async function getPricePlansByID(req: Request, res: Response) {
   }
 }
 
+async function getPricePlanMatrixByPricePlanID(req: Request, res: Response) {
+  try {
+    const id = Number(req.params.id);
+    const pricePlan = await pp.getPricePlanMatrixByPricePlanID(id);
+    res.status(200).json(pricePlan);
+  } catch (error) {
+    res.status(400).json('Could not get pricePlans');
+  }
+}
+
 const pricePlansRoutes = (app: express.Application) => {
   app.get('/pricePlans', getAllPricePlans);
   app.post('/pricePlans', addPricePlan);
   app.put('/pricePlans/:id', updatePricePlan);
   app.delete('/pricePlans/:id', deletePricePlan);
   app.get('/pricePlans/:id', getPricePlansByID);
+  app.get('/pricePlans/pricePlanMatrix/:id', getPricePlanMatrixByPricePlanID);
 };
 
 export default pricePlansRoutes;

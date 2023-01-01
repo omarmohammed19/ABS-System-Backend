@@ -42,6 +42,7 @@ const addAddress = async (req: Request, res: Response) => {
         const result = await addressesController.create(address);
         res.json(result);
     } catch (error) {
+        console.log(error);
         res.status(400)
         res.json(error)
     }
@@ -88,8 +89,33 @@ const deleteAddress = async (req: Request, res: Response) => {
     }
 }
 
+const AddBusinessLocation = async (req: Request, res: Response) => {
+    try {
+        const addressTypeID = req.body.addressTypeID;
+        const subAccountID = req.body.subAccountID;
+        const streetName = req.body.streetName;
+        const apartmentNumber = req.body.apartmentNumber;
+        const floorNumber = req.body.floorNumber;
+        const buildingNumber = req.body.buildingNumber;
+        const cityID = req.body.cityID;
+        const postalCode = req.body.postalCode;
+        const locationName = req.body.locationName;
+        const email = req.body.email;
+        const mobile = req.body.mobile;
+        const firstName = req.body.firstName;
+        const lastName = req.body.lastName;
+
+        const result = await addressesController.AddBusinessLocation(addressTypeID, subAccountID, streetName, apartmentNumber, floorNumber, buildingNumber, cityID, postalCode, locationName, email, mobile, firstName, lastName);
+        res.json(result);
+    } catch (error) {
+        res.status(400)
+        res.json(error)
+    }
+}
+
 const addressRouter = (app: express.Application) => {
     app.post('/address', addAddress);
+    app.post('/businessLocation', AddBusinessLocation);
     app.get('/address/:id', getAddressByID);
     app.get('/address', getAll);
     app.get('/businessLocations/:id', getBusinessLocations);
