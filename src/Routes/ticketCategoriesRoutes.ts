@@ -48,11 +48,11 @@ async function updateTicketCategory(req: Request, res: Response) {
     }
 }
 const ticketCategories_endpoints = (app: express.Application) => {
-    app.get('/ticketCategory/get/:id', getTicketCategoryByID);
-    app.get('/ticketCategory/get', getTicketCategory);
-    app.post('/ticketCategory/add', addTicketCategory);
-    app.delete('/ticketCategory/delete/:id', deleteTicketCategory);
-    app.put('/ticketCategory/update/:id', updateTicketCategory);
+    app.get('/ticketCategory/:id', getTicketCategoryByID);
+    app.get('/ticketCategory', getTicketCategory);
+    app.post('/ticketCategory', addTicketCategory);
+    app.delete('/ticketCategory/:id', deleteTicketCategory);
+    app.put('/ticketCategory/:id', updateTicketCategory);
 };
 
 export { ticketCategories_endpoints, ticketCategoriesRouter };
