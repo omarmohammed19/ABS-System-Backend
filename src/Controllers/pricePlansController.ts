@@ -82,4 +82,19 @@ export class PricePlansController {
       throw new Error(`Could not get pricePlans ${error}`);
     }
   }
+
+  async getPricePlanMatrixByPricePlanID(id: number): Promise<PricePlan[]> {
+    try {
+      //@ts-ignore
+      const pool = await new sql.ConnectionPool(sqlConfig).connect();
+      const result = await pool
+        .request()
+        .input('pricePlanID', sql.Int, id)
+        .execute('p_GetPricePlanMatrixByID');
+      pool.close();
+      return result.recordset;
+    } catch (error) {
+      throw new Error(`Could not get pricePlans ${error}`);
+    }
+  }
 }

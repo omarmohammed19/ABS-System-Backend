@@ -6,13 +6,14 @@ import { subAccount } from '../Models/subAccount';
 dotenv.config();
 
 export class subAccountController {
-  async getSubAccountByID(id: number): Promise<subAccount[]> {
+  async getSubAccountByID(id: number): Promise<subAccount> {
     try {
+      console.log('id', id);
       //@ts-ignore
       const pool = await new sql.ConnectionPool(sqlConfig).connect();
       const result = await pool.request().input('ID', sql.BigInt, id).execute('[dbo].[p_GetsubAccountByID]');
       pool.close();
-      return result.recordset;
+      return result.recordset[0];
     } catch (error) {
       throw new Error(`Could not get orders ${error}`);
     }
@@ -96,6 +97,18 @@ export class subAccountController {
       return result.recordset[0];
     } catch (error) {
       throw new Error(`Could not get payment method${error}`);
+    }
+  }
+
+  async getPricePlanByID(id: number): Promise<subAccount> {
+    try {
+      //@ts-ignore
+      const pool = await new sql.ConnectionPool(sqlConfig).connect();
+      const result = await pool.request().input('ID', sql.BigInt, id).execute('[dbo].[p_GetsubAccountPricePlanByID]');
+      pool.close();
+      return result.recordset[0];
+    } catch (error) {
+      throw new Error(`Could not get price plan${error}`);
     }
   }
 }

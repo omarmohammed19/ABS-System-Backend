@@ -34,7 +34,7 @@ export class AddressesController {
         }
     }
 
-    async create(address: Address): Promise<Address> {
+    async create(address: Address): Promise<any> {
         try {
 
             //@ts-ignore
@@ -50,7 +50,7 @@ export class AddressesController {
                 .input("postalCode", sql.Int, address.postalCode)
                 .execute('[dbo].[p_SaveAddresses]');
             pool.close();
-            return result.recordset[0];
+            return result.recordset;
         }
         catch (err) {
             throw new Error(`Could not add new Address ${address.ID}. Error: ${err}`)
@@ -110,6 +110,34 @@ export class AddressesController {
         }
         catch (err) {
             throw new Error(`Could not get all Addresses. Error: ${err}`)
+        }
+    }
+
+    async AddBusinessLocation(addressTypeID: number, subAccountID: number, streetName: string, apartmentNumber: number, floorNumber: number, buildingNumber: number, cityID: number, postalCode: number, locationName: string, email: string, mobile: string, firstName: string, lastName: string): Promise<any> {
+        try {
+
+            //@ts-ignore
+            const pool = await new sql.ConnectionPool(sqlConfig).connect();
+            const result = await pool.request()
+                .input("addressTypeID", sql.Int, addressTypeID)
+                .input("subAccountID", sql.Int, subAccountID)
+                .input("streetName", sql.NVarChar, streetName)
+                .input("apartmentNumber", sql.Int, apartmentNumber)
+                .input("floorNumber", sql.Int, floorNumber)
+                .input("buildingNumber", sql.Int, buildingNumber)
+                .input("cityID", sql.Int, cityID)
+                .input("postalCode", sql.Int, postalCode)
+                .input("locationName", sql.NVarChar, locationName)
+                .input("email", sql.NVarChar, email)
+                .input("mobile", sql.NVarChar, mobile)
+                .input("firstName", sql.NVarChar, firstName)
+                .input("lastName", sql.NVarChar, lastName)
+                .execute('[dbo].[p_AddBusinessLocation]');
+            pool.close();
+            return result.recordset;
+        }
+        catch (err) {
+            throw new Error(`Could not add new Address`)
         }
     }
 
