@@ -34,6 +34,20 @@ export class legalPapersController {
         }
     }
 
+    async getByCompanyInfoID(id: number): Promise<legalPapersModel[]> {
+        try {
+            //@ts-ignore
+            const pool = await new sql.ConnectionPool(sqlConfig).connect();
+            const result = await pool.request()
+                .input("companyInfoID", sql.BigInt, id)
+                .execute("p_GetLegalPapersByCompanyInfoID");
+            return result.recordset;
+        }
+        catch (error) {
+            throw new Error(`Could not get legal papers by company info ID ${error}`);
+        }
+    }
+
     async add(legalPapers: legalPapersModel): Promise<legalPapersModel> {
         try {
             //@ts-ignore

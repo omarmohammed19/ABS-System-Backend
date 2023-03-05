@@ -28,6 +28,8 @@ async function updatePricePlanName(req: Request, res: Response) {
     const p: pricePlanNameModel = {
       ID: Number(req.params.id),
       Name: req.body.Name,
+      pricePlanID: Number(req.body.pricePlanID),
+      numberOfShipments: Number(req.body.numberOfShipments),
     };
     const pricePlanName = await ppn.updatePricePlanName(p);
     res.status(200).json(pricePlanName);

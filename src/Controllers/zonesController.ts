@@ -11,7 +11,6 @@ export class ZonesController {
       //@ts-ignore
       const pool = await new sql.ConnectionPool(sqlConfig).connect();
       const result = await pool.request().input('ID', sql.BigInt, id).execute('[dbo].[p_GetZonesByID]');
-      //   console.log(result);
       pool.close();
       return result.recordset;
     } catch (error) {
@@ -28,7 +27,6 @@ export class ZonesController {
         .input('zoneTypeID', sql.Int, zone.zoneTypeID)
         .input('cityID', sql.Int, zone.cityID)
         .execute('[dbo].[p_SaveZones]');
-      console.log(zone);
       pool.close();
       return result.recordset[0];
     } catch (error) {
@@ -40,7 +38,6 @@ export class ZonesController {
       //@ts-ignore
       const pool = await new sql.ConnectionPool(sqlConfig).connect();
       const result = await pool.request().execute('[dbo].[p_GetZones]');
-      console.log(result);
       pool.close();
       return result.recordset;
     } catch (error) {
@@ -54,7 +51,6 @@ export class ZonesController {
       const result = await pool.request().input('ID', sql.BigInt, id).execute('[dbo].[p_DeleteZones]');
       pool.close();
       if (result.returnValue === 0) {
-        console.log(result);
         return 'The zone deleted successfully';
       } else {
         return 'The zone could not be deleted';
@@ -74,7 +70,6 @@ export class ZonesController {
         .input('zoneTypeID', sql.Int, zone.zoneTypeID)
         .input('cityID', sql.Int, zone.cityID)
         .execute('[dbo].[p_UpdateZones]');
-      console.log(zone);
       pool.close();
       return result.recordset[0];
     } catch (error) {

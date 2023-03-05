@@ -55,7 +55,6 @@ export class PaymentInfoController {
                 .input('bankDetailID', sql.Int, pi.bankDetailID)
                 .execute("p_UpdatepaymentInfo");
             pool.close();
-            console.log(result);
             return "Updated";
         } catch (error) {
             throw new Error(`Could not update paymentInfo ${error}`);

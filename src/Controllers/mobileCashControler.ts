@@ -75,4 +75,18 @@ export class mobileCashController {
             throw new Error(`Could not delete mobile cash ${error}`);
         }
     }
+
+    async getMobileCashBysubAccountID(subAccountID: number): Promise<mobileCashModel> {
+        try {
+            //@ts-ignore
+            const pool = await new sql.ConnectionPool(sqlConfig).connect();
+            const result = await pool.request()
+                .input("subAccountID", sql.Int, subAccountID)
+                .execute("p_GetmobileCashBysubAccountID");
+            return result.recordset[0];
+        }
+        catch (error) {
+            throw new Error(`Could not get mobile cash ${error}`);
+        }
+    }
 }

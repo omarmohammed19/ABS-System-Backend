@@ -63,9 +63,19 @@ async function getNearestBranchByID(req: Request, res: Response) {
     }
 }
 
+async function getNearestBranchBysubAccountID(req: Request, res: Response) {
+    try {
+        const nearestBranch = await n1.getNearestBranchBysubAccountID(Number(req.params.id));
+        res.status(200).json(nearestBranch);
+    } catch (error) {
+        res.status(400).json("Could not get nearestBranch");
+    }
+}
+
 
 const nearestBranchRoutes = (app: express.Application) => {
     app.get('/nearestBranch', getAllNearestBranch);
+    app.get('/nearestBranch/subAccount/:id', getNearestBranchBysubAccountID);
     app.post('/nearestBranch', addNearestBranch);
     app.put('/nearestBranch/:id', updateNearestBranch);
     app.delete('/nearestBranch/:id', deleteNearestBranch);

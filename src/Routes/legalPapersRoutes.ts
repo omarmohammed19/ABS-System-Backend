@@ -27,6 +27,17 @@ const getLegalPapersById = async (req: Request, res: Response) => {
     }
 }
 
+const getLegalPapersByCompanyInfoID = async (req: Request, res: Response) => {
+    try {
+        const id = parseInt(req.params.id);
+        const result = await makeLegalPapersRoute.getByCompanyInfoID(id);
+        res.json(result);
+    }
+    catch (error) {
+        res.status(500).send(error);
+    }
+}
+
 const addLegalPapers = async (req: Request, res: Response) => {
     try {
         const result = await makeLegalPapersRoute.add(req.body);
@@ -68,6 +79,7 @@ const deleteLegalPapers = async (req: Request, res: Response) => {
 const legalPapers_Route = (app: express.Application) => {
     app.get('/legalPapers', getLegalPapers);
     app.get('/legalPapers/:id', getLegalPapersById);
+    app.get('/legalPapers/companyInfoID/:id', getLegalPapersByCompanyInfoID);
     app.post('/legalPapers', addLegalPapers);
     app.put('/legalPapers/:id', updateLegalPapers);
     app.delete('/legalPapers/:id', deleteLegalPapers);

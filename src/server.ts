@@ -42,11 +42,18 @@ import register_router from './Routes/RegisterRoute';
 import customers_router from './Routes/CustomersRoutes';
 import pricePlanNameRoutes from './Routes/pricePlanNameRoute';
 import imageRouter from './Routes/uploadFilesRoute';
+import handleLoginRouter from './Routes/authRoute';
+import conversationRouter from './Routes/ChatRoutes/conversationRoute';
+import messageRouter from './Routes/ChatRoutes/messagesRoutes';
+import newsRoutes from './Routes/NewsRoutes';
+import rolesRoutes from './Routes/RolesRoute';
+import mail_route from './Routes/mailRoute';
+import { ticketCategories_endpoints } from './Routes/ticketCategoriesRoutes';
 
 
 
 const corsOptions = {
-  origin: 'http://localhost:3001',
+  origin: '*',
   credentials: true,
   optionSuccessStatus: 200,
 };
@@ -102,6 +109,14 @@ citiesRouter(app);
 pricePlanNameRoutes(app);
 citiesRouter(app);
 customers_router(app);
+handleLoginRouter(app);
+conversationRouter(app);
+messageRouter(app);
+newsRoutes(app);
+rolesRoutes(app);
+mail_route(app);
+ticketCategories_endpoints(app);
+
 app.use('/images', imageRouter);
 
 

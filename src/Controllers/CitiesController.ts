@@ -74,15 +74,29 @@ export class CitiesController {
                 .input("ID", sql.BigInt, id)
                 .execute('[dbo].[p_DeleteCities]');
             pool.close();
-            if(result.returnValue === 0) {
+            if (result.returnValue === 0) {
                 return "City deleted successfully";
             }
-            else{
+            else {
                 return "City not found";
             }
         }
         catch (err) {
             throw new Error(`Could not delete City ${id}. Error: ${err}`)
+        }
+    }
+
+    async getCitiesByZoneID(id: number): Promise<City[]> {
+        try {
+            //@ts-ignore
+            const pool = await new sql.ConnectionPool(sqlConfig).connect();
+            const result = await pool.request()
+                .input("zoneID", sql.Int, id)
+                .execute('[dbo].[p_GetCitiesByZoneID]');
+            return result.recordset;
+        }
+        catch (err) {
+            throw new Error(`Could not get all Cities. Error: ${err}`)
         }
     }
 }

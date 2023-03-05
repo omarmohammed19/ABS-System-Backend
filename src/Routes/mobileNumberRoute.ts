@@ -63,10 +63,21 @@ const deleteMobileNumber = async (req: Request, res: Response) => {
     }
 }
 
+const checkMobiles = async (req: Request, res: Response) => {
+    try {
+        const mobile = req.body.mobile;
+        const result = await makeMobileNumberRoute.checkMobiles(mobile);
+        res.json(result);
+    } catch (error) {
+        res.status(500).send
+    }
+}
+
 const mobileNumber_Route = (app: express.Application) => {
     app.get('/mobileNumbers', getMobileNumbers);
     app.get('/mobileNumber/:id', getMobileNumberById);
     app.post('/mobileNumber', addMobileNumber);
+    app.post('/checkMobiles', checkMobiles);
     app.put('/mobileNumber/:id', updateMobileNumber);
     app.delete('/mobileNumber/:id', deleteMobileNumber);
 }

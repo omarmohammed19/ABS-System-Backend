@@ -2,7 +2,6 @@ import express, { Request, Response } from 'express'
 import dotenv from 'dotenv';
 import { City } from '../Models/CitiesModel';
 import { CitiesController } from '../Controllers/CitiesController';
-import  verifyJWT  from '../Middlewares/verifyJWT';
 
 dotenv.config();
 
@@ -67,12 +66,22 @@ const deleteCity = async (req: Request, res: Response) => {
     }
 }
 
+const getCitiesByZoneID = async (req: Request, res: Response) => {
+    try {
+        const city = await citiesController.getCitiesByZoneID(Number(req.params.id));
+        res.status(200).json(city);
+    } catch (error) {
+        res.status(500).json('Could not get the cities');
+    }
+}
+
 const citiesRouter = (app: express.Application) => {
-    app.post('/city',verifyJWT, addCity);
+    app.post('/city', addCity);
     app.get('/city/:id', getCityByID);
     app.get('/city', getAll);
-    app.put('/city/:id',verifyJWT, updateCity);
-    app.delete('/city/:id',verifyJWT, deleteCity);
+    app.get('/city/zone/:id', getCitiesByZoneID);
+    app.put('/city/:id', updateCity);
+    app.delete('/city/:id', deleteCity);
 }
 
 export default citiesRouter;

@@ -37,6 +37,7 @@ export interface Register {
   nationalID: string;
   commercialRegister: string;
   ServicesIDs: string;
+  salesChannelsIDs: string;
   //
   pickupFirstName: string;
   pickupLastName: string;

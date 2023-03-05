@@ -3,6 +3,9 @@ dotenv.config();
 
 export interface webUsers {
   ID?: number;
-  userName: string;
-  webUserPassword: string;
+  userName?: string;
+  webUserPassword?: string;
+  Roles?: number;
+  subAccountID?: number;
+  Avatar?: string;
 }
