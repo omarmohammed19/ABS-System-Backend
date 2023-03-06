@@ -108,6 +108,7 @@ pricePlanNameRoutes(app);
 citiesRouter(app);
 pricePlanNameRoutes(app);
 citiesRouter(app);
+customers_router(app);
 handleLoginRouter(app);
 conversationRouter(app);
 messageRouter(app);
