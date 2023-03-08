@@ -2,6 +2,7 @@ import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
+import contactLogTypesRouter from './Backend/ship_ContactLogTypes/Route';
 
 const corsOptions = {
   origin: '*',
@@ -18,6 +19,7 @@ app.use(cors(corsOptions));
 
 app.use(bodyParser.json());
 
+contactLogTypesRouter(app);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port http://${address}:${process.env.PORT}`);
