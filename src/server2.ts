@@ -48,8 +48,6 @@ import messageRouter from './Routes/ChatRoutes/messagesRoutes';
 import newsRoutes from './Routes/NewsRoutes';
 import rolesRoutes from './Routes/RolesRoute';
 import mail_route from './Routes/mailRoute';
-import { ticketCategories_endpoints } from './Routes/ticketCategoriesRoutes';
-
 
 
 const corsOptions = {
@@ -114,7 +112,6 @@ messageRouter(app);
 newsRoutes(app);
 rolesRoutes(app);
 mail_route(app);
-ticketCategories_endpoints(app);
 
 app.use('/images', imageRouter);
 
