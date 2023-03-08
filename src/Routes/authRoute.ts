@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express'
 import dotenv from 'dotenv';
-import { webUsers } from '../Models/webUsers';
-import { authController } from '../Controllers/authController';
+import { webUsers } from '../Models2/webUsers';
+import { authController } from '../Controllers2/authController';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 

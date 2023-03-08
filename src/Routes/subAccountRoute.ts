@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { subAccountController } from '../Controllers/subAccountController';
+import { subAccountController } from '../Controllers2/subAccountController';
 
 const subAccountRouter = express.Router();
 const sub = new subAccountController();

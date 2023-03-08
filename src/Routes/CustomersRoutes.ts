@@ -1,4 +1,4 @@
-import { CustomersController } from '../Controllers/CustomersController';
+import { CustomersController } from '../Controllers2/CustomersController';
 import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 

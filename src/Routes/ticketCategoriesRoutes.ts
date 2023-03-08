@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { ticketCategoriesController } from '../Controllers/ticketCategoriesController';
+import { ticketCategoriesController } from '../Controllers2/ticketCategoriesController';
 
 const ticketCategoriesRouter = express.Router();
 const ticketCat = new ticketCategoriesController();

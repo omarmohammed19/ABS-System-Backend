@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express'
-import { NearestBranch } from '../Models/nearestBranch'
-import { NearestBranchController } from '../Controllers/nearestBranchController'
+import { NearestBranch } from '../Models2/nearestBranch'
+import { NearestBranchController } from '../Controllers2/nearestBranchController'
 
 
 const nearestBranchRouter = express.Router();

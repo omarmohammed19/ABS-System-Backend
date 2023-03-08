@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express'
 import dotenv from 'dotenv';
-import { ContactPersonType } from '../Models/contactPersonTypesModel';
-import { contactPersonTypesController } from '../Controllers/contactPersonTypesController';
+import { ContactPersonType } from '../Models2/contactPersonTypesModel';
+import { contactPersonTypesController } from '../Controllers2/contactPersonTypesController';
 
 dotenv.config();
 

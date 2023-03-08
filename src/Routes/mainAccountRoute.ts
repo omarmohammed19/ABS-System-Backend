@@ -1,4 +1,4 @@
-import { mainAccountController } from './../Controllers/mainAccountController';
+import { mainAccountController } from './../Controllers2/mainAccountController';
 import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 

@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
-import { mobileCashController } from '../Controllers/mobileCashControler';
+import { mobileCashController } from '../Controllers2/mobileCashControler';
 
 dotenv.config();
 

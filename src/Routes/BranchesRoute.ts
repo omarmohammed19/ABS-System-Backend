@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express'
 import dotenv from 'dotenv';
-import { Branch } from '../Models/BranchesModel';
-import { BranchesController } from '../Controllers/BranchesController';
+import { Branch } from '../Models2/BranchesModel';
+import { BranchesController } from '../Controllers2/BranchesController';
 
 dotenv.config();
 

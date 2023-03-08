@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { walletDetailsController } from '../Controllers/walletDetailsController';
+import { walletDetailsController } from '../Controllers2/walletDetailsController';
 
 const walletDetailsRouter = express.Router();
 const wallet = new walletDetailsController();

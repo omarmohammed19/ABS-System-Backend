@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express'
 import dotenv from 'dotenv';
-import { Country } from '../Models/CountriesModel';
-import { CountriesController } from '../Controllers/CountriesController';
+import { Country } from '../Models2/CountriesModel';
+import { CountriesController } from '../Controllers2/CountriesController';
 
 dotenv.config();
 

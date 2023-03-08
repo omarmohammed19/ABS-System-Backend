@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { telephoneTypesController } from '../Controllers/telephoneTypesController';
+import { telephoneTypesController } from '../Controllers2/telephoneTypesController';
 
 const telephoneTypesRouter = express.Router();
 const telType = new telephoneTypesController();

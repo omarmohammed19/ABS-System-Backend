@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { webUsersController } from '../Controllers/webUsersController';
+import { webUsersController } from '../Controllers2/webUsersController';
 import bcrypt from 'bcrypt';
 
 const webUserRouter = express.Router();

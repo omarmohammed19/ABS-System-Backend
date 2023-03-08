@@ -1,4 +1,4 @@
-import { RegisterController } from '../Controllers/RegisterController';
+import { RegisterController } from '../Controllers2/RegisterController';
 import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 

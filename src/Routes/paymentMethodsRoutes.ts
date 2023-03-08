@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express'
-import { PaymentMethod } from '../Models/paymentMethods'
-import { PaymentMethodsController } from '../Controllers/paymentMethodsController'
+import { PaymentMethod } from '../Models2/paymentMethods'
+import { PaymentMethodsController } from '../Controllers2/paymentMethodsController'
 
 
 const paymentMethodsRouter = express.Router();

@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express'
-import { SalesChannelType } from '../Models/salesChannelsType'
-import { SalesChannelTypeController } from '../Controllers/salesChannelTypeController'
+import { SalesChannelType } from '../Models2/salesChannelsType'
+import { SalesChannelTypeController } from '../Controllers2/salesChannelTypeController'
 
 
 const salesChannelTypeRouter = express.Router();

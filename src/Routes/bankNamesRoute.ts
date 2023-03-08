@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express'
 import dotenv from 'dotenv';
-import { BankName } from '../Models/bankNamesModel';
-import { bankNamesController } from '../Controllers/bankNamesController';
+import { BankName } from '../Models2/bankNamesModel';
+import { bankNamesController } from '../Controllers2/bankNamesController';
 
 dotenv.config();
 

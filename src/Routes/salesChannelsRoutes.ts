@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express'
-import { SalesChannel } from '../Models/salesChannels'
-import { SalesChannelsController } from '../Controllers/salesChannelsController'
+import { SalesChannel } from '../Models2/salesChannels'
+import { SalesChannelsController } from '../Controllers2/salesChannelsController'
 
 
 const salesChannelsRouter = express.Router();

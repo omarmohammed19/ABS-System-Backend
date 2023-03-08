@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { NewsController } from '../Controllers/NewsController';
+import { NewsController } from '../Controllers2/NewsController';
 
 const news = new NewsController();
 

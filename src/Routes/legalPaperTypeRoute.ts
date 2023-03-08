@@ -1,4 +1,4 @@
-import { legalPaperTypeController } from './../Controllers/legalPaperTypeController';
+import { legalPaperTypeController } from './../Controllers2/legalPaperTypeController';
 import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 

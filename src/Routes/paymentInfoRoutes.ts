@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express'
-import { PaymentInfo } from '../Models/paymentInfo'
-import { PaymentInfoController } from '../Controllers/paymentInfoController'
+import { PaymentInfo } from '../Models2/paymentInfo'
+import { PaymentInfoController } from '../Controllers2/paymentInfoController'
 
 
 const paymentInfoRouter = express.Router();

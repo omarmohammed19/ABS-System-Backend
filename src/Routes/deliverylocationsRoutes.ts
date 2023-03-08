@@ -1,4 +1,4 @@
-import { deliveryLocationsController } from './../Controllers/deliveryLocationsController';
+import { deliveryLocationsController } from './../Controllers2/deliveryLocationsController';
 import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 

@@ -1,8 +1,8 @@
 import express, { Request, Response } from 'express'
 import { Router } from 'express'
 import dotenv from 'dotenv';
-import { mobileTypesController } from '../Controllers/mobileTypesController'
-import { MobileType } from '../Models/mobileTypes';
+import { mobileTypesController } from '../Controllers2/mobileTypesController'
+import { MobileType } from '../Models2/mobileTypes';
 
 
 const mobileTypesRouter = express.Router();

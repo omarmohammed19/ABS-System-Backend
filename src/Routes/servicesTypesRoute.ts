@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { ServicesTypesController } from '../Controllers/servicesTypesController';
+import { ServicesTypesController } from '../Controllers2/servicesTypesController';
 
 const serviceTypesRouter = express.Router();
 const service = new ServicesTypesController();

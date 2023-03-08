@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express'
-import { Roles } from '../Models/Roles';
-import { RolesController } from '../Controllers/RolesController';
+import { Roles } from '../Models2/Roles';
+import { RolesController } from '../Controllers2/RolesController';
 
 
 const roles = new RolesController();

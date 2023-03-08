@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express'
 import dotenv from 'dotenv';
-import { City } from '../Models/CitiesModel';
-import { CitiesController } from '../Controllers/CitiesController';
+import { City } from '../Models2/CitiesModel';
+import { CitiesController } from '../Controllers2/CitiesController';
 
 dotenv.config();
 

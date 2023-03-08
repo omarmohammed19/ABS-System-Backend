@@ -1,4 +1,4 @@
-import { mobileNumberController } from './../Controllers/mobileNumberController';
+import { mobileNumberController } from './../Controllers2/mobileNumberController';
 import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 

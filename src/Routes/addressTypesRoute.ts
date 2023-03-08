@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express'
 import dotenv from 'dotenv';
-import { AddressType } from '../Models/addressTypesModel';
-import { addressTypesController } from '../Controllers/addressTypesController';
+import { AddressType } from '../Models2/addressTypesModel';
+import { addressTypesController } from '../Controllers2/addressTypesController';
 
 dotenv.config();
 

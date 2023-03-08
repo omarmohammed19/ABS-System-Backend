@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { telephoneNumberController } from '../Controllers/telephoneNumberController';
+import { telephoneNumberController } from '../Controllers2/telephoneNumberController';
 
 const telephoneNumberRouter = express.Router();
 const telephoneNum = new telephoneNumberController();

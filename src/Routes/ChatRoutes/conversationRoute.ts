@@ -1,5 +1,5 @@
-import { ConversationsController } from './../../Controllers/ChatControllers/conversationsController';
-import { Conversation } from './../../Models/ConversationModel';
+import { ConversationsController } from './../../Controllers2/ChatControllers/conversationsController';
+import { Conversation } from '../../Models2/ConversationModel';
 import express, { Request, Response } from 'express'
 import dotenv from 'dotenv';
 

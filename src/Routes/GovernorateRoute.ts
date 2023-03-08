@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
-import { governoratesController } from '../Controllers/GovernorateController';
+import { governoratesController } from '../Controllers2/GovernorateController';
 
 dotenv.config();
 

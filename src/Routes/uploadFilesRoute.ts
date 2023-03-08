@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import upload from '../Controllers/uploadFilesController';
+import upload from '../Controllers2/uploadFilesController';
 // const imageController = require('../controllers/imageController');
 const imageRouter = Router();
 import fs from 'fs';

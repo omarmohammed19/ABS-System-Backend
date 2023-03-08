@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
-import { legalPapersController } from '../Controllers/legalPapersController';
+import { legalPapersController } from '../Controllers2/legalPapersController';
 
 dotenv.config();
 

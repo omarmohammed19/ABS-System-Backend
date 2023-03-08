@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
-import { pricePlanNameModel } from '../Models/pricePlanNameModel';
-import { pricePlanNameController } from '../Controllers/pricePlanNameController';
+import { pricePlanNameModel } from '../Models2/pricePlanNameModel';
+import { pricePlanNameController } from '../Controllers2/pricePlanNameController';
 
 const pricePlanNameRouter = express.Router();
 const ppn = new pricePlanNameController();

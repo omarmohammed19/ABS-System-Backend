@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express'
 import dotenv from 'dotenv';
-import { MessageController } from '../../Controllers/ChatControllers/messageController';
-import { messages } from '../../Models/messagesModel';
+import { MessageController } from '../../Controllers2/ChatControllers/messageController';
+import { messages } from '../../Models2/messagesModel';
 
 dotenv.config();
 

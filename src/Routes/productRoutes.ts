@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express'
-import { Product } from '../Models/Products'
-import { ProductsController } from '../Controllers/productsController'
+import { Product } from '../Models2/Products'
+import { ProductsController } from '../Controllers2/productsController'
 
 
 const productRouter = express.Router();

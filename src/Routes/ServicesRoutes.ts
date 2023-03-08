@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express'
-import { Services } from '../Models/Services'
-import { ServicesController } from '../Controllers/ServicesController'
+import { Services } from '../Models2/Services'
+import { ServicesController } from '../Controllers2/ServicesController'
 
 
 const servicesRouter = express.Router();

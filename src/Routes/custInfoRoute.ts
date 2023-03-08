@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
-import { custInfoController } from '../Controllers/custInfoController';
+import { custInfoController } from '../Controllers2/custInfoController';
 
 dotenv.config();
 

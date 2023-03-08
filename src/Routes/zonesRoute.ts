@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { ZonesController } from '../Controllers/zonesController';
+import { ZonesController } from '../Controllers2/zonesController';
 
 const zonesRouter = express.Router();
 const zones = new ZonesController();

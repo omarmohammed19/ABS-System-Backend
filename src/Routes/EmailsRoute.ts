@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
-import { emailsController } from '../Controllers/EmailsController';
+import { emailsController } from '../Controllers2/EmailsController';
 
 dotenv.config();
 

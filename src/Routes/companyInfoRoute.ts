@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express'
 import dotenv from 'dotenv';
-import { CompanyInfo } from '../Models/companyInfoModel';
-import { companyInfoController } from '../Controllers/companyInfoController';
+import { CompanyInfo } from '../Models2/companyInfoModel';
+import { companyInfoController } from '../Controllers2/companyInfoController';
 
 dotenv.config();
 
