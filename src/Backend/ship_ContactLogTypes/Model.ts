@@ -1,7 +1,15 @@
-import { DataTypes } from 'sequelize';
+import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../../Config/database';
 
-export const ContactLogTypes = sequelize.define(
+export interface ContactLogTypesModel extends Model {
+  ID: number;
+  enContactLogType: string;
+  arContactLogType: string;
+  Notes: string;
+  isActive: boolean;
+}
+
+export const ContactLogTypes = sequelize.define<ContactLogTypesModel>(
   'ship_ContactLogTypes',
   {
     ID: {
@@ -26,11 +34,3 @@ export const ContactLogTypes = sequelize.define(
     timestamps: false,
   }
 );
-
-export interface ContactLogTypesModel {
-  ID?: number;
-  enContactLogType: string;
-  arContactLogType: string;
-  Notes: string;
-  isActive?: boolean;
-}
