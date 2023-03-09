@@ -1,10 +1,23 @@
 import { ContactLogTypesModel, ContactLogTypes } from './Model';
+import { De_Activate } from '../../Services/De_Activate';
+
+const getById = (ID: Number, language?: string) => {
+  const attributes = (language === 'en') ? ['ID', 'enContactLogType', 'Notes'] : ['ID', 'arContactLogType', 'Notes'];
+  return ContactLogTypes.findOne({
+    attributes: attributes,
+    where: {
+      ID: ID,
+      isActive: true,
+    },
+  });
+}
 
 export class ContactLogTypesController {
-  async index(): Promise<ContactLogTypesModel[]> {
+  async index(language: string): Promise<ContactLogTypesModel[]> {
     try {
+      const attributes = (language === 'en') ? ['ID', 'enContactLogType', 'Notes'] : ['ID', 'arContactLogType', 'Notes'];
       const result = await ContactLogTypes.findAll({
-        attributes: ['ID', 'enContactLogType', 'arContactLogType', 'Notes'],
+        attributes: attributes,
         where: {
           isActive: true,
         },
@@ -15,15 +28,9 @@ export class ContactLogTypesController {
     }
   }
 
-  async getContactLogTypeById(ID: number): Promise<ContactLogTypesModel | string> {
+  async getContactLogTypeById(language: string, ID: number): Promise<ContactLogTypesModel | string> {
     try {
-      const result = await ContactLogTypes.findOne({
-        attributes: ['ID', 'enContactLogType', 'arContactLogType', 'Notes'],
-        where: {
-          ID: ID,
-          isActive: true,
-        },
-      });
+      const result = await getById(ID, language);
       return result ? result.toJSON() : 'Could not get ContactLogTypes by ID';
     } catch (err) {
       throw new Error(`Could not get ContactLogTypes by ID. Error: ${err}`);
@@ -62,13 +69,7 @@ export class ContactLogTypesController {
           },
         }
       );
-      const result = await ContactLogTypes.findOne({
-        attributes: ['ID', 'enContactLogType', 'arContactLogType', 'Notes'],
-        where: {
-          ID: contactLogType.ID,
-          isActive: true,
-        },
-      });
+      const result = await getById(Number(contactLogType.ID));
       return result ? result.toJSON() : 'Could not update ContactLogTypes';
     } catch (err) {
       throw new Error(`Could not update ContactLogTypes. Error: ${err}`);
@@ -77,29 +78,8 @@ export class ContactLogTypesController {
 
   async deactivate(ID: number): Promise<string> {
     try {
-      const check = (await ContactLogTypes.findOne({
-        attributes: ['isActive'],
-        where: {
-          ID: ID,
-        },
-      })) as ContactLogTypesModel | null;
-
-      if (check == null) {
-        return 'ID is not found';
-      } else if (check.isActive == false) {
-        return 'Already Deactivated';
-      }
-      const result = await ContactLogTypes.update(
-        {
-          isActive: false,
-        },
-        {
-          where: {
-            ID: ID,
-          },
-        }
-      );
-      return result ? 'ContactLogTypes deactivated' : 'Could not deactivate ContactLogTypes';
+      const result = De_Activate<ContactLogTypesModel>(ContactLogTypes, ID, 'deactivate');
+      return result;
     } catch (err) {
       throw new Error(`Could not deactivate ContactLogTypes. Error: ${err}`);
     }
@@ -107,31 +87,8 @@ export class ContactLogTypesController {
 
   async activate(ID: number): Promise<string> {
     try {
-      const check = (await ContactLogTypes.findOne({
-        attributes: ['isActive'],
-        where: {
-          ID: ID,
-        },
-      })) as ContactLogTypesModel | null;
-      console.log(check);
-
-      if (check == null) {
-        return 'ID is not found';
-      } else if (check.isActive == true) {
-        return 'Already Activated';
-      }
-      const result = await ContactLogTypes.update(
-        {
-          isActive: true,
-        },
-        {
-          where: {
-            ID: ID,
-          },
-        }
-      );
-
-      return result[0] == 1 ? 'ContactLogTypes activated' : 'Could not activate ContactLogTypes';
+      const result = De_Activate<ContactLogTypesModel>(ContactLogTypes, ID, 'activate');
+      return result;
     } catch (err) {
       throw new Error(`Could not activate ContactLogTypes. Error: ${err}`);
     }
