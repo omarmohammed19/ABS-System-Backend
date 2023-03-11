@@ -1,89 +1,96 @@
 import { SubAccountsModel, SubAccounts } from './Model';
 import { De_Activate } from '../../Services/De_Activate';
+import { sequelize } from '../../Config/database';
+import { Transaction } from 'sequelize';
+import Sequelize from 'sequelize';
 
-const getById = (ID: Number, language?: string) => {
-  const attributes = (language === 'en') ? ['ID', 'enContactLogType', 'Notes'] : ['ID', 'arContactLogType', 'Notes'];
-  return SubAccounts.findOne({
-    attributes: attributes,
-    where: {
-      ID: ID,
-      isActive: true,
-    },
-  });
+const getById = async (ID: Number, language?: string): Promise<SubAccountsModel> => {
+
+  const query = 'EXEC [dbo].[p_GET_cust_SubAccounts] @language = :language, @Method = :Method, @ID = :ID';
+  const replacements = { language: language, Method: 'GET_ByID', ID: ID };
+  const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
+  const result = await sequelize.query(query, options)
+  return result as unknown as SubAccountsModel;
 }
 
-export class ContactLogTypesController {
+export class SubAccountsController {
+
   async index(language: string): Promise<SubAccountsModel[]> {
     try {
-      const attributes = (language === 'en') ? ['ID', 'enContactLogType', 'Notes'] : ['ID', 'arContactLogType', 'Notes'];
-      const result = await SubAccounts.findAll({
-        attributes: attributes,
-        where: {
-          isActive: true,
-        },
-      });
-      return result.map((item: any) => item.toJSON()) as SubAccountsModel[];
-    } catch (err) {
-      throw new Error(`Could not get all SubAccounts. Error: ${err}`);
+      const query = 'EXEC [dbo].[p_GET_cust_SubAccounts] @language = :language, @Method = :Method';
+      const replacements = { language: language, Method: 'GET' };
+      const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
+      const result = sequelize.query(query, options)
+      return result as unknown as SubAccountsModel[];
+    }
+    catch (err) {
+      throw new Error(`Could not get all PaymentMethods. Error: ${err}`);
     }
   }
 
-  async getContactLogTypeById(language: string, ID: number): Promise<SubAccountsModel | string> {
+  async create(subAccounts: SubAccountsModel): Promise<SubAccountsModel | string> {
+    try {
+      return await sequelize.transaction(async (t) => { // start managed transaction and pass transaction object to the callback function
+        const result = await SubAccounts.create(
+          {
+            mainAccountID: subAccounts.mainAccountID,
+            subAccountName: subAccounts.subAccountName,
+            accountNumber: subAccounts.accountNumber,
+            pricePlanID: subAccounts.pricePlanID,
+            paymentMethodID: subAccounts.paymentMethodID,
+            productTypeID: subAccounts.productTypeID,
+            customerServiceID: subAccounts.customerServiceID,
+            prefix: subAccounts.prefix,
+            creationDate: subAccounts.creationDate,
+          },
+          { transaction: t } // pass transaction object to query
+        );
+        return result ? result.toJSON() : 'Could not add new SubAccounts';
+      });
+
+    }
+    catch (err) {
+      throw new Error(`Could not add new SubAccounts. Error: ${err}`);
+    }
+  }
+
+  async getSubAccountsById(ID: number, language: string): Promise<SubAccountsModel | string> {
     try {
       const result = await getById(ID, language);
-      return result ? result.toJSON() : 'Could not get SubAccounts by ID';
+      return result;
     } catch (err) {
       throw new Error(`Could not get SubAccounts by ID. Error: ${err}`);
     }
   }
 
-  async create(subAccount: SubAccountsModel): Promise<SubAccountsModel | string> {
+  async update(subAccounts: SubAccountsModel,language:string): Promise<SubAccountsModel | string> {
     try {
-      const result = await SubAccounts.create(
-        {
-          mainAccountID: subAccount.mainAccountID,
-          subAccountName: subAccount.subAccountName,
-          accountNumber: subAccount.accountNumber,
-          pricePlanID: subAccount.pricePlanID,
-          paymentMethodID: subAccount.paymentMethodID,
-          productTypeID: subAccount.productTypeID,
-          customerServiceID: subAccount.customerServiceID,
-          prefix: subAccount.prefix,
-          creationDate: subAccount.creationDate,
-        },
-        {
-          fields: ['mainAccountID', 'subAccountName', 'accountNumber', 'pricePlanID', 'paymentMethodID', 'productTypeID', 'customerServiceID', 'prefix', 'creationDate'],
-        }
-      );
-      return result ? result.toJSON() : 'Could not add new SubAccounts';
-    } catch (err) {
-      throw new Error(`Could not add new SubAccounts. Error: ${err}`);
-    }
-  }
-
-  async update(subAccount: SubAccountsModel): Promise<SubAccountsModel | string> {
-    try {
-      await SubAccounts.update(
-        {
-          mainAccountID: subAccount.mainAccountID,
-          subAccountName: subAccount.subAccountName,
-          accountNumber: subAccount.accountNumber,
-          pricePlanID: subAccount.pricePlanID,
-          paymentMethodID: subAccount.paymentMethodID,
-          productTypeID: subAccount.productTypeID,
-          customerServiceID: subAccount.customerServiceID,
-          prefix: subAccount.prefix,
-          creationDate: subAccount.creationDate,
-        },
-        {
-          where: {
-            ID: subAccount.ID,
+      return await sequelize.transaction(async (t) => { // start managed transaction and pass transaction object to the callback function
+        await SubAccounts.update(
+          {
+            mainAccountID: subAccounts.mainAccountID,
+            subAccountName: subAccounts.subAccountName,
+            accountNumber: subAccounts.accountNumber,
+            pricePlanID: subAccounts.pricePlanID,
+            paymentMethodID: subAccounts.paymentMethodID,
+            productTypeID: subAccounts.productTypeID,
+            customerServiceID: subAccounts.customerServiceID,
+            prefix: subAccounts.prefix,
+            creationDate: subAccounts.creationDate,
           },
-        }
-      );
-      const result = await getById(Number(subAccount.ID));
-      return result ? result.toJSON() : 'Could not update SubAccounts';
-    } catch (err) {
+          {
+            where: {
+              ID: subAccounts.ID,
+            },
+            transaction: t // pass transaction object to query
+          }
+        );
+
+        const result = await getById(Number(subAccounts.ID),language);
+        return result ? result.toJSON() : 'Could not update SubAccounts';
+      });
+    }
+    catch (err) {
       throw new Error(`Could not update SubAccounts. Error: ${err}`);
     }
   }
