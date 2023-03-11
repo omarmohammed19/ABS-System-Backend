@@ -54,6 +54,7 @@ import { sequelize } from "../Config/database";
 // }
 
 export const De_Activate = async <T extends { isActive: boolean }>(Model: any, ID: Number, type: string): Promise<string> => {
+
     let result: string = '';
 
     try {
