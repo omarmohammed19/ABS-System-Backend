@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import { UsersController } from './Controller';
 import { UsersModel } from './Model';
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 
 dotenv.config();
 
@@ -19,7 +20,7 @@ const handleLogin = async (req: Request, res: Response) => {
       return res.sendStatus(404).json("User not found");
     }
     try {
-      const match = req.body.password === user.password;
+      const match = await bcrypt.compareSync(req.body.password + process.env.pepper, user.password);
       if (match) {
         const id = user.ID;
         const name = user.displayedName;
