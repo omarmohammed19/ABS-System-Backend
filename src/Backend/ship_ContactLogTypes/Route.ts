@@ -1,7 +1,6 @@
 import express, { Request, Response } from 'express';
 import { ContactLogTypesController } from './Controller';
 import { ContactLogTypesModel } from './Model';
-import verifyJWT from '../../Middlewares/verifyJWT';
 
 const contactLogTypesController = new ContactLogTypesController();
 
@@ -79,12 +78,12 @@ const activate = async (req: Request, res: Response) => {
 };
 
 const contactLogTypesRouter = (app: express.Application) => {
-  app.get('/contactLogTypes', verifyJWT, getAll);
-  app.get('/contactLogTypes/:ID', verifyJWT, getById);
-  app.post('/contactLogTypes', verifyJWT, create);
-  app.put('/contactLogTypes/:ID', verifyJWT, update);
-  app.put('/contactLogTypes/deactivate/:ID', verifyJWT, deactivate);
-  app.put('/contactLogTypes/activate/:ID', verifyJWT, activate);
+  app.get('/contactLogTypes', getAll);
+  app.get('/contactLogTypes/:ID', getById);
+  app.post('/contactLogTypes', create);
+  app.put('/contactLogTypes/:ID', update);
+  app.put('/contactLogTypes/deactivate/:ID', deactivate);
+  app.put('/contactLogTypes/activate/:ID', activate);
 };
 
 export default contactLogTypesRouter;
