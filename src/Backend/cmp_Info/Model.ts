@@ -28,6 +28,7 @@ export const Info = sequelize.define<InfoModel>(
     },
     {
         timestamps: false,
+        tableName: 'cmp_Info',
     }
 );
 

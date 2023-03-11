@@ -3,8 +3,8 @@ import { sequelize } from '../../Config/database';
 
 export interface VehicleTypesModel extends Model {
     ID: number;
-    enVehicleTypeName: string;
-    arVehicleTypeName: string;
+    enVehicleType: string;
+    arVehicleType: string;
     Notes: string;
     isActive: boolean;
 }
@@ -17,10 +17,10 @@ export const VehicleTypes = sequelize.define<VehicleTypesModel>(
             primaryKey: true,
             autoIncrement: true,
         },
-        enVehicleTypeName: {
+        enVehicleType: {
             type: DataTypes.STRING,
         },
-        arVehicleTypeName: {
+        arVehicleType: {
             type: DataTypes.STRING,
         },
         Notes: {
