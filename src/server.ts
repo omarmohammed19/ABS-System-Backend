@@ -14,6 +14,12 @@ import serviceTypesRouter from './Backend/cust_ServiceTypes/Route'
 import walletDetailsRouter from './Backend/cust_WalletDetails/Route'
 import locationsRouter from './Backend/cust_Locations/Route'
 import subAccountsRouter from './Backend/cust_SubAccounts/Route'
+import packageTypesRouter from './Backend/ship_PackageTypes/Route';
+import pickupTypesRouter from './Backend/ship_PickupTypes/Route';
+import reasonsRouter from './Backend/ship_Reasons/Route';
+import recipientTypesRouter from './Backend/ship_RecepientsTypes/Route';
+import shipmentTypesRouter from './Backend/ship_ShipmentTypes/Route';
+import productsRouter from './Backend/ship_Products/Route';
 
 const corsOptions = {
   origin: '*',
@@ -45,6 +51,12 @@ serviceTypesRouter(app);
 walletDetailsRouter(app);
 locationsRouter(app);
 subAccountsRouter(app);
+packageTypesRouter(app);
+pickupTypesRouter(app);
+reasonsRouter(app);
+recipientTypesRouter(app);
+shipmentTypesRouter(app);
+productsRouter(app);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port http://${address}:${process.env.PORT}`);
