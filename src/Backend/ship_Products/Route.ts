@@ -84,7 +84,7 @@ const productsRouter = (app: express.Application) => {
   app.get('/products/:ID', getById);
   app.post('/products', create);
   app.put('/products/:ID', update);
-  app.put('/products/deactivate/:ID', deactivate);
+  app.put('/products/de-activate/:ID', deactivate);
   app.put('/products/activate/:ID', activate);
 };
 
