@@ -78,12 +78,12 @@ const activate = async (req: Request, res: Response) => {
 };
 
 const pickupTypesRouter = (app: express.Application) => {
-  app.get('/pickupTypes', getAll);
-  app.get('/pickupTypes/:ID', getById);
-  app.post('/pickupTypes', create);
-  app.put('/pickupTypes/:ID', update);
-  app.put('/pickupTypes/deactivate/:ID', deactivate);
-  app.put('/pickupTypes/activate/:ID', activate);
+  app.get('/pickup-types', getAll);
+  app.get('/pickup-types/:ID', getById);
+  app.post('/pickup-types', create);
+  app.put('/pickup-types/:ID', update);
+  app.put('/pickup-types/de-activate/:ID', deactivate);
+  app.put('/pickup-types/activate/:ID', activate);
 };
 
 export default pickupTypesRouter;

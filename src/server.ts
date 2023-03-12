@@ -19,17 +19,18 @@ import vehicleTypesRouter from './Backend/cmp_VehicleTypes/Route';
 import bankDetailsRouter from './Backend/cust_BankDetails/Route';
 import mobileCashRouter from './Backend/cust_MobileCash/Route';
 import paymentMethodsRouter from './Backend/cust_PaymentMethods/Route';
-import salesChannelTypesRouter from './Backend/cust_SalesChannelTypes/Route'
-import serviceTypesRouter from './Backend/cust_ServiceTypes/Route'
-import walletDetailsRouter from './Backend/cust_WalletDetails/Route'
-import locationsRouter from './Backend/cust_Locations/Route'
-import subAccountsRouter from './Backend/cust_SubAccounts/Route'
+import salesChannelTypesRouter from './Backend/cust_SalesChannelTypes/Route';
+import serviceTypesRouter from './Backend/cust_ServiceTypes/Route';
+import walletDetailsRouter from './Backend/cust_WalletDetails/Route';
+import locationsRouter from './Backend/cust_Locations/Route';
+import subAccountsRouter from './Backend/cust_SubAccounts/Route';
 import packageTypesRouter from './Backend/ship_PackageTypes/Route';
 import pickupTypesRouter from './Backend/ship_PickupTypes/Route';
 import reasonsRouter from './Backend/ship_Reasons/Route';
 import recipientTypesRouter from './Backend/ship_RecepientsTypes/Route';
 import shipmentTypesRouter from './Backend/ship_ShipmentTypes/Route';
 import productsRouter from './Backend/ship_Products/Route';
+import extraInfoRouter from './Backend/ship_ExtraInfo/Route';
 
 const corsOptions = {
   origin: '*',
@@ -77,6 +78,7 @@ reasonsRouter(app);
 recipientTypesRouter(app);
 shipmentTypesRouter(app);
 productsRouter(app);
+extraInfoRouter(app);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port http://${address}:${process.env.PORT}`);
