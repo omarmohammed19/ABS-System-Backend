@@ -96,6 +96,7 @@ export class BankDetailsController {
     }
   }
 
+
   async deactivate(ID: number): Promise<string> {
     try {
       const result = De_Activate<BankDetailsModel>(BankDetails, 'ID', ID, 'deactivate');
