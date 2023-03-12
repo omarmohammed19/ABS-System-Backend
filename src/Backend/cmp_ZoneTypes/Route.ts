@@ -1,13 +1,13 @@
 import express, { Request, Response } from 'express';
-import { VehicleTypesController } from './Controller';
-import { VehicleTypesModel } from './Model';
+import { ZoneTypesController } from './Controller';
+import { ZoneTypesModel } from './Model';
 
-const vehicleTypesController = new VehicleTypesController();
+const zoneTypesController = new ZoneTypesController();
 
 const getAll = async (req: Request, res: Response) => {
     try {
         const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-        const result = await vehicleTypesController.index(language);
+        const result = await zoneTypesController.index(language);
         res.json(result);
     } catch (error) {
         res.status(400);
@@ -18,7 +18,7 @@ const getAll = async (req: Request, res: Response) => {
 const getById = async (req: Request, res: Response) => {
     try {
         const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-        const result = await vehicleTypesController.getVehicleTypeById(language, Number(req.params.ID));
+        const result = await zoneTypesController.getZoneTypeByID(Number(req.params.ID), language);
         res.json(result);
     } catch (error) {
         res.status(400);
@@ -26,14 +26,15 @@ const getById = async (req: Request, res: Response) => {
     }
 }
 
+
 const create = async (req: Request, res: Response) => {
     try {
-        const vehicleType = <VehicleTypesModel>{
-            enVehicleType: req.body.enVehicleType,
-            arVehicleType: req.body.arVehicleType,
+        const zoneType = <ZoneTypesModel>{
+            enZoneType: req.body.enZoneType,
+            arZoneType: req.body.arZoneType,
             Notes: req.body.Notes,
         };
-        const result = await vehicleTypesController.create(vehicleType);
+        const result = await zoneTypesController.create(zoneType);
         res.json(result);
     } catch (error) {
         res.status(400);
@@ -43,15 +44,16 @@ const create = async (req: Request, res: Response) => {
 
 const update = async (req: Request, res: Response) => {
     try {
-        const vehicleType = <VehicleTypesModel>{
+        const zoneType = <ZoneTypesModel>{
             ID: Number(req.params.ID),
-            enVehicleType: req.body.enVehicleType,
-            arVehicleType: req.body.arVehicleType,
+            enZoneType: req.body.enZoneType,
+            arZoneType: req.body.arZoneType,
             Notes: req.body.Notes,
         };
-        const result = await vehicleTypesController.update(vehicleType);
+        const result = await zoneTypesController.update(zoneType);
         res.json(result);
     } catch (error) {
+        console.log(error);
         res.status(400);
         res.json(error);
     }
@@ -59,7 +61,7 @@ const update = async (req: Request, res: Response) => {
 
 const deactivate = async (req: Request, res: Response) => {
     try {
-        const result = await vehicleTypesController.deactivate(Number(req.params.ID));
+        const result = await zoneTypesController.deactivate(Number(req.params.ID));
         res.json(result);
     } catch (error) {
         res.status(400);
@@ -69,7 +71,7 @@ const deactivate = async (req: Request, res: Response) => {
 
 const activate = async (req: Request, res: Response) => {
     try {
-        const result = await vehicleTypesController.activate(Number(req.params.ID));
+        const result = await zoneTypesController.activate(Number(req.params.ID));
         res.json(result);
     } catch (error) {
         res.status(400);
@@ -77,13 +79,14 @@ const activate = async (req: Request, res: Response) => {
     }
 }
 
-const vehicleTypesRouter = (app: express.Application) => {
-    app.get('/vehicle-types', getAll);
-    app.get('/vehicle-types/:ID', getById);
-    app.post('/vehicle-types', create);
-    app.put('/vehicle-types/:ID', update);
-    app.put('/vehicle-types/deactivate/:ID', deactivate);
-    app.put('/vehicle-types/activate/:ID', activate);
+const zonesTypesRouter = (app: express.Application) => {
+    app.get('/zones-types', getAll);
+    app.get('/zones-types/:ID', getById);
+    app.post('/zones-types', create);
+    app.put('/zones-types/:ID', update);
+    app.put('/zones-types/de-activate/:ID', deactivate);
+    app.put('/zones-types/activate/:ID', activate);
 }
 
-export default vehicleTypesRouter;
+export default zonesTypesRouter;
+

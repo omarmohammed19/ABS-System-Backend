@@ -99,7 +99,7 @@ export class BankDetailsController {
 
     async deactivate(ID: number): Promise<string> {
         try {
-            const result = De_Activate<BankDetailsModel>(BankDetails, ID, 'deactivate');
+            const result = await De_Activate<BankDetailsModel>(BankDetails, ID, 'deactivate');
             return result;
         } catch (err) {
             throw new Error(`Could not deactivate BankDetails. Error: ${err}`);
@@ -108,7 +108,7 @@ export class BankDetailsController {
 
     async activate(ID: number): Promise<string> {
         try {
-            const result = De_Activate<BankDetailsModel>(BankDetails, ID, 'activate');
+            const result = await De_Activate<BankDetailsModel>(BankDetails, ID, 'activate');
             return result;
         } catch (err) {
             throw new Error(`Could not activate BankDetails. Error: ${err}`);
