@@ -5,6 +5,7 @@ export interface CallResultsModel extends Model {
     ID: number;
     enCallResult: string;
     arCallResult: string;
+    Notes: string;
     isActive: boolean;
 }
 
@@ -20,6 +21,9 @@ export const CallResults = sequelize.define<CallResultsModel>(
             type: DataTypes.STRING,
         },
         arCallResult: {
+            type: DataTypes.STRING,
+        },
+        Notes: {
             type: DataTypes.STRING,
         },
         isActive: {
