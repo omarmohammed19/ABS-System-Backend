@@ -11,9 +11,25 @@ import callStatusRouter from './Backend/cc_CallStatus/Route';
 import callTypesRouter from './Backend/cc_CallTypes/Route';
 import messageStatusRouter from './Backend/cs_MessageStatus/Route';
 import templateTypesRouter from './Backend/cs_TemplateTypes/Route';
-
-
-
+import branchesRouter from './Backend/cmp_Branches/Route';
+import departmentsRouter from './Backend/cmp_Departments/Route';
+import infoRouter from './Backend/cmp_Info/Route';
+import titlesRouter from './Backend/cmp_Titles/Route';
+import vehicleTypesRouter from './Backend/cmp_VehicleTypes/Route';
+import bankDetailsRouter from './Backend/cust_BankDetails/Route';
+import mobileCashRouter from './Backend/cust_MobileCash/Route';
+import paymentMethodsRouter from './Backend/cust_PaymentMethods/Route';
+import salesChannelTypesRouter from './Backend/cust_SalesChannelTypes/Route'
+import serviceTypesRouter from './Backend/cust_ServiceTypes/Route'
+import walletDetailsRouter from './Backend/cust_WalletDetails/Route'
+import locationsRouter from './Backend/cust_Locations/Route'
+import subAccountsRouter from './Backend/cust_SubAccounts/Route'
+import packageTypesRouter from './Backend/ship_PackageTypes/Route';
+import pickupTypesRouter from './Backend/ship_PickupTypes/Route';
+import reasonsRouter from './Backend/ship_Reasons/Route';
+import recipientTypesRouter from './Backend/ship_RecepientsTypes/Route';
+import shipmentTypesRouter from './Backend/ship_ShipmentTypes/Route';
+import productsRouter from './Backend/ship_Products/Route';
 
 const corsOptions = {
   origin: '*',
@@ -34,7 +50,6 @@ app.use(bodyParser.json());
 AuthenticationRouter(app);
 UsersRouter(app);
 
-
 //with authorization
 app.use(verifyJWT);
 contactLogTypesRouter(app);
@@ -43,7 +58,25 @@ callStatusRouter(app);
 callTypesRouter(app);
 messageStatusRouter(app);
 templateTypesRouter(app);
-
+branchesRouter(app);
+departmentsRouter(app);
+infoRouter(app);
+titlesRouter(app);
+vehicleTypesRouter(app);
+bankDetailsRouter(app);
+mobileCashRouter(app);
+paymentMethodsRouter(app);
+salesChannelTypesRouter(app);
+serviceTypesRouter(app);
+walletDetailsRouter(app);
+locationsRouter(app);
+subAccountsRouter(app);
+packageTypesRouter(app);
+pickupTypesRouter(app);
+reasonsRouter(app);
+recipientTypesRouter(app);
+shipmentTypesRouter(app);
+productsRouter(app);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port http://${address}:${process.env.PORT}`);

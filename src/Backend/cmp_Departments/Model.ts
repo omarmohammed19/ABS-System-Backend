@@ -8,7 +8,7 @@ export interface DepartmentsModel extends Model {
     isActive: boolean;
 }
 
-export const Department = sequelize.define<DepartmentsModel>(
+export const Departments = sequelize.define<DepartmentsModel>(
     'cmp_Departments',
     {
         ID: {

@@ -19,4 +19,5 @@ export const sequelize = new Sequelize(SQL_DB, SQL_USER, SQL_PASSWORD, {
   host: SQL_HOST,
   dialect: SQL_DIALECT,
 
+  logging: false
 });
