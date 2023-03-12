@@ -78,12 +78,12 @@ const activate = async (req: Request, res: Response) => {
 }
 
 const vehicleTypesRouter = (app: express.Application) => {
-    app.get('/vehicleTypes', getAll);
-    app.get('/vehicleTypes/:ID', getById);
-    app.post('/vehicleTypes', create);
-    app.put('/vehicleTypes/:ID', update);
-    app.put('/vehicleTypes/deactivate/:ID', deactivate);
-    app.put('/vehicleTypes/activate/:ID', activate);
+    app.get('/vehicletypes', getAll);
+    app.get('/vehicletypes/:ID', getById);
+    app.post('/vehicletypes', create);
+    app.put('/vehicletypes/:ID', update);
+    app.put('/vehicletypes/deactivate/:ID', deactivate);
+    app.put('/vehicletypes/activate/:ID', activate);
 }
 
 export default vehicleTypesRouter;
