@@ -19,18 +19,24 @@ import vehicleTypesRouter from './Backend/cmp_VehicleTypes/Route';
 import bankDetailsRouter from './Backend/cust_BankDetails/Route';
 import mobileCashRouter from './Backend/cust_MobileCash/Route';
 import paymentMethodsRouter from './Backend/cust_PaymentMethods/Route';
-import salesChannelTypesRouter from './Backend/cust_SalesChannelTypes/Route'
-import serviceTypesRouter from './Backend/cust_ServiceTypes/Route'
-import walletDetailsRouter from './Backend/cust_WalletDetails/Route'
-import locationsRouter from './Backend/cust_Locations/Route'
-import subAccountsRouter from './Backend/cust_SubAccounts/Route'
+import salesChannelTypesRouter from './Backend/cust_SalesChannelTypes/Route';
+import serviceTypesRouter from './Backend/cust_ServiceTypes/Route';
+import walletDetailsRouter from './Backend/cust_WalletDetails/Route';
+import locationsRouter from './Backend/cust_Locations/Route';
+import subAccountsRouter from './Backend/cust_SubAccounts/Route';
 import packageTypesRouter from './Backend/ship_PackageTypes/Route';
 import pickupTypesRouter from './Backend/ship_PickupTypes/Route';
 import reasonsRouter from './Backend/ship_Reasons/Route';
 import recipientTypesRouter from './Backend/ship_RecepientsTypes/Route';
 import shipmentTypesRouter from './Backend/ship_ShipmentTypes/Route';
 import productsRouter from './Backend/ship_Products/Route';
-
+import AddressTypesRouter from './Backend/client_AddressTypes/Route';
+import ContactNumberTypesRouter from './Backend/client_ContactNumberTypes/Route';
+import ContactPersonTypesRouter from './Backend/client_ContactPersonTypes/Route';
+import EmailTypesRouter from './Backend/client_EmailTypes/Route';
+import NumberTypesRouter from './Backend/client_NumberTypes/Route';
+import LegalPaperTypesRouter from './Backend/cust_LegalPaperTypes/Route';
+import InfoRouter from './Backend/cust_Info/Route';
 const corsOptions = {
   origin: '*',
   credentials: true,
@@ -77,7 +83,13 @@ reasonsRouter(app);
 recipientTypesRouter(app);
 shipmentTypesRouter(app);
 productsRouter(app);
-
+AddressTypesRouter(app);
+ContactNumberTypesRouter(app);
+ContactPersonTypesRouter(app);
+EmailTypesRouter(app);
+NumberTypesRouter(app);
+LegalPaperTypesRouter(app);
+InfoRouter(app);
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port http://${address}:${process.env.PORT}`);
 });
