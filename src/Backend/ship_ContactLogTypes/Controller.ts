@@ -3,8 +3,8 @@ import { De_Activate } from '../../Services/De_Activate';
 import { sequelize } from '../../Config/database';
 import { Transaction } from 'sequelize';
 
-const getById = (ID: number, t: Transaction, language?: string,) => {
-  const attributes = (language === 'en') ? ['ID', 'enContactLogType', 'Notes'] : ['ID', 'arContactLogType', 'Notes'];
+const getById = (ID: number, t: Transaction, language?: string) => {
+  const attributes = language === 'en' ? ['ID', 'enContactLogType', 'Notes'] : ['ID', 'arContactLogType', 'Notes'];
 
   return ContactLogTypes.findOne({
     attributes: attributes,
@@ -96,7 +96,7 @@ export class ContactLogTypesController {
 
   async deactivate(ID: number): Promise<string> {
     try {
-      const result = await De_Activate<ContactLogTypesModel>(ContactLogTypes, ID, 'deactivate');
+      const result = await De_Activate<ContactLogTypesModel>(ContactLogTypes, 'ID', ID, 'deactivate');
       return result;
     } catch (err) {
       throw new Error(`Could not deactivate ContactLogTypes. Error: ${err}`);
@@ -105,7 +105,7 @@ export class ContactLogTypesController {
 
   async activate(ID: number): Promise<string> {
     try {
-      const result = await De_Activate<ContactLogTypesModel>(ContactLogTypes, ID, 'activate');
+      const result = await De_Activate<ContactLogTypesModel>(ContactLogTypes, 'ID', ID, 'activate');
       return result;
     } catch (err) {
       throw new Error(`Could not activate ContactLogTypes. Error: ${err}`);

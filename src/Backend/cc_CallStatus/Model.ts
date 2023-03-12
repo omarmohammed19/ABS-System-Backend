@@ -5,6 +5,7 @@ export interface CallStatusModel extends Model {
     ID: number;
     enCallStatus: string;
     arCallStatus: string;
+    Notes: string;
     isActive: boolean;
 }
 
@@ -22,11 +23,15 @@ export const CallStatus = sequelize.define<CallStatusModel>(
         arCallStatus: {
             type: DataTypes.STRING,
         },
+        Notes: {
+            type: DataTypes.STRING,
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
         },
     },
     {
         timestamps: false,
+        tableName: "cc_CallStatus"
     }
 );

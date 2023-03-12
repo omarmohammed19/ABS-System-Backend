@@ -95,7 +95,7 @@ export class PackageTypesController {
 
   async deactivate(ID: number): Promise<string> {
     try {
-      const result = await De_Activate<PackageTypesModel>(PackageTypes, ID, 'deactivate');
+      const result = await De_Activate<PackageTypesModel>(PackageTypes, 'ID', ID, 'deactivate');
       return result;
     } catch (err) {
       throw new Error(`Could not deactivate PackageTypes. Error: ${err}`);
@@ -104,7 +104,7 @@ export class PackageTypesController {
 
   async activate(ID: number): Promise<string> {
     try {
-      const result = await De_Activate<PackageTypesModel>(PackageTypes, ID, 'activate');
+      const result = await De_Activate<PackageTypesModel>(PackageTypes, 'ID', ID, 'activate');
       return result;
     } catch (err) {
       throw new Error(`Could not activate PackageType. Error: ${err}`);
