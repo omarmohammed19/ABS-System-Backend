@@ -32,5 +32,6 @@ export const MessageStatus = sequelize.define<MessageStatusModel>(
     },
     {
         timestamps: false,
+        tableName: "cs_MessageStatus"
     }
 );
