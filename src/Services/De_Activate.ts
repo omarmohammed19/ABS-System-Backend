@@ -72,7 +72,7 @@ export const De_Activate = async <T extends { isActive: boolean }>(Model: any, I
             }
             else if (type == 'activate') {
                 if (object.isActive == true) {
-                    result = 'Already Deactivated';
+                    result = 'Already Activated';
                 }
                 else {
                     const updateResult = await Model.update(
