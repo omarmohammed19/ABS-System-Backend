@@ -30,10 +30,16 @@ import reasonsRouter from './Backend/ship_Reasons/Route';
 import recipientTypesRouter from './Backend/ship_RecepientsTypes/Route';
 import shipmentTypesRouter from './Backend/ship_ShipmentTypes/Route';
 import productsRouter from './Backend/ship_Products/Route';
+import AddressTypesRouter from './Backend/client_AddressTypes/Route';
+import ContactNumberTypesRouter from './Backend/client_ContactNumberTypes/Route';
+import ContactPersonTypesRouter from './Backend/client_ContactPersonTypes/Route';
+import EmailTypesRouter from './Backend/client_EmailTypes/Route';
+import NumberTypesRouter from './Backend/client_NumberTypes/Route';
+import LegalPaperTypesRouter from './Backend/cust_LegalPaperTypes/Route';
+import InfoRouter from './Backend/cust_Info/Route';
 import zonesRouter from './Backend/cmp_Zones/Route';
 import zonesTypesRouter from './Backend/cmp_ZoneTypes/Route';
 import extraInfoRouter from './Backend/ship_ExtraInfo/Route';
-
 
 const corsOptions = {
   origin: '*',
@@ -81,6 +87,13 @@ reasonsRouter(app);
 recipientTypesRouter(app);
 shipmentTypesRouter(app);
 productsRouter(app);
+AddressTypesRouter(app);
+ContactNumberTypesRouter(app);
+ContactPersonTypesRouter(app);
+EmailTypesRouter(app);
+NumberTypesRouter(app);
+LegalPaperTypesRouter(app);
+InfoRouter(app);
 zonesRouter(app);
 zonesTypesRouter(app);
 extraInfoRouter(app);
