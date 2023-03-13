@@ -91,7 +91,7 @@ export class BranchesController {
 
     async deActivate(ID: number): Promise<string> {
         try {
-            const result = await De_Activate<BranchesModel>(Branches, ID, 'deactivate');
+            const result = await De_Activate<BranchesModel>(Branches, 'ID', ID, 'deactivate');
             return result;
         }
         catch (err) {
@@ -101,7 +101,7 @@ export class BranchesController {
 
     async activate(ID: number): Promise<string> {
         try {
-            const result = await De_Activate<BranchesModel>(Branches, ID, 'activate');
+            const result = await De_Activate<BranchesModel>(Branches, 'ID', ID, 'activate');
             return result;
         }
         catch (err) {

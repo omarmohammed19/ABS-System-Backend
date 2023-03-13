@@ -107,7 +107,7 @@ export class ZoneTypesController {
 
     async deactivate(ID: number): Promise<ZoneTypesModel | string> {
         try {
-            const result = await De_Activate<ZoneTypesModel>(ZoneTypes, ID, 'deactivate');
+            const result = await De_Activate<ZoneTypesModel>(ZoneTypes, 'ID', ID, 'deactivate');
             return result;
         }
         catch (err) {
@@ -117,7 +117,7 @@ export class ZoneTypesController {
 
     async activate(ID: number): Promise<ZoneTypesModel | string> {
         try {
-            const result = await De_Activate<ZoneTypesModel>(ZoneTypes, ID, 'activate');
+            const result = await De_Activate<ZoneTypesModel>(ZoneTypes, 'ID', ID, 'activate');
             return result;
         }
         catch (err) {

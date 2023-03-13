@@ -1,34 +1,24 @@
 import { BankDetailsModel, BankDetails } from './Model';
 import { De_Activate } from '../../Services/De_Activate';
 import { sequelize } from '../../Config/database';
-import { Transaction } from 'sequelize';
+import Sequelize, { Transaction } from 'sequelize';
 
-const getById = (ID: Number, t: Transaction) => {
-  return BankDetails.findOne({
-    attributes: ['ID', 'accountHolderName', 'accountNumber', 'bankNameID', 'IBAN', 'swiftCode'],
-    where: {
-      ID: ID,
-      isActive: true,
-    },
-    transaction: t, // pass transaction object to query
-  });
+const getById = async (ID: Number, t: Transaction, language: string) => {
+  const query = 'EXEC [dbo].[p_GET_cust_BankDetails] @language = :language, @Method = :Method, @ID = :ID';
+  const replacements = { language: language, Method: 'GET_ByID', ID: ID };
+  const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
+  const result = await sequelize.query(query, options)
+  return result as unknown as BankDetailsModel;
 };
 
 export class BankDetailsController {
-  async index(): Promise<BankDetailsModel[]> {
+  async index(language: string, isActive: number): Promise<BankDetailsModel[]> {
     try {
-      return await sequelize.transaction(async (t) => {
-        // start managed transaction and pass transaction object to the callback function
-        const result = await BankDetails.findAll({
-          attributes: ['ID', 'accountHolderName', 'accountNumber', 'bankNameID', 'IBAN', 'swiftCode'],
-          where: {
-            isActive: true,
-          },
-          transaction: t, // pass transaction object to query
-        });
-
-        return result.map((item: any) => item.toJSON()) as BankDetailsModel[]; // return the result of the query (if successful) to be committed automatically
-      });
+      const query = 'EXEC [dbo].[p_GET_cust_BankDetails] @language = :language, @Method = :Method, @isActive = :isActive';
+      const replacements = { language: language, Method: 'GET', isActive: isActive };
+      const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
+      const result = sequelize.query(query, options)
+      return result as unknown as BankDetailsModel[];
     } catch (err) {
       throw new Error(`Could not get all BankDetails. Error: ${err}`);
     }
@@ -55,12 +45,12 @@ export class BankDetailsController {
     }
   }
 
-  async getBankDetialsById(ID: number): Promise<BankDetailsModel | string> {
+  async getBankDetialsById(ID: number, language: string): Promise<BankDetailsModel | string> {
     try {
       const result = await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
-        const item = await getById(ID, t); // pass transaction object to getById function
-        return item ? item.toJSON() : 'Could not get BankDetails by ID';
+        const item = await getById(ID, t, language); // pass transaction object to getById function
+        return item;
       });
       return result;
     } catch (err) {
@@ -68,7 +58,7 @@ export class BankDetailsController {
     }
   }
 
-  async update(bankDetails: BankDetailsModel): Promise<BankDetailsModel | string> {
+  async update(bankDetails: BankDetailsModel, language: string): Promise<BankDetailsModel | string> {
     try {
       return await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
@@ -88,8 +78,8 @@ export class BankDetailsController {
           }
         );
 
-        const result = await getById(Number(bankDetails.ID), t);
-        return result ? result.toJSON() : 'Could not update BankDetails';
+        const result = await getById(Number(bankDetails.ID), t, language);
+        return result;
       });
     } catch (err) {
       throw new Error(`Could not update BankDetails. Error: ${err}`);

@@ -56,7 +56,7 @@ export class ServicesController {
         }
     }
 
-    async update(services: ServicesModel, language:string): Promise<ServicesModel | string> {
+    async update(services: ServicesModel, language: string): Promise<ServicesModel | string> {
         try {
             return await sequelize.transaction(async (t) => { // start managed transaction and pass transaction object to the callback function
                 await Services.update(
@@ -72,7 +72,7 @@ export class ServicesController {
                     }
                 );
 
-                const result = await getById(Number(services.ID), t,language); // pass transaction object to getById function
+                const result = await getById(Number(services.ID), t, language); // pass transaction object to getById function
                 return result;
             });
         }
@@ -83,7 +83,7 @@ export class ServicesController {
 
     async deactivate(ID: number): Promise<string> {
         try {
-            const result = De_Activate<ServicesModel>(Services, ID, 'deactivate');
+            const result = De_Activate<ServicesModel>(Services, 'ID', ID, 'deactivate');
             return result;
         } catch (err) {
             throw new Error(`Could not deactivate Services. Error: ${err}`);
@@ -92,7 +92,7 @@ export class ServicesController {
 
     async activate(ID: number): Promise<string> {
         try {
-            const result = De_Activate<ServicesModel>(Services, ID, 'activate');
+            const result = De_Activate<ServicesModel>(Services, 'ID', ID, 'activate');
             return result;
         } catch (err) {
             throw new Error(`Could not activate Services. Error: ${err}`);

@@ -101,7 +101,7 @@ export class SalesChannelsController {
 
   async deactivate(ID: number): Promise<string> {
     try {
-      const result = De_Activate<SalesChannelsModel>(SalesChannels, ID, 'deactivate');
+      const result = De_Activate<SalesChannelsModel>(SalesChannels, 'ID', ID, 'deactivate');
       return result;
     } catch (err) {
       throw new Error(`Could not deactivate SalesChannels. Error: ${err}`);
@@ -110,7 +110,7 @@ export class SalesChannelsController {
 
   async activate(ID: number): Promise<string> {
     try {
-      const result = De_Activate<SalesChannelsModel>(SalesChannels, ID, 'activate');
+      const result = De_Activate<SalesChannelsModel>(SalesChannels, 'ID', ID, 'activate');
       return result;
     } catch (err) {
       throw new Error(`Could not activate SalesChannels. Error: ${err}`);

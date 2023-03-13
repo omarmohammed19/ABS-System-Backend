@@ -95,7 +95,7 @@ export class LegalPaperTypesController {
 
   async deactivate(ID: number): Promise<string> {
     try {
-      const result = De_Activate<LegalPaperTypesModel>(LegalPaperTypes, ID, 'deactivate');
+      const result = De_Activate<LegalPaperTypesModel>(LegalPaperTypes, 'ID', ID, 'deactivate');
       return result;
     } catch (err) {
       throw new Error(`Could not deactivate LegalPaperType. Error: ${err}`);
@@ -104,7 +104,7 @@ export class LegalPaperTypesController {
 
   async activate(ID: number): Promise<string> {
     try {
-      const result = De_Activate<LegalPaperTypesModel>(LegalPaperTypes, ID, 'activate');
+      const result = De_Activate<LegalPaperTypesModel>(LegalPaperTypes, 'ID', ID, 'activate');
       return result;
     } catch (err) {
       throw new Error(`Could not activate LegalPaperTypes. Error: ${err}`);
