@@ -1,24 +1,34 @@
 import { BranchesModel, Branches } from './Model';
 import { De_Activate } from '../../Services/De_Activate';
 import { sequelize } from '../../Config/database';
-import { Transaction } from 'sequelize';
+import Sequelize, { Transaction } from 'sequelize';
 
-const getById = (ID: number, t: Transaction, language?: string,) => {
-    const attributes = (language === 'en') ? ['ID', 'enBranchName', 'cityID'] : ['ID', 'arBranchName', 'cityID'];
-    return Branches.findOne({
-        attributes: attributes,
-        where: {
-            ID: ID,
-            isActive: true,
-        },
-        transaction: t // pass transaction object to query
-    });
+
+const getById = (ID: number, t: Transaction, language?: string) => {
+
+    const query = 'EXEC [dbo].[p_GET_cmp_Branches] @language = :language, @Method = :Method, @ID = :ID';
+    const replacements = { language: language, Method: 'GET_ByID', ID: ID };
+    const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
+    const result = sequelize.query(query, options)
+    return result as unknown as BranchesModel;
 }
 
-export class BranchesController {
-    async index() {
 
+export class BranchesController {
+
+    async index(language: string): Promise<BranchesModel[]> {
+        try {
+            const query = 'EXEC [dbo].[p_GET_cmp_Branches] @language = :language, @Method = :Method';
+            const replacements = { language: language, Method: 'GET' };
+            const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
+            const result = await sequelize.query(query, options);
+            return result as unknown as BranchesModel[];
+        }
+        catch (err) {
+            throw new Error(`Could not get all Branches. Error: ${err}`);
+        }
     }
+
 
     async create(branch: BranchesModel): Promise<BranchesModel | string> {
         try {
@@ -40,9 +50,19 @@ export class BranchesController {
         }
     }
 
-    async getBranchById() {
 
+    async getBranchByID(ID: number, language: string): Promise<BranchesModel> {
+        try {
+            return await sequelize.transaction(async (t) => {
+                const result = getById(ID, t, language);
+                return result;
+            });
+        }
+        catch (err) {
+            throw new Error(`Could not get Zone Type by ID. Error: ${err}`);
+        }
     }
+
 
     async update(branch: BranchesModel): Promise<BranchesModel | string> {
         try {
@@ -60,8 +80,8 @@ export class BranchesController {
                         transaction: t // pass transaction object to query
                     }
                 );
-                const updatedBranch = await getById(branch.ID, t);
-                return updatedBranch ? updatedBranch.toJSON() as BranchesModel : 'Branch not found';
+                const updatedBranch = getById(branch.ID, t);
+                return updatedBranch;
             });
         }
         catch (err) {
@@ -69,9 +89,9 @@ export class BranchesController {
         }
     }
 
-    async deActivate(ID: Number): Promise<string> {
+    async deActivate(ID: number): Promise<string> {
         try {
-            const result = De_Activate<BranchesModel>(Branches, ID, 'deactivate');
+            const result = await De_Activate<BranchesModel>(Branches, ID, 'deactivate');
             return result;
         }
         catch (err) {
@@ -79,9 +99,9 @@ export class BranchesController {
         }
     }
 
-    async activate(ID: Number): Promise<string> {
+    async activate(ID: number): Promise<string> {
         try {
-            const result = De_Activate<BranchesModel>(Branches, ID, 'activate');
+            const result = await De_Activate<BranchesModel>(Branches, ID, 'activate');
             return result;
         }
         catch (err) {

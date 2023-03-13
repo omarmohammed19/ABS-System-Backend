@@ -78,12 +78,12 @@ const activate = async (req: Request, res: Response) => {
 };
 
 const recipientTypesRouter = (app: express.Application) => {
-  app.get('/recipientTypes', getAll);
-  app.get('/recipientTypes/:ID', getById);
-  app.post('/recipientTypes', create);
-  app.put('/recipientTypes/:ID', update);
-  app.put('/recipientTypes/deactivate/:ID', deactivate);
-  app.put('/recipientTypes/activate/:ID', activate);
+  app.get('/recipient-types', getAll);
+  app.get('/recipient-types/:ID', getById);
+  app.post('/recipient-types', create);
+  app.put('/recipient-types/:ID', update);
+  app.put('/recipient-types/de-activate/:ID', deactivate);
+  app.put('/recipient-types/activate/:ID', activate);
 };
 
 export default recipientTypesRouter;

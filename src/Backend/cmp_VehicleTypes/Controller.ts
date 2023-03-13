@@ -27,7 +27,6 @@ export class VehicleTypesController {
                     },
                     transaction: t
                 });
-
                 return result.map((item: any) => item.toJSON()) as VehicleTypesModel[];
             });
         }

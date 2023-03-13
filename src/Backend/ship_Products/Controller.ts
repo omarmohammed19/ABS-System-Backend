@@ -97,7 +97,7 @@ export class ProductsController {
 
   async deactivate(ID: number): Promise<string> {
     try {
-      const result = await De_Activate<ProductsModel>(Products, ID, 'deactivate');
+      const result = await De_Activate<ProductsModel>(Products, 'ID', ID, 'deactivate');
       return result;
     } catch (err) {
       throw new Error(`Could not deactivate Product. Error: ${err}`);
@@ -106,7 +106,7 @@ export class ProductsController {
 
   async activate(ID: number): Promise<string> {
     try {
-      const result = await De_Activate<ProductsModel>(Products, ID, 'activate');
+      const result = await De_Activate<ProductsModel>(Products, 'ID', ID, 'activate');
       return result;
     } catch (err) {
       throw new Error(`Could not activate Product. Error: ${err}`);

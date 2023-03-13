@@ -78,12 +78,12 @@ const activate = async (req: Request, res: Response) => {
 };
 
 const contactLogTypesRouter = (app: express.Application) => {
-  app.get('/contactLogTypes', getAll);
-  app.get('/contactLogTypes/:ID', getById);
-  app.post('/contactLogTypes', create);
-  app.put('/contactLogTypes/:ID', update);
-  app.put('/contactLogTypes/deactivate/:ID', deactivate);
-  app.put('/contactLogTypes/activate/:ID', activate);
+  app.get('/contact-log-types', getAll);
+  app.get('/contact-log-types/:ID', getById);
+  app.post('/contact-log-types', create);
+  app.put('/contact-log-types/:ID', update);
+  app.put('/contact-log-types/de-activate/:ID', deactivate);
+  app.put('/contact-log-types/activate/:ID', activate);
 };
 
 export default contactLogTypesRouter;
