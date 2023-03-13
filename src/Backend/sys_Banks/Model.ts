@@ -1,14 +1,14 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../../Config/database';
 
-export interface BankNamesModel extends Model {
+export interface BanksModel extends Model {
     ID: number;
     bankName: string;
     isActive: boolean;
 }
 
-export const BankNames = sequelize.define<BankNamesModel>(
-    'sys_BankNames',
+export const Banks = sequelize.define<BanksModel>(
+    'sys_Banks',
     {
         ID: {
             type: DataTypes.INTEGER,
