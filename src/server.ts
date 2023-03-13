@@ -37,6 +37,10 @@ import EmailTypesRouter from './Backend/client_EmailTypes/Route';
 import NumberTypesRouter from './Backend/client_NumberTypes/Route';
 import LegalPaperTypesRouter from './Backend/cust_LegalPaperTypes/Route';
 import InfoRouter from './Backend/cust_Info/Route';
+import zonesRouter from './Backend/cmp_Zones/Route';
+import zonesTypesRouter from './Backend/cmp_ZoneTypes/Route';
+import extraInfoRouter from './Backend/ship_ExtraInfo/Route';
+
 const corsOptions = {
   origin: '*',
   credentials: true,
@@ -90,6 +94,10 @@ EmailTypesRouter(app);
 NumberTypesRouter(app);
 LegalPaperTypesRouter(app);
 InfoRouter(app);
+zonesRouter(app);
+zonesTypesRouter(app);
+extraInfoRouter(app);
+
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port http://${address}:${process.env.PORT}`);
 });

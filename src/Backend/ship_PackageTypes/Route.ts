@@ -78,12 +78,12 @@ const activate = async (req: Request, res: Response) => {
 };
 
 const packageTypesRouter = (app: express.Application) => {
-  app.get('/packageTypes', getAll);
-  app.get('/packageTypes/:ID', getById);
-  app.post('/packageTypes', create);
-  app.put('/packageTypes/:ID', update);
-  app.put('/packageTypes/deactivate/:ID', deactivate);
-  app.put('/packageTypes/activate/:ID', activate);
+  app.get('/package-types', getAll);
+  app.get('/package-types/:ID', getById);
+  app.post('/package-types', create);
+  app.put('/package-types/:ID', update);
+  app.put('/package-types/de-activate/:ID', deactivate);
+  app.put('/package-types/activate/:ID', activate);
 };
 
 export default packageTypesRouter;
