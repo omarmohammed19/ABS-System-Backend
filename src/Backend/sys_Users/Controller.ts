@@ -8,7 +8,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 const { SALT_ROUNDS, pepper } = process.env;
 
-const getById = (ID: Number, language?: string) => {
+const getById = (ID: number, language?: string) => {
   const lang = language === 'en' ? 'enRole' : 'arRole';
   return Users.findOne({
     where: {
@@ -62,7 +62,7 @@ export class UsersController {
 
   async getUserById(language: string, ID: number): Promise<UsersModel | null> {
     try {
-      const result = await getById(ID, language);
+      const result = getById(ID, language);
       if (result === null) {
         return null;
       }
@@ -82,7 +82,7 @@ export class UsersController {
   async create(user: UsersModel): Promise<UsersModel | string> {
     try {
       //@ts-ignore
-      const hashedPassword = await bcrypt.hashSync(user.password + pepper, parseInt(SALT_ROUNDS));
+      const hashedPassword = bcrypt.hashSync(user.password + pepper, parseInt(SALT_ROUNDS));
       const result = await Users.create(
         {
           username: user.username,
@@ -105,7 +105,7 @@ export class UsersController {
   async update(user: UsersModel): Promise<UsersModel> {
     try {
       //@ts-ignore
-      const hashedPassword = await bcrypt.hashSync(user.password + pepper, parseInt(SALT_ROUNDS));
+      const hashedPassword = bcrypt.hashSync(user.password + pepper, parseInt(SALT_ROUNDS));
       await Users.update(
         {
           username: user.username,
@@ -121,7 +121,7 @@ export class UsersController {
           },
         }
       );
-      const result = await getById(Number(user.ID));
+      const result = getById(Number(user.ID));
       return {
         username: result.username,
         password: result.password,

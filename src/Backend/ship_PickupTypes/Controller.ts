@@ -95,7 +95,7 @@ export class PickupTypesController {
 
   async deactivate(ID: number): Promise<string> {
     try {
-      const result = await De_Activate<PickupTypesModel>(PickupTypes, 'ID''ID', ID, 'deactivate'');
+      const result = await De_Activate<PickupTypesModel>(PickupTypes, 'ID', ID, 'deactivate');
       return result;
     } catch (err) {
       throw new Error(`Could not deactivate PickupType. Error: ${err}`);

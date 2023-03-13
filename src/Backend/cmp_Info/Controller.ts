@@ -95,7 +95,7 @@ export class InfoController {
 
   async deactivate(ID: number): Promise<InfoModel | string> {
     try {
-      const result = await De_Activate<InfoModel>(Info, 'ID''ID', ID, 'deactivate'');
+      const result = await De_Activate<InfoModel>(Info, 'ID', ID, 'deactivate');
       return result;
     } catch (err) {
       throw new Error(`Could not deactivate Info. Error: ${err}`);

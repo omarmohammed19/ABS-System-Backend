@@ -1,8 +1,8 @@
 import { LocationsModel, Locations } from './Model';
 import { De_Activate } from '../../Services/De_Activate';
 import { sequelize } from '../../Config/database';
-import { Transaction } from 'sequelize';
-import Sequelize from 'sequelize';
+import Sequelize, { Transaction } from 'sequelize';
+
 
 
 const getById = async (ID: number, t: Transaction, language?: string): Promise<LocationsModel> => {
@@ -19,7 +19,7 @@ export class LocationsController {
       const query = 'EXEC [dbo].[p_GET_cust_Locations] @language = :language, @Method = :Method';
       const replacements = { language: language, Method: 'GET' };
       const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
-      const result = sequelize.query(query, options);
+      const result = await sequelize.query(query, options);
       return result as unknown as LocationsModel[];
     } catch (err) {
       throw new Error(`Could not get all Addresses. Error: ${err}`);

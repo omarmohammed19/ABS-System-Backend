@@ -10,6 +10,7 @@ const getAll = async (req: Request, res: Response) => {
         const result = await branchesController.index(language);
         res.json(result);
     } catch (error) {
+        console.log(error);
         res.status(400);
         res.json(error);
     }

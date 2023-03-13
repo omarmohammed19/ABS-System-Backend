@@ -3,7 +3,7 @@ import { De_Activate } from '../../Services/De_Activate';
 import { sequelize } from '../../Config/database';
 import { Transaction } from 'sequelize';
 
-const getById = (ID: Number, t: Transaction, language?: string) => {
+const getById = (ID: number, t: Transaction, language?: string) => {
   const attributes = language === 'en' ? ['ID', 'enSalesChannelType', 'Notes'] : ['ID', 'arSalesChannelType', 'Notes'];
   return SalesChannelTypes.findOne({
     attributes: attributes,

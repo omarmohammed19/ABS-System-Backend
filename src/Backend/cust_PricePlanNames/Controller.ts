@@ -1,9 +1,9 @@
 import { PricePlanNamesModel, PricePlanNames } from './Model';
 import { De_Activate } from '../../Services/De_Activate';
 import { sequelize } from '../../Config/database';
-import Sequelize, { Transaction } from 'sequelize';
+import { Transaction } from 'sequelize';
 
-const getById = async (ID: Number, t: Transaction, language?: string) => {
+const getById = async (ID: number, t: Transaction, language?: string) => {
     const attributes = (language === 'en') ? ['ID', 'enPricePlanName', 'pricePlanID', 'numberOfShipments', 'collectionStart', 'collectionIncrement', 'collectionFees', 'basicPlan', 'defaultPlan', 'Notes'] : ['ID', 'arPricePlanName', 'pricePlanID', 'numberOfShipments', 'collectionStart', 'collectionIncrement', 'collectionFees', 'basicPlan', 'defaultPlan', 'Notes'];
     return await PricePlanNames.findOne({
         attributes: attributes,
@@ -132,7 +132,7 @@ export class PricePlanNamesController {
 
     async deactivate(ID: number): Promise<string> {
         try {
-            const result = De_Activate<PricePlanNamesModel>(PricePlanNames'ID', ID, 'deactivate'');
+            const result = await De_Activate<PricePlanNamesModel>(PricePlanNames, 'ID', ID, 'deactivate');
             return result;
         } catch (err) {
             throw new Error(`Could not deactivate PricePlanNames. Error: ${err}`);
@@ -141,7 +141,7 @@ export class PricePlanNamesController {
 
     async activate(ID: number): Promise<string> {
         try {
-            const result = De_Activate<PricePlanNamesModel>(PricePlanNames, ID, 'activate');
+            const result = await De_Activate<PricePlanNamesModel>(PricePlanNames, 'ID', ID, 'activate');
             return result;
         } catch (err) {
             throw new Error(`Could not activate PricePlanNames. Error: ${err}`);

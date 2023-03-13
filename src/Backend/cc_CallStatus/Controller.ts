@@ -95,7 +95,7 @@ export class CallStatusController {
 
   async deactivate(ID: number): Promise<string> {
     try {
-      const result = De_Activate<CallStatusModel>(CallStatus, 'ID', ID, 'deactivate');
+      const result = await De_Activate<CallStatusModel>(CallStatus, 'ID', ID, 'deactivate');
       return result;
     } catch (err) {
       throw new Error(`Could not deactivate CallStatus. Error: ${err}`);
@@ -104,7 +104,7 @@ export class CallStatusController {
 
   async activate(ID: number): Promise<string> {
     try {
-      const result = De_Activate<CallStatusModel>(CallStatus, 'ID', ID, 'activate');
+      const result = await De_Activate<CallStatusModel>(CallStatus, 'ID', ID, 'activate');
       return result;
     } catch (err) {
       throw new Error(`Could not activate CallStatus. Error: ${err}`);

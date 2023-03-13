@@ -3,7 +3,7 @@ import { De_Activate } from '../../Services/De_Activate';
 import { sequelize } from '../../Config/database';
 import Sequelize, { Transaction } from 'sequelize';
 
-const getById = async (ID: Number, t: Transaction, language?: string) => {
+const getById = async (ID: number, t: Transaction, language?: string) => {
     const query = 'EXEC [dbo].[p_GET_cust_NearestBranch] @language = :language, @Method = :Method, @ID = :ID';
     const replacements = { language: language, Method: 'GET_ByID', ID: ID };
     const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
@@ -17,7 +17,7 @@ export class NearestBranchController {
             const query = 'EXEC [dbo].[p_GET_cust_NearestBranch] @language = :language, @Method = :Method';
             const replacements = { language: language, Method: 'GET' };
             const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
-            const result = sequelize.query(query, options)
+            const result = await sequelize.query(query, options)
             return result as unknown as NearestBranchModel[];
         }
         catch (err) {

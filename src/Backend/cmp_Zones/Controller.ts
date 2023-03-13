@@ -1,8 +1,7 @@
 import { Zones, ZonesModel } from './Model';
 import { De_Activate } from '../../Services/De_Activate';
 import { sequelize } from '../../Config/database';
-import { Transaction, } from 'sequelize';
-import Sequelize from 'sequelize';
+import Sequelize, { Transaction, } from 'sequelize';
 
 const getById = (ID: number, t: Transaction, language?: string) => {
 

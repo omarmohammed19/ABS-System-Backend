@@ -3,7 +3,7 @@ import { De_Activate } from '../../Services/De_Activate';
 import { sequelize } from '../../Config/database';
 import { Transaction } from 'sequelize';
 
-const getById = (ID: Number, t: Transaction) => {
+const getById = (ID: number, t: Transaction) => {
   return MobileCash.findOne({
     attributes: ['ID', 'mobileNumber'],
     where: {

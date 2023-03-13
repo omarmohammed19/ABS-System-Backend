@@ -95,7 +95,7 @@ export class ReasonsController {
 
   async deactivate(ID: number): Promise<string> {
     try {
-      const result = await De_Activate<ReasonsModel>(Reasons, 'ID''ID', ID, 'deactivate'');
+      const result = await De_Activate<ReasonsModel>(Reasons, 'ID', ID, 'deactivate');
       return result;
     } catch (err) {
       throw new Error(`Could not deactivate Reason. Error: ${err}`);

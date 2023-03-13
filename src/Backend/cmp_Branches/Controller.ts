@@ -42,7 +42,7 @@ export class BranchesController {
                     },
                     { transaction: t } // pass transaction object to query
                 );
-                return result.toJSON() as BranchesModel; // return the result of the query (if successful) to be committed automatically
+                return result; // return the result of the query (if successful) to be committed automatically
             });
         }
         catch (err) {
