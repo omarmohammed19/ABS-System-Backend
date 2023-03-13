@@ -138,7 +138,7 @@ export class UsersController {
 
   async deactivate(ID: number): Promise<string> {
     try {
-      const result = De_Activate<UsersModel>(Users, 'ID', ID, 'deactivate');
+      const result = await De_Activate<UsersModel>(Users, 'ID', ID, 'deactivate');
       return result;
     } catch (err) {
       throw new Error(`Could not deactivate Users. Error: ${err}`);
@@ -147,7 +147,7 @@ export class UsersController {
 
   async activate(ID: number): Promise<string> {
     try {
-      const result = De_Activate<UsersModel>(Users, 'ID', ID, 'activate');
+      const result = await De_Activate<UsersModel>(Users, 'ID', ID, 'activate');
       return result;
     } catch (err) {
       throw new Error(`Could not activate Users. Error: ${err}`);

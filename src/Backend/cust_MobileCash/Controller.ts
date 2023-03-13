@@ -90,7 +90,7 @@ export class MobileCashController {
 
   async deactivate(ID: number): Promise<string> {
     try {
-      const result = De_Activate<MobileCashModel>(MobileCash, 'ID', ID, 'deactivate');
+      const result = await De_Activate<MobileCashModel>(MobileCash, 'ID', ID, 'deactivate');
       return result;
     } catch (err) {
       throw new Error(`Could not deactivate MobileCash. Error: ${err}`);
@@ -99,7 +99,7 @@ export class MobileCashController {
 
   async activate(ID: number): Promise<string> {
     try {
-      const result = De_Activate<MobileCashModel>(MobileCash, 'ID', ID, 'activate');
+      const result = await De_Activate<MobileCashModel>(MobileCash, 'ID', ID, 'activate');
       return result;
     } catch (err) {
       throw new Error(`Could not activate MobileCash. Error: ${err}`);

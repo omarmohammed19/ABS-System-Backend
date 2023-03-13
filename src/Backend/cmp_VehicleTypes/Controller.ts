@@ -96,7 +96,7 @@ export class VehicleTypesController {
 
     async deactivate(ID: number): Promise<VehicleTypesModel | string> {
         try {
-            const result = await De_Activate<VehicleTypesModel>(VehicleTypes, ID, 'deactivate');
+            const result = await De_Activate<VehicleTypesModel>(VehicleTypes'ID', ID, 'deactivate'');
             return result;
         }
         catch (err) {

@@ -91,7 +91,7 @@ export class LanguagesController {
 
     async deactivate(ID: number): Promise<string> {
         try {
-            const result = await De_Activate<LanguagesModel>(Languages, ID, 'deactivate');
+            const result = await De_Activate<LanguagesModel>(Languages, 'ID', ID, 'deactivate');
             return result;
         }
         catch (err) {
@@ -101,7 +101,7 @@ export class LanguagesController {
 
     async activate(ID: number): Promise<string> {
         try {
-            const result = await De_Activate<LanguagesModel>(Languages, ID, 'activate');
+            const result = await De_Activate<LanguagesModel>(Languages, 'ID', ID, 'activate');
             return result;
         }
         catch (err) {

@@ -95,7 +95,7 @@ export class MessageStatusController {
 
   async deactivate(ID: number): Promise<string> {
     try {
-      const result = De_Activate<MessageStatusModel>(MessageStatus, 'ID', ID, 'deactivate');
+      const result = await De_Activate<MessageStatusModel>(MessageStatus, 'ID', ID, 'deactivate');
       return result;
     } catch (err) {
       throw new Error(`Could not deactivate MessageStatusType. Error: ${err}`);
@@ -104,7 +104,7 @@ export class MessageStatusController {
 
   async activate(ID: number): Promise<string> {
     try {
-      const result = De_Activate<MessageStatusModel>(MessageStatus, 'ID', ID, 'activate');
+      const result = await De_Activate<MessageStatusModel>(MessageStatus, 'ID', ID, 'activate');
       return result;
     } catch (err) {
       throw new Error(`Could not activate MessageStatusType. Error: ${err}`);

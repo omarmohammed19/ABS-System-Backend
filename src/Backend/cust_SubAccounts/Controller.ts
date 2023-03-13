@@ -85,8 +85,8 @@ export class SubAccountsController {
             transaction: t // pass transaction object to query
           });
 
-          const item = await getById(subAccounts.ID, t, language); // pass transaction object to getById function
-          return item;
+        const item = await getById(subAccounts.ID, t, language); // pass transaction object to getById function
+        return item;
       });
     } catch (err) {
       throw new Error(`Could not update SubAccounts. Error: ${err}`);
@@ -95,7 +95,7 @@ export class SubAccountsController {
 
   async deactivate(ID: number): Promise<string> {
     try {
-      const result = De_Activate<SubAccountsModel>(SubAccounts, 'ID', ID, 'deactivate');
+      const result = await De_Activate<SubAccountsModel>(SubAccounts, 'ID', ID, 'deactivate');
       return result;
     } catch (err) {
       throw new Error(`Could not deactivate SubAccounts. Error: ${err}`);
@@ -104,7 +104,7 @@ export class SubAccountsController {
 
   async activate(ID: number): Promise<string> {
     try {
-      const result = De_Activate<SubAccountsModel>(SubAccounts, 'ID', ID, 'activate');
+      const result = await De_Activate<SubAccountsModel>(SubAccounts, 'ID', ID, 'activate');
       return result;
     } catch (err) {
       throw new Error(`Could not activate SubAccounts. Error: ${err}`);

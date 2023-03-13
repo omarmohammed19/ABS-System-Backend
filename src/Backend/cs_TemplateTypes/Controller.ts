@@ -95,7 +95,7 @@ export class TemplateTypesController {
 
   async deactivate(ID: number): Promise<string> {
     try {
-      const result = De_Activate<TemplateTypesModel>(TemplateTypes, 'ID', ID, 'deactivate');
+      const result = await De_Activate<TemplateTypesModel>(TemplateTypes, 'ID', ID, 'deactivate');
       return result;
     } catch (err) {
       throw new Error(`Could not deactivate TemplateType. Error: ${err}`);
@@ -104,7 +104,7 @@ export class TemplateTypesController {
 
   async activate(ID: number): Promise<string> {
     try {
-      const result = De_Activate<TemplateTypesModel>(TemplateTypes, 'ID', ID, 'activate');
+      const result = await De_Activate<TemplateTypesModel>(TemplateTypes, 'ID', ID, 'activate');
       return result;
     } catch (err) {
       throw new Error(`Could not activate TemplateType. Error: ${err}`);
