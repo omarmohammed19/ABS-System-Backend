@@ -4,9 +4,8 @@ import { sequelize } from '../../Config/database';
 import { Transaction } from 'sequelize';
 
 const getById = (ID: number, t: Transaction, language?: string) => {
-  const attributes = language === 'en' ? ['ID', 'enMessageStatusType', 'Notes'] : ['ID', 'arMessageStatusType', 'Notes'];
   return MessageStatus.findOne({
-    attributes: attributes,
+    attributes: language === 'en' ? ['ID', 'enMessageStatusType', 'Notes'] : [['ID', 'ID'], ['arMessageStatusType', 'حالة الرسالة'], ['Notes', 'ملحوظات']],
     where: {
       ID: ID,
       isActive: true,
@@ -16,15 +15,14 @@ const getById = (ID: number, t: Transaction, language?: string) => {
 };
 
 export class MessageStatusController {
-  async index(language: string): Promise<MessageStatusModel[]> {
+  async index(language: string, isActive: number): Promise<MessageStatusModel[]> {
     try {
       return await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
-        const attributes = language === 'en' ? ['ID', 'enMessageStatusType', 'Notes'] : ['ID', 'arMessageStatusType', 'Notes'];
         const result = await MessageStatus.findAll({
-          attributes: attributes,
+          attributes: language === 'en' ? ['ID', 'enMessageStatusType', 'Notes'] : [['ID', 'ID'], ['arMessageStatusType', 'حالة الرسالة'], ['Notes', 'ملحوظات']],
           where: {
-            isActive: true,
+            isActive: isActive,
           },
           transaction: t, // pass transaction object to query
         });
@@ -95,7 +93,7 @@ export class MessageStatusController {
 
   async deactivate(ID: number): Promise<string> {
     try {
-      const result = De_Activate<MessageStatusModel>(MessageStatus, 'ID', ID, 'deactivate');
+      const result = await De_Activate<MessageStatusModel>(MessageStatus, 'ID', ID, 'deactivate');
       return result;
     } catch (err) {
       throw new Error(`Could not deactivate MessageStatusType. Error: ${err}`);
@@ -104,7 +102,7 @@ export class MessageStatusController {
 
   async activate(ID: number): Promise<string> {
     try {
-      const result = De_Activate<MessageStatusModel>(MessageStatus, 'ID', ID, 'activate');
+      const result = await De_Activate<MessageStatusModel>(MessageStatus, 'ID', ID, 'activate');
       return result;
     } catch (err) {
       throw new Error(`Could not activate MessageStatusType. Error: ${err}`);

@@ -30,6 +30,20 @@ export class BranchesController {
     }
 
 
+    async indexDeActivated(language: string): Promise<BranchesModel[]> {
+        try {
+            const query = 'EXEC [dbo].[p_GET_cmp_Branches] @language = :language, @Method = :Method';
+            const replacements = { language: language, Method: 'GET_DeActivated' };
+            const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
+            const result = await sequelize.query(query, options);
+            return result as unknown as BranchesModel[];
+        }
+        catch (err) {
+            throw new Error(`Could not get all Branches. Error: ${err}`);
+        }
+    }
+
+
     async create(branch: BranchesModel): Promise<BranchesModel | string> {
         try {
             return await sequelize.transaction(async (t) => { // start managed transaction and pass transaction object to the callback function
@@ -42,7 +56,7 @@ export class BranchesController {
                     },
                     { transaction: t } // pass transaction object to query
                 );
-                return result.toJSON() as BranchesModel; // return the result of the query (if successful) to be committed automatically
+                return result; // return the result of the query (if successful) to be committed automatically
             });
         }
         catch (err) {

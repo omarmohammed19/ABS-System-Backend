@@ -3,7 +3,7 @@ import { De_Activate } from '../../Services/De_Activate';
 import { sequelize } from '../../Config/database';
 import { Transaction } from 'sequelize';
 
-const getById = (ID: Number, t: Transaction, language?: string) => {
+const getById = (ID: number, t: Transaction, language?: string) => {
   const attributes = language === 'en' ? ['ID', 'enSalesChannelType', 'Notes'] : ['ID', 'arSalesChannelType', 'Notes'];
   return SalesChannelTypes.findOne({
     attributes: attributes,
@@ -96,7 +96,7 @@ export class SalesChannelTypesController {
 
   async deactivate(ID: number): Promise<string> {
     try {
-      const result = De_Activate<SalesChannelTypesModel>(SalesChannelTypes, 'ID', ID, 'deactivate');
+      const result = await De_Activate<SalesChannelTypesModel>(SalesChannelTypes, 'ID', ID, 'deactivate');
       return result;
     } catch (err) {
       throw new Error(`Could not deactivate SalesChannelTypes. Error: ${err}`);
@@ -105,7 +105,7 @@ export class SalesChannelTypesController {
 
   async activate(ID: number): Promise<string> {
     try {
-      const result = De_Activate<SalesChannelTypesModel>(SalesChannelTypes, 'ID', ID, 'activate');
+      const result = await De_Activate<SalesChannelTypesModel>(SalesChannelTypes, 'ID', ID, 'activate');
       return result;
     } catch (err) {
       throw new Error(`Could not activate SalesChannelTypes. Error: ${err}`);

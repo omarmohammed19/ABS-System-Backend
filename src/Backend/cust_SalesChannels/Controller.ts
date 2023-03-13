@@ -3,7 +3,7 @@ import { De_Activate } from '../../Services/De_Activate';
 import { sequelize } from '../../Config/database';
 import Sequelize, { Transaction } from 'sequelize';
 
-const getById = async (ID: Number, t: Transaction, language?: string) => {
+const getById = async (ID: number, t: Transaction, language?: string) => {
   const query = 'EXEC [dbo].[p_GET_cust_SalesChannels] @language = :language, @Method = :Method, @ID = :ID';
   const replacements = { language: language, Method: 'GET_ByID', ID: ID };
   const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
@@ -18,7 +18,7 @@ export class SalesChannelsController {
       const query = 'EXEC [dbo].[p_GET_cust_SalesChannels] @language = :language, @Method = :Method';
       const replacements = { language: language, Method: 'GET' };
       const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
-      const result = sequelize.query(query, options)
+      const result = await sequelize.query(query, options)
       return result as unknown as SalesChannelsModel[];
     }
     catch (err) {
@@ -30,8 +30,8 @@ export class SalesChannelsController {
     try {
       const query = 'EXEC [dbo].[p_GET_cust_SalesChannels] @language = :language, @Method = :Method';
       const replacements = { language: language, Method: 'GET_DeActivated' };
-      const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };      
-      const result = sequelize.query(query, options)
+      const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
+      const result = await sequelize.query(query, options)
       return result as unknown as SalesChannelsModel[];
     }
     catch (err) {
@@ -90,8 +90,8 @@ export class SalesChannelsController {
             transaction: t // pass transaction object to query
           });
 
-          const item = await getById(salesChannels.ID, t, language); // pass transaction object to getById function
-          return item;
+        const item = await getById(salesChannels.ID, t, language); // pass transaction object to getById function
+        return item;
       });
     }
     catch (err) {
@@ -101,7 +101,9 @@ export class SalesChannelsController {
 
   async deactivate(ID: number): Promise<string> {
     try {
-      const result = De_Activate<SalesChannelsModel>(SalesChannels, 'ID', ID, 'deactivate');
+
+      const result = await De_Activate<SalesChannelsModel>(SalesChannels, 'ID', ID, 'deactivate');
+
       return result;
     } catch (err) {
       throw new Error(`Could not deactivate SalesChannels. Error: ${err}`);
@@ -110,7 +112,9 @@ export class SalesChannelsController {
 
   async activate(ID: number): Promise<string> {
     try {
-      const result = De_Activate<SalesChannelsModel>(SalesChannels, 'ID', ID, 'activate');
+
+      const result = await De_Activate<SalesChannelsModel>(SalesChannels, 'ID', ID, 'activate');
+
       return result;
     } catch (err) {
       throw new Error(`Could not activate SalesChannels. Error: ${err}`);

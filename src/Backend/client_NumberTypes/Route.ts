@@ -15,6 +15,17 @@ const getAll = async (req: Request, res: Response) => {
   }
 };
 
+const getAllDeActivated = async (req: Request, res: Response) => {
+  try {
+    const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
+    const result = await numberTypesController.indexDeActivated(language);
+    res.json(result);
+  } catch (error) {
+    res.status(400);
+    res.json(error);
+  }
+};
+
 const getById = async (req: Request, res: Response) => {
   try {
     const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
@@ -81,10 +92,11 @@ const activate = async (req: Request, res: Response) => {
 
 const NumberTypesRouter = (app: express.Application) => {
   app.get('/number-types', getAll);
+  app.get('/number-types/de-activated', getAllDeActivated);
   app.get('/number-types/:ID', getById);
   app.post('/number-types', create);
   app.put('/number-types/:ID', update);
-  app.put('/number-types/deactivate/:ID', deactivate);
+  app.put('/number-types/de-activate/:ID', deactivate);
   app.put('/number-types/activate/:ID', activate);
 };
 

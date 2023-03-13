@@ -36,6 +36,26 @@ export class NumberTypesController {
     }
   }
 
+  async indexDeActivated(language: string): Promise<NumberTypesModel[]> {
+    try {
+      return await sequelize.transaction(async (t) => {
+        // start managed transaction and pass transaction object to the callback function
+        const attributes = language === 'en' ? ['ID', 'enNumberType', 'Notes'] : ['ID', 'arNumberType', 'Notes'];
+        const result = await NumberTypes.findAll({
+          attributes: attributes,
+          where: {
+            isActive: false,
+          },
+          transaction: t, // pass transaction object to query
+        });
+
+        return result.map((item: any) => item.toJSON()) as NumberTypesModel[]; // return the result of the query (if successful) to be committed automatically
+      });
+    } catch (err) {
+      throw new Error(`Could not get all NumberTypes. Error: ${err}`);
+    }
+  }
+
   async create(NumberType: NumberTypesModel): Promise<NumberTypesModel | string> {
     try {
       return await sequelize.transaction(async (t) => {
@@ -95,7 +115,9 @@ export class NumberTypesController {
 
   async deactivate(ID: number): Promise<string> {
     try {
-      const result = De_Activate<NumberTypesModel>(NumberTypes, 'ID', ID, 'deactivate');
+
+      const result = await De_Activate<NumberTypesModel>(NumberTypes, 'ID', ID, 'deactivate');
+
       return result;
     } catch (err) {
       throw new Error(`Could not deactivate NumberType. Error: ${err}`);
@@ -104,7 +126,9 @@ export class NumberTypesController {
 
   async activate(ID: number): Promise<string> {
     try {
-      const result = De_Activate<NumberTypesModel>(NumberTypes, 'ID', ID, 'activate');
+
+      const result = await De_Activate<NumberTypesModel>(NumberTypes, 'ID', ID, 'activate');
+
       return result;
     } catch (err) {
       throw new Error(`Could not activate NumberType. Error: ${err}`);

@@ -1,12 +1,11 @@
 import { LanguagesModel, Languages } from './Model';
 import { De_Activate } from '../../Services/De_Activate';
 import { sequelize } from '../../Config/database';
-import Sequelize, { Transaction } from 'sequelize';
+import { Transaction } from 'sequelize';
 
-const getById = (ID: number, t: Transaction) => {
-    const attributes = ['ID', 'Language'];
+const getById = (ID: number, t: Transaction, language?: string) => {
     return Languages.findOne({
-        attributes: attributes,
+        attributes: language === 'en' ? [['ID', 'Language ID'], 'Language'] : [['ID', 'رقم اللغة'], ['Language', 'اسم اللغة']],
         where: {
             ID: ID,
             IsActive: true
@@ -16,12 +15,11 @@ const getById = (ID: number, t: Transaction) => {
 }
 
 export class LanguagesController {
-    async index(): Promise<LanguagesModel[]> {
+    async index(language: string): Promise<LanguagesModel[]> {
         try {
             return await sequelize.transaction(async (t) => {
-                const attributes = ['ID', 'Language'];
                 const result = await Languages.findAll({
-                    attributes: attributes,
+                    attributes: language === 'en' ? [['ID', 'Language ID'], 'Language'] : [['ID', 'رقم اللغة'], ['Language', 'اسم اللغة']],
                     where: {
                         IsActive: true
                     },
@@ -34,6 +32,7 @@ export class LanguagesController {
             throw new Error(`Could not get all Languages. Error: ${err}`);
         }
     }
+
 
     async create(language: LanguagesModel): Promise<LanguagesModel | string> {
         try {
@@ -53,10 +52,10 @@ export class LanguagesController {
         }
     }
 
-    async getLanguageByID(ID: number): Promise<LanguagesModel | string> {
+    async getLanguageByID(ID: number, language?: string): Promise<LanguagesModel | string> {
         try {
             return await sequelize.transaction(async (t) => {
-                const result = await getById(ID, t);
+                const result = await getById(ID, t, language);
                 return result ? result.toJSON() : 'Could not get Language';
             });
         }
@@ -65,10 +64,10 @@ export class LanguagesController {
         }
     }
 
-    async update(language: LanguagesModel): Promise<LanguagesModel | string> {
+    async update(language: LanguagesModel, lang?: string): Promise<LanguagesModel | string> {
         try {
             return await sequelize.transaction(async (t) => { // start managed transaction and pass transaction object to the callback function
-                await language.update(
+                await Languages.update(
                     {
                         Language: language.Language,
                     },
@@ -79,8 +78,8 @@ export class LanguagesController {
                         transaction: t // pass transaction object to query
                     }
                 );
-                const result = await getById(language.ID, t);
-                return result ? result.toJSON() as LanguagesModel : 'Branch not found';
+                const result = await getById(language.ID, t, lang);
+                return result ? result.toJSON() : 'Could not update Language';
             });
         }
         catch (err) {
@@ -91,7 +90,7 @@ export class LanguagesController {
 
     async deactivate(ID: number): Promise<string> {
         try {
-            const result = await De_Activate<LanguagesModel>(Languages, ID, 'deactivate');
+            const result = await De_Activate<LanguagesModel>(Languages, 'ID', ID, 'deactivate');
             return result;
         }
         catch (err) {
@@ -101,7 +100,7 @@ export class LanguagesController {
 
     async activate(ID: number): Promise<string> {
         try {
-            const result = await De_Activate<LanguagesModel>(Languages, ID, 'activate');
+            const result = await De_Activate<LanguagesModel>(Languages, 'ID', ID, 'activate');
             return result;
         }
         catch (err) {

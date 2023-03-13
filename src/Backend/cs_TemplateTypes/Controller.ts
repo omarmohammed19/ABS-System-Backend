@@ -4,9 +4,8 @@ import { sequelize } from '../../Config/database';
 import { Transaction } from 'sequelize';
 
 const getById = (ID: number, t: Transaction, language?: string) => {
-  const attributes = language === 'en' ? ['ID', 'enTemplateType', 'Notes'] : ['ID', 'arTemplateType', 'Notes'];
   return TemplateTypes.findOne({
-    attributes: attributes,
+    attributes: language === 'en' ? ['ID', 'enTemplateType', 'Notes'] : [['ID', 'ID'], ['arTemplateType', 'نوع النموذج'], ['Notes', 'ملحوظات']],
     where: {
       ID: ID,
       isActive: true,
@@ -16,15 +15,14 @@ const getById = (ID: number, t: Transaction, language?: string) => {
 };
 
 export class TemplateTypesController {
-  async index(language: string): Promise<TemplateTypesModel[]> {
+  async index(language: string, isActive: number): Promise<TemplateTypesModel[]> {
     try {
       return await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
-        const attributes = language === 'en' ? ['ID', 'enTemplateType', 'Notes'] : ['ID', 'arTemplateType', 'Notes'];
         const result = await TemplateTypes.findAll({
-          attributes: attributes,
+          attributes: language === 'en' ? ['ID', 'enTemplateType', 'Notes'] : [['ID', 'ID'], ['arTemplateType', 'نوع النموذج'], ['Notes', 'ملحوظات']],
           where: {
-            isActive: true,
+            isActive: isActive,
           },
           transaction: t, // pass transaction object to query
         });
@@ -95,7 +93,7 @@ export class TemplateTypesController {
 
   async deactivate(ID: number): Promise<string> {
     try {
-      const result = De_Activate<TemplateTypesModel>(TemplateTypes, 'ID', ID, 'deactivate');
+      const result = await De_Activate<TemplateTypesModel>(TemplateTypes, 'ID', ID, 'deactivate');
       return result;
     } catch (err) {
       throw new Error(`Could not deactivate TemplateType. Error: ${err}`);
@@ -104,7 +102,7 @@ export class TemplateTypesController {
 
   async activate(ID: number): Promise<string> {
     try {
-      const result = De_Activate<TemplateTypesModel>(TemplateTypes, 'ID', ID, 'activate');
+      const result = await De_Activate<TemplateTypesModel>(TemplateTypes, 'ID', ID, 'activate');
       return result;
     } catch (err) {
       throw new Error(`Could not activate TemplateType. Error: ${err}`);

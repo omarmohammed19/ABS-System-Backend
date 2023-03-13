@@ -1,11 +1,11 @@
-import { Countries, CountriesModel } from './Model';
+import { Banks, BanksModel } from './Model';
 import { De_Activate } from '../../Services/De_Activate';
 import { sequelize } from '../../Config/database';
 import { Transaction } from 'sequelize';
 
 const getById = (ID: number, t: Transaction) => {
-    const attributes = ['ID', 'countryName'];
-    return Countries.findOne({
+    const attributes = ['ID', 'bankName'];
+    return Banks.findOne({
         attributes: attributes,
         where: {
             ID: ID,
@@ -15,13 +15,13 @@ const getById = (ID: number, t: Transaction) => {
     });
 }
 
-export class CountriesController {
+export class BanksController {
 
-    async index(isActive: number): Promise<CountriesModel[]> {
+    async index(isActive: number): Promise<BanksModel[]> {
         try {
             return await sequelize.transaction(async (t) => { // start managed transaction and pass transaction object to the callback function
-                const attributes = ['ID', 'countryName'];
-                const result = await Countries.findAll({
+                const attributes = ['ID', 'bankName'];
+                const result = await Banks.findAll({
                     attributes: attributes,
                     where: {
                         isActive: isActive,
@@ -29,85 +29,85 @@ export class CountriesController {
                     transaction: t // pass transaction object to query
                 });
 
-                return result.map((item: any) => item.toJSON()) as CountriesModel[]; // return the result of the query (if successful) to be committed automatically
+                return result.map((item: any) => item.toJSON()) as BanksModel[]; // return the result of the query (if successful) to be committed automatically
             });
         }
         catch (err) {
-            throw new Error(`Could not get all Countries. Error: ${err}`);
+            throw new Error(`Could not get all Banks. Error: ${err}`);
         }
 
     }
 
-    async create(country: CountriesModel): Promise<CountriesModel | string> {
+    async create(bankName: BanksModel): Promise<BanksModel | string> {
         try {
             return await sequelize.transaction(async (t) => { // start managed transaction and pass transaction object to the callback function
-                const result = await Countries.create(
+                const result = await Banks.create(
                     {
-                        countryName: country.countryName,
+                        bankName: bankName.bankName,
                     },
                     { transaction: t } // pass transaction object to query
                 );
-                return result ? result.toJSON() : 'Could not add new Country';
+                return result ? result.toJSON() : 'Could not add new Bank';
             });
 
         }
         catch (err) {
-            throw new Error(`Could not add new Country. Error: ${err}`);
+            throw new Error(`Could not add new Bank. Error: ${err}`);
         }
     }
 
 
-    async getCountryByID(ID: number): Promise<CountriesModel | string> {
+    async getBankNameByID(ID: number): Promise<BanksModel | string> {
         try {
             const result = await sequelize.transaction(async (t) => { // start managed transaction and pass transaction object to the callback function
                 const item = await getById(ID, t); // pass transaction object to getById function
-                return item ? item.toJSON() : 'Could not get Country by ID';
+                return item ? item.toJSON() : 'Could not get Bank by ID';
             });
             return result;
         } catch (err) {
-            throw new Error(`Could not get Country by ID. Error: ${err}`);
+            throw new Error(`Could not get Bank by ID. Error: ${err}`);
         }
     }
 
-    async update(country: CountriesModel): Promise<CountriesModel | string> {
+    async update(bankName: BanksModel): Promise<BanksModel | string> {
         try {
             return await sequelize.transaction(async (t) => { // start managed transaction and pass transaction object to the callback function
-                await Countries.update(
+                await Banks.update(
                     {
-                        countryName: country.countryName,
+                        bankName: bankName.bankName,
                     },
                     {
                         where: {
-                            ID: country.ID,
+                            ID: bankName.ID,
                         },
                         transaction: t // pass transaction object to query
                     }
                 );
-                const result = await getById(Number(country.ID), t);
-                return result ? result.toJSON() : 'Could not update Country';
+                const result = await getById(Number(bankName.ID), t);
+                return result ? result.toJSON() : 'Could not update Bank';
             });
         }
         catch (err) {
-            throw new Error(`Could not update Country. Error: ${err}`);
+            throw new Error(`Could not update Bank. Error: ${err}`);
         }
     }
 
 
     async deactivate(ID: number): Promise<string> {
         try {
-            const result = await De_Activate<CountriesModel>(Countries, 'ID', ID, 'deactivate');
+            const result = await De_Activate<BanksModel>(Banks, 'ID', ID, 'deactivate');
             return result;
         } catch (err) {
-            throw new Error(`Could not deactivate Country. Error: ${err}`);
+            throw new Error(`Could not deactivate Bank. Error: ${err}`);
         }
     }
 
     async activate(ID: number): Promise<string> {
         try {
-            const result = await De_Activate<CountriesModel>(Countries, 'ID', ID, 'activate');
+            const result = await De_Activate<BanksModel>(Banks, 'ID', ID, 'activate');
             return result;
         } catch (err) {
-            throw new Error(`Could not activate Country. Error: ${err}`);
+            throw new Error(`Could not activate BankName. Error: ${err}`);
         }
     }
 }

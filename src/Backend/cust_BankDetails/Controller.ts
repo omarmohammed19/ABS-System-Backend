@@ -22,28 +22,28 @@ export class BankDetailsController {
     } catch (err) {
       throw new Error(`Could not get all BankDetails. Error: ${err}`);
     }
-  }
-
-  async create(bankDetails: BankDetailsModel): Promise<BankDetailsModel | string> {
-    try {
-      return await sequelize.transaction(async (t) => {
-        // start managed transaction and pass transaction object to the callback function
-        const result = await BankDetails.create(
-          {
-            accountHolderName: bankDetails.accountHolderName,
-            accountNumber: bankDetails.accountNumber,
-            bankNameID: bankDetails.bankNameID,
-            IBAN: bankDetails.IBAN,
-            swiftCode: bankDetails.swiftCode,
-          },
-          { transaction: t } // pass transaction object to query
-        );
-        return result ? result.toJSON() : 'Could not add new BankDetails';
-      });
-    } catch (err) {
-      throw new Error(`Could not add new BankDetails. Error: ${err}`);
+}
+    async create(bankDetails: BankDetailsModel): Promise<BankDetailsModel | string> {
+        try {
+            return await sequelize.transaction(async (t) => {
+                // start managed transaction and pass transaction object to the callback function
+                const result = await BankDetails.create(
+                    {
+                        accountHolderName: bankDetails.accountHolderName,
+                        accountNumber: bankDetails.accountNumber,
+                        bankNameID: bankDetails.bankNameID,
+                        IBAN: bankDetails.IBAN,
+                        swiftCode: bankDetails.swiftCode,
+                    },
+                    { transaction: t } // pass transaction object to query
+                );
+                return result ? result.toJSON() : 'Could not add new BankDetails';
+            });
+        } catch (err) {
+            throw new Error(`Could not add new BankDetails. Error: ${err}`);
+        }
     }
-  }
+
 
   async getBankDetialsById(ID: number, language: string): Promise<BankDetailsModel | string> {
     try {
@@ -56,7 +56,6 @@ export class BankDetailsController {
     } catch (err) {
       throw new Error(`Could not get BankDetails by ID. Error: ${err}`);
     }
-  }
 
   async update(bankDetails: BankDetailsModel, language: string): Promise<BankDetailsModel | string> {
     try {
@@ -84,24 +83,23 @@ export class BankDetailsController {
     } catch (err) {
       throw new Error(`Could not update BankDetails. Error: ${err}`);
     }
-  }
+}
 
-
-  async deactivate(ID: number): Promise<string> {
-    try {
-      const result = De_Activate<BankDetailsModel>(BankDetails, 'ID', ID, 'deactivate');
-      return result;
-    } catch (err) {
-      throw new Error(`Could not deactivate BankDetails. Error: ${err}`);
+    async deactivate(ID: number): Promise<string> {
+        try {
+            const result = await De_Activate<BankDetailsModel>(BankDetails, 'ID', ID, 'deactivate');
+            return result;
+        } catch (err) {
+            throw new Error(`Could not deactivate BankDetails. Error: ${err}`);
+        }
     }
-  }
 
-  async activate(ID: number): Promise<string> {
-    try {
-      const result = De_Activate<BankDetailsModel>(BankDetails, 'ID', ID, 'activate');
-      return result;
-    } catch (err) {
-      throw new Error(`Could not activate BankDetails. Error: ${err}`);
+    async activate(ID: number): Promise<string> {
+        try {
+            const result = await De_Activate<BankDetailsModel>(BankDetails, 'ID', ID, 'activate');
+            return result;
+        } catch (err) {
+            throw new Error(`Could not activate BankDetails. Error: ${err}`);
+        }
     }
-  }
 }

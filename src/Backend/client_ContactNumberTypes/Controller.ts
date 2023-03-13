@@ -36,6 +36,26 @@ export class ContactNumberTypesController {
     }
   }
 
+  async indexDeActivated(language: string): Promise<ContactNumberTypesModel[]> {
+    try {
+      return await sequelize.transaction(async (t) => {
+        // start managed transaction and pass transaction object to the callback function
+        const attributes = language === 'en' ? ['ID', 'enContactNumberType', 'Notes'] : ['ID', 'arContactNumberType', 'Notes'];
+        const result = await ContactNumberTypes.findAll({
+          attributes: attributes,
+          where: {
+            isActive: false,
+          },
+          transaction: t, // pass transaction object to query
+        });
+
+        return result.map((item: any) => item.toJSON()) as ContactNumberTypesModel[]; // return the result of the query (if successful) to be committed automatically
+      });
+    } catch (err) {
+      throw new Error(`Could not get all ContactNumberTypes. Error: ${err}`);
+    }
+  }
+
   async create(ContactNumberType: ContactNumberTypesModel): Promise<ContactNumberTypesModel | string> {
     try {
       return await sequelize.transaction(async (t) => {
@@ -95,7 +115,9 @@ export class ContactNumberTypesController {
 
   async deactivate(ID: number): Promise<string> {
     try {
-      const result = De_Activate<ContactNumberTypesModel>(ContactNumberTypes, 'ID', ID, 'deactivate');
+
+      const result = await De_Activate<ContactNumberTypesModel>(ContactNumberTypes, 'ID', ID, 'deactivate');
+
       return result;
     } catch (err) {
       throw new Error(`Could not deactivate ContactNumberType. Error: ${err}`);
@@ -104,7 +126,9 @@ export class ContactNumberTypesController {
 
   async activate(ID: number): Promise<string> {
     try {
-      const result = De_Activate<ContactNumberTypesModel>(ContactNumberTypes, 'ID', ID, 'activate');
+
+      const result = await De_Activate<ContactNumberTypesModel>(ContactNumberTypes, 'ID', ID, 'activate');
+
       return result;
     } catch (err) {
       throw new Error(`Could not activate ContactNumberType. Error: ${err}`);

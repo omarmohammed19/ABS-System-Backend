@@ -1,11 +1,12 @@
 import { LocationsModel, Locations } from './Model';
 import { De_Activate } from '../../Services/De_Activate';
 import { sequelize } from '../../Config/database';
-import { Transaction } from 'sequelize';
-import Sequelize from 'sequelize';
+import Sequelize, { Transaction } from 'sequelize';
+
 
 
 const getById = async (ID: Number, t: Transaction, language?: string): Promise<LocationsModel> => {
+
   const query = 'EXEC [dbo].[p_GET_cust_Locations] @language = :language, @Method = :Method, @ID = :ID';
   const replacements = { language: language, Method: 'GET_ByID', ID: ID };
   const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
@@ -19,7 +20,7 @@ export class LocationsController {
       const query = 'EXEC [dbo].[p_GET_cust_Locations] @language = :language, @Method = :Method';
       const replacements = { language: language, Method: 'GET' };
       const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
-      const result = sequelize.query(query, options);
+      const result = await sequelize.query(query, options);
       return result as unknown as LocationsModel[];
     } catch (err) {
       throw new Error(`Could not get all Addresses. Error: ${err}`);
@@ -48,14 +49,18 @@ export class LocationsController {
     try {
       return await sequelize.transaction(async (t) => {
         const result = await getById(ID, t, language);
+
         return result;
+
       });
     } catch (err) {
       throw new Error(`Could not get Locations by ID. Error: ${err}`);
     }
   }
 
+
   async update(locations: LocationsModel, language: string): Promise<LocationsModel | string> {
+
     try {
       return await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
@@ -72,8 +77,10 @@ export class LocationsController {
           }
         );
 
+
         const result = await getById(Number(locations.ID), t, language);
         return result;
+
       });
     }
     catch (err) {
@@ -81,9 +88,10 @@ export class LocationsController {
     }
   }
 
+
   async deactivate(ID: number): Promise<string> {
     try {
-      const result = De_Activate<LocationsModel>(Locations, 'ID', ID, 'deactivate');
+      const result = await De_Activate<LocationsModel>(Locations, 'ID', ID, 'deactivate');
       return result;
     } catch (err) {
       throw new Error(`Could not deactivate Locations. Error: ${err}`);
@@ -92,7 +100,7 @@ export class LocationsController {
 
   async activate(ID: number): Promise<string> {
     try {
-      const result = De_Activate<LocationsModel>(Locations, 'ID', ID, 'activate');
+      const result = await De_Activate<LocationsModel>(Locations, 'ID', ID, 'activate');
       return result;
     } catch (err) {
       throw new Error(`Could not activate Locations. Error: ${err}`);

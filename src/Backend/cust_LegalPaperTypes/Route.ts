@@ -15,6 +15,17 @@ const getAll = async (req: Request, res: Response) => {
   }
 };
 
+const getAllDeActivated = async (req: Request, res: Response) => {
+  try {
+    const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
+    const result = await legalPaperTypesController.indexDeActivated(language);
+    res.json(result);
+  } catch (error) {
+    res.status(400);
+    res.json(error);
+  }
+};
+
 const getById = async (req: Request, res: Response) => {
   try {
     const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
@@ -81,10 +92,11 @@ const activate = async (req: Request, res: Response) => {
 
 const LegalPaperTypesRouter = (app: express.Application) => {
   app.get('/legal-paper-types', getAll);
+  app.get('/legal-paper-types/de-activated', getAllDeActivated);
   app.get('/legal-paper-types/:ID', getById);
   app.post('/legal-paper-types', create);
   app.put('/legal-paper-types/:ID', update);
-  app.put('/legal-paper-types/deactivate/:ID', deactivate);
+  app.put('/legal-paper-types/de-activate/:ID', deactivate);
   app.put('/legal-paper-types/activate/:ID', activate);
 };
 

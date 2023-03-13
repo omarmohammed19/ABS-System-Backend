@@ -7,7 +7,7 @@ const templateTypesController = new TemplateTypesController();
 const getAll = async (req: Request, res: Response) => {
     try {
         const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-        const result = await templateTypesController.index(language);
+        const result = await templateTypesController.index(language, Number(req.params.isActive));
         res.json(result);
     } catch (error) {
         res.status(400);
@@ -80,12 +80,12 @@ const activate = async (req: Request, res: Response) => {
 };
 
 const TemplateTypesRouter = (app: express.Application) => {
-    app.get('/templatetypes', getAll);
-    app.get('/templatetypes/:ID', getById);
-    app.post('/templatetypes', create);
-    app.put('/templatetypes/:ID', update);
-    app.put('/templatetypes/deactivate/:ID', deactivate);
-    app.put('/templatetypes/activate/:ID', activate);
+    app.get('/template-types/:isActive', getAll);
+    app.get('/template-types/:ID', getById);
+    app.post('/template-types', create);
+    app.put('/template-types/:ID', update);
+    app.put('/template-types/deactivate/:ID', deactivate);
+    app.put('/template-types/activate/:ID', activate);
 };
 
 export default TemplateTypesRouter;

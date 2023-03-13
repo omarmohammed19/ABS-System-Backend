@@ -7,7 +7,7 @@ const callResultsController = new CallResultsController();
 const getAll = async (req: Request, res: Response) => {
     try {
         const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-        const result = await callResultsController.index(language);
+        const result = await callResultsController.index(language, Number(req.params.isActive));
         res.json(result);
     } catch (error) {
         res.status(400);
@@ -79,13 +79,24 @@ const activate = async (req: Request, res: Response) => {
     }
 };
 
+const getAllDeactivated = async (req: Request, res: Response) => {
+    try {
+        const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
+        const result = await callResultsController.getAllDeactivated(language);
+        res.json(result);
+    } catch (error) {
+        res.status(400);
+        res.json(error);
+    }
+};
+
 const callResultsRouter = (app: express.Application) => {
-    app.get('/callResults', getAll);
-    app.get('/callResults/:ID', getById);
-    app.post('/callResults', create);
-    app.put('/callResults/:ID', update);
-    app.put('/callResults/deactivate/:ID', deactivate);
-    app.put('/callResults/activate/:ID', activate);
+    app.get('/call-results/:isActive', getAll);
+    app.get('/call-results/:ID', getById);
+    app.post('/call-results', create);
+    app.put('/call-results/:ID', update);
+    app.put('/call-results/deactivate/:ID', deactivate);
+    app.put('/call-results/activate/:ID', activate);
 };
 
 export default callResultsRouter;
