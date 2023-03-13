@@ -7,7 +7,7 @@ const callStatusController = new CallStatusController();
 const getAll = async (req: Request, res: Response) => {
     try {
         const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-        const result = await callStatusController.index(language);
+        const result = await callStatusController.index(language, Number(req.params.isActive));
         res.json(result);
     } catch (error) {
         res.status(400);
@@ -80,7 +80,7 @@ const activate = async (req: Request, res: Response) => {
 };
 
 const callStatusRouter = (app: express.Application) => {
-    app.get('/call-status', getAll);
+    app.get('/call-status/:isActive', getAll);
     app.get('/call-status/:ID', getById);
     app.post('/call-status', create);
     app.put('/call-status/:ID', update);

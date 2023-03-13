@@ -6,7 +6,7 @@ const banksController = new BanksController();
 
 const getAll = async (req: Request, res: Response) => {
     try {
-        const result = await banksController.index();
+        const result = await banksController.index(Number(req.params.isActive));
         res.json(result);
     } catch (error) {
         res.status(400);
@@ -74,7 +74,7 @@ const activate = async (req: Request, res: Response) => {
 };
 
 const BanksRouter = (app: express.Application) => {
-    app.get('/banks', getAll);
+    app.get('/banks/:isActive', getAll);
     app.get('/banks/:ID', getById);
     app.post('/banks', create);
     app.put('/banks/:ID', update);

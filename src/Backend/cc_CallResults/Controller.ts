@@ -4,9 +4,8 @@ import { sequelize } from '../../Config/database';
 import { Transaction } from 'sequelize';
 
 const getById = (ID: number, t: Transaction, language?: string) => {
-  const attributes = language === 'en' ? ['ID', 'enCallResult', 'Notes'] : ['ID', 'arCallResult', 'Notes'];
   return CallResults.findOne({
-    attributes: attributes,
+    attributes: language === 'en' ? ['ID', 'enCallResult', 'Notes'] : [['ID', 'ID'], ['arCallResult', 'نتيجة الاتصال'], ['Notes', 'ملاحظات']],
     where: {
       ID: ID,
       isActive: true,
@@ -16,15 +15,14 @@ const getById = (ID: number, t: Transaction, language?: string) => {
 };
 
 export class CallResultsController {
-  async index(language: string): Promise<CallResultsModel[]> {
+  async index(language: string, isActive: number): Promise<CallResultsModel[]> {
     try {
       return await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
-        const attributes = language === 'en' ? ['ID', 'enCallResult', 'Notes'] : ['ID', 'arCallResult', 'Notes'];
         const result = await CallResults.findAll({
-          attributes: attributes,
+          attributes: language === 'en' ? ['ID', 'enCallResult', 'Notes'] : [['ID', 'ID'], ['arCallResult', 'نتيجة الاتصال'], ['Notes', 'ملاحظات']],
           where: {
-            isActive: true,
+            isActive: isActive,
           },
           transaction: t, // pass transaction object to query
         });
@@ -109,6 +107,26 @@ export class CallResultsController {
       return result;
     } catch (err) {
       throw new Error(`Could not activate CallResult. Error: ${err}`);
+    }
+  }
+
+  async getAllDeactivated(language: string): Promise<CallResultsModel[]> {
+    try {
+      return await sequelize.transaction(async (t) => {
+        // start managed transaction and pass transaction object to the callback function
+        const attributes = language === 'en' ? ['ID', 'enCallResult', 'Notes'] : ['ID', 'arCallResult', 'Notes'];
+        const result = await CallResults.findAll({
+          attributes: attributes,
+          where: {
+            isActive: false,
+          },
+          transaction: t, // pass transaction object to query
+        });
+
+        return result.map((item: any) => item.toJSON()) as CallResultsModel[]; // return the result of the query (if successful) to be committed automatically
+      });
+    } catch (err) {
+      throw new Error(`Could not get all deactivated CallResults. Error: ${err}`);
     }
   }
 }

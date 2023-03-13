@@ -7,7 +7,7 @@ const ticketStatusController = new TicketStatusController();
 const getAll = async (req: Request, res: Response) => {
     try {
         const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-        const result = await ticketStatusController.index(language);
+        const result = await ticketStatusController.index(language, Number(req.params.isActive));
         res.json(result);
     } catch (error) {
         res.status(400);
@@ -80,7 +80,7 @@ const activate = async (req: Request, res: Response) => {
 };
 
 const TicketStatusRouter = (app: express.Application) => {
-    app.get('/ticket-status', getAll);
+    app.get('/ticket-status/:isActive', getAll);
     app.get('/ticket-status/:ID', getById);
     app.post('/ticket-status', create);
     app.put('/ticket-status/:ID', update);

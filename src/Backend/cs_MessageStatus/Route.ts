@@ -7,7 +7,7 @@ const messageStatusController = new MessageStatusController();
 const getAll = async (req: Request, res: Response) => {
     try {
         const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-        const result = await messageStatusController.index(language);
+        const result = await messageStatusController.index(language, Number(req.params.isActive));
         res.json(result);
     } catch (error) {
         res.status(400);
@@ -80,7 +80,7 @@ const activate = async (req: Request, res: Response) => {
 };
 
 const MessageStatusRouter = (app: express.Application) => {
-    app.get('/message-status', getAll);
+    app.get('/message-status/:isActive', getAll);
     app.get('/message-status/:ID', getById);
     app.post('/message-status', create);
     app.put('/message-status/:ID', update);
