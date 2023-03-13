@@ -143,6 +143,8 @@ const handleLogin = async (req: Request, res: Response) => {
 
 const handlesignin = async (req: Request, res: Response) => {
     const result = await authcontroller.handlesignin(req.body.userCred, req.body.password);
+    console.log(result);
+     
     if (!result) {
         return res.sendStatus(401); //Unauthorized 
     }

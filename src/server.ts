@@ -25,6 +25,10 @@ import reasonsRouter from './Backend/ship_Reasons/Route';
 import recipientTypesRouter from './Backend/ship_RecepientsTypes/Route';
 import shipmentTypesRouter from './Backend/ship_ShipmentTypes/Route';
 import productsRouter from './Backend/ship_Products/Route';
+import servicesRouter from './Backend/cust_Services/Route';
+import nearestBranchRouter from './Backend/cust_NearestBranch/Route';
+import pricePlanNamesRouter from './Backend/cust_PricePlanNames/Route';
+import salesChannelsRouter from './Backend/cust_SalesChannels/Route';
 
 const corsOptions = {
   origin: '*',
@@ -67,6 +71,10 @@ reasonsRouter(app);
 recipientTypesRouter(app);
 shipmentTypesRouter(app);
 productsRouter(app);
+servicesRouter(app);
+nearestBranchRouter(app);
+pricePlanNamesRouter(app);
+salesChannelsRouter(app);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port http://${address}:${process.env.PORT}`);

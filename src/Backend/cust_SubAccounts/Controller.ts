@@ -1,14 +1,12 @@
 import { SubAccountsModel, SubAccounts } from './Model';
 import { De_Activate } from '../../Services/De_Activate';
 import { sequelize } from '../../Config/database';
-import { Transaction } from 'sequelize';
-import Sequelize from 'sequelize';
+import Sequelize, { Transaction } from 'sequelize';
 
-const getById = async (ID: Number, language?: string): Promise<SubAccountsModel> => {
-
+const getById = async (ID: Number, t: Transaction, language?: string) => {
   const query = 'EXEC [dbo].[p_GET_cust_SubAccounts] @language = :language, @Method = :Method, @ID = :ID';
   const replacements = { language: language, Method: 'GET_ByID', ID: ID };
-  const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
+  const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
   const result = await sequelize.query(query, options)
   return result as unknown as SubAccountsModel;
 }
@@ -56,14 +54,18 @@ export class SubAccountsController {
 
   async getSubAccountsById(ID: number, language: string): Promise<SubAccountsModel | string> {
     try {
-      const result = await getById(ID, language);
+      const result = await sequelize.transaction(async (t) => { // start managed transaction and pass transaction object to the callback function
+        const item = await getById(ID, t, language); // pass transaction object to getById function
+        return item;
+      });
       return result;
     } catch (err) {
+      console.log(err);
       throw new Error(`Could not get SubAccounts by ID. Error: ${err}`);
     }
   }
 
-  async update(subAccounts: SubAccountsModel,language:string): Promise<SubAccountsModel | string> {
+  async update(subAccounts: SubAccountsModel, language: string): Promise<SubAccountsModel | string> {
     try {
       return await sequelize.transaction(async (t) => { // start managed transaction and pass transaction object to the callback function
         await SubAccounts.update(
@@ -83,11 +85,10 @@ export class SubAccountsController {
               ID: subAccounts.ID,
             },
             transaction: t // pass transaction object to query
-          }
-        );
+          });
 
-        const result = await getById(Number(subAccounts.ID),language);
-        return result ? result.toJSON() : 'Could not update SubAccounts';
+          const item = await getById(subAccounts.ID, t, language); // pass transaction object to getById function
+          return item;
       });
     }
     catch (err) {
