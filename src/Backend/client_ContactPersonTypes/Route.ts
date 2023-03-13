@@ -15,6 +15,17 @@ const getAll = async (req: Request, res: Response) => {
   }
 };
 
+const getAllDeActivated = async (req: Request, res: Response) => {
+  try {
+    const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
+    const result = await contactPersonTypesController.indexDeActivated(language);
+    res.json(result);
+  } catch (error) {
+    res.status(400);
+    res.json(error);
+  }
+};
+
 const getById = async (req: Request, res: Response) => {
   try {
     const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
@@ -81,10 +92,11 @@ const activate = async (req: Request, res: Response) => {
 
 const ContactPersonTypesRouter = (app: express.Application) => {
   app.get('/contact-person-types', getAll);
+  app.get('/contact-person-types/de-activated', getAllDeActivated);
   app.get('/contact-person-types/:ID', getById);
   app.post('/contact-person-types', create);
   app.put('/contact-person-types/:ID', update);
-  app.put('/contact-person-types/deactivate/:ID', deactivate);
+  app.put('/contact-person-types/de-activate/:ID', deactivate);
   app.put('/contact-person-types/activate/:ID', activate);
 };
 

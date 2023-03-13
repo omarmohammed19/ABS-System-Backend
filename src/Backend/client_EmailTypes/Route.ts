@@ -15,6 +15,17 @@ const getAll = async (req: Request, res: Response) => {
   }
 };
 
+const getAllDeActivated = async (req: Request, res: Response) => {
+  try {
+    const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
+    const result = await emailTypesController.indexDeActivated(language);
+    res.json(result);
+  } catch (error) {
+    res.status(400);
+    res.json(error);
+  }
+};
+
 const getById = async (req: Request, res: Response) => {
   try {
     const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
@@ -81,10 +92,11 @@ const activate = async (req: Request, res: Response) => {
 
 const EmailTypesRouter = (app: express.Application) => {
   app.get('/email-types', getAll);
+  app.get('/email-types/de-activated', getAllDeActivated);
   app.get('/email-types/:ID', getById);
   app.post('/email-types', create);
   app.put('/email-types/:ID', update);
-  app.put('/email-types/deactivate/:ID', deactivate);
+  app.put('/email-types/de-activate/:ID', deactivate);
   app.put('/email-types/activate/:ID', activate);
 };
 
