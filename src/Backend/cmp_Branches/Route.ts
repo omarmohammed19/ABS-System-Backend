@@ -10,7 +10,17 @@ const getAll = async (req: Request, res: Response) => {
         const result = await branchesController.index(language);
         res.json(result);
     } catch (error) {
-        console.log(error);
+        res.status(400);
+        res.json(error);
+    }
+};
+
+const getAllDeActivated = async (req: Request, res: Response) => {
+    try {
+        const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
+        const result = await branchesController.indexDeActivated(language);
+        res.json(result);
+    } catch (error) {
         res.status(400);
         res.json(error);
     }

@@ -4,9 +4,8 @@ import { sequelize } from '../../Config/database';
 import { Transaction } from 'sequelize';
 
 const getById = (ID: number, t: Transaction, language?: string) => {
-  const attributes = language === 'en' ? ['ID', 'enDepartmentName'] : ['ID', 'arDepartmentName'];
   return Departments.findOne({
-    attributes: attributes,
+    attributes: language === 'en' ? [['ID', 'Department ID'], ['enDepartmentName', 'Department']] : [['ID', 'رقم القسم'], ['arDepartmentName', 'اسم القسم']],
     where: {
       ID: ID,
       isActive: true,
@@ -20,9 +19,9 @@ export class DepartmentsController {
     try {
       return await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
-        const attributes = language === 'en' ? ['ID', 'enDepartmentName'] : ['ID', 'arDepartmentName'];
+        // const attributes = language === 'en' ? [['ID', 'Department ID'], ['enDepartmentName', 'Department']] : ['ID', 'arDepartmentName'];
         const result = await Departments.findAll({
-          attributes: attributes,
+          attributes: language === 'en' ? [['ID', 'Department ID'], ['enDepartmentName', 'Department']] : [['ID', 'رقم القسم'], ['arDepartmentName', 'اسم القسم']],
           where: {
             isActive: true,
           },
@@ -35,6 +34,26 @@ export class DepartmentsController {
       throw new Error(`Could not get all Departments. Error: ${err}`);
     }
   }
+
+  async indexDeActivated(language: string): Promise<DepartmentsModel[]> {
+    try {
+      return await sequelize.transaction(async (t) => {
+        // start managed transaction and pass transaction object to the callback function
+        const result = await Departments.findAll({
+          attributes: language === 'en' ? [['ID', 'Department ID'], ['enDepartmentName', 'Department']] : [['ID', 'رقم القسم'], ['arDepartmentName', 'اسم القسم']],
+          where: {
+            isActive: false,
+          },
+          transaction: t, // pass transaction object to query
+        });
+
+        return result.map((item: any) => item.toJSON()) as DepartmentsModel[]; // return the result of the query (if successful) to be committed automatically
+      });
+    } catch (err) {
+      throw new Error(`Could not get all Departments. Error: ${err}`);
+    }
+  }
+
 
   async create(department: DepartmentsModel): Promise<DepartmentsModel | string> {
     try {
