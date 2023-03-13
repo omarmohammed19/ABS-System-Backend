@@ -6,7 +6,7 @@ const countriescontroller = new CountriesController();
 
 const getAll = async (req: Request, res: Response) => {
     try {
-        const result = await countriescontroller.index();
+        const result = await countriescontroller.index(Number(req.params.isActive));
         res.json(result);
     } catch (error) {
         res.status(400);
@@ -74,7 +74,7 @@ const activate = async (req: Request, res: Response) => {
 };
 
 const CountriesRouter = (app: express.Application) => {
-    app.get('/countries', getAll);
+    app.get('/countries/:isActive', getAll);
     app.get('/countries/:ID', getById);
     app.post('/countries', create);
     app.put('/countries/:ID', update);

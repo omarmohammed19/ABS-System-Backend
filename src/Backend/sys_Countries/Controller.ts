@@ -17,14 +17,14 @@ const getById = (ID: number, t: Transaction) => {
 
 export class CountriesController {
 
-    async index(): Promise<CountriesModel[]> {
+    async index(isActive: number): Promise<CountriesModel[]> {
         try {
             return await sequelize.transaction(async (t) => { // start managed transaction and pass transaction object to the callback function
                 const attributes = ['ID', 'countryName'];
                 const result = await Countries.findAll({
                     attributes: attributes,
                     where: {
-                        isActive: true,
+                        isActive: isActive,
                     },
                     transaction: t // pass transaction object to query
                 });

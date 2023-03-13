@@ -4,9 +4,8 @@ import { sequelize } from '../../Config/database';
 import { Transaction } from 'sequelize';
 
 const getById = (ID: number, t: Transaction, language?: string) => {
-  const attributes = language === 'en' ? ['ID', 'enCallType', 'Notes'] : ['ID', 'arCallType', 'Notes'];
   return CallTypes.findOne({
-    attributes: attributes,
+    attributes: language === 'en' ? ['ID', 'enCallType', 'Notes'] : [['ID', 'ID'], ['arCallType', 'نوع الاتصال'], ['Notes', 'ملحوظات']],
     where: {
       ID: ID,
       isActive: true,
@@ -16,15 +15,14 @@ const getById = (ID: number, t: Transaction, language?: string) => {
 };
 
 export class CallTypesController {
-  async index(language: string): Promise<CallTypesModel[]> {
+  async index(language: string, isActive: number): Promise<CallTypesModel[]> {
     try {
       return await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
-        const attributes = language === 'en' ? ['ID', 'enCallType', 'Notes'] : ['ID', 'arCallType', 'Notes'];
         const result = await CallTypes.findAll({
-          attributes: attributes,
+          attributes: language === 'en' ? ['ID', 'enCallType', 'Notes'] : [['ID', 'ID'], ['arCallType', 'نوع الاتصال'], ['Notes', 'ملحوظات']],
           where: {
-            isActive: true,
+            isActive: isActive,
           },
           transaction: t, // pass transaction object to query
         });

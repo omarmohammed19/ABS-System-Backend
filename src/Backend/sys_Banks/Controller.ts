@@ -17,14 +17,14 @@ const getById = (ID: number, t: Transaction) => {
 
 export class BanksController {
 
-    async index(): Promise<BanksModel[]> {
+    async index(isActive: number): Promise<BanksModel[]> {
         try {
             return await sequelize.transaction(async (t) => { // start managed transaction and pass transaction object to the callback function
                 const attributes = ['ID', 'bankName'];
                 const result = await Banks.findAll({
                     attributes: attributes,
                     where: {
-                        isActive: true,
+                        isActive: isActive,
                     },
                     transaction: t // pass transaction object to query
                 });
