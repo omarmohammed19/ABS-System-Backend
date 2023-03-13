@@ -15,13 +15,13 @@ const getById = (ID: number, t: Transaction, language?: string,) => {
 }
 
 export class VehicleTypesController {
-    async index(language: string): Promise<VehicleTypesModel[]> {
+    async index(language: string, isActive: number): Promise<VehicleTypesModel[]> {
         try {
             return await sequelize.transaction(async (t) => {
                 const result = await VehicleTypes.findAll({
                     attributes: language === 'en' ? [['ID', 'Vehicle Type ID'], ['enVehicleType', 'Vehicle Type'], 'Notes'] : [['ID', 'رقم نوع السيارة'], ['arVehicleType', 'نوع السيارة'], ['Notes', 'ملاحظات']],
                     where: {
-                        IsActive: true
+                        IsActive: isActive
                     },
                     transaction: t
                 });
