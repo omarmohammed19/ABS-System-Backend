@@ -4,9 +4,8 @@ import { sequelize } from '../../Config/database';
 import { Transaction } from 'sequelize';
 
 const getById = (ID: number, t: Transaction, language?: string,) => {
-    const attributes = (language === 'en') ? ['ID', 'enVehicleType', 'Notes'] : ['ID', 'arVehicleType', 'Notes'];
     return VehicleTypes.findOne({
-        attributes: attributes,
+        attributes: language === 'en' ? [['ID', 'Vehicle Type ID'], ['enVehicleType', 'Vehicle Type'], 'Notes'] : [['ID', 'رقم نوع السيارة'], ['arVehicleType', 'نوع السيارة'], ['Notes', 'ملاحظات']],
         where: {
             ID: ID,
             IsActive: true
@@ -19,9 +18,8 @@ export class VehicleTypesController {
     async index(language: string): Promise<VehicleTypesModel[]> {
         try {
             return await sequelize.transaction(async (t) => {
-                const attributes = (language === 'en') ? ['ID', 'enVehicleType', 'Notes'] : ['ID', 'arVehicleType', 'Notes'];
                 const result = await VehicleTypes.findAll({
-                    attributes: attributes,
+                    attributes: language === 'en' ? [['ID', 'Vehicle Type ID'], ['enVehicleType', 'Vehicle Type'], 'Notes'] : [['ID', 'رقم نوع السيارة'], ['arVehicleType', 'نوع السيارة'], ['Notes', 'ملاحظات']],
                     where: {
                         IsActive: true
                     },
