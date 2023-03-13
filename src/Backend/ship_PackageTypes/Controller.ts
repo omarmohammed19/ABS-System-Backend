@@ -16,7 +16,7 @@ const getById = (ID: number, t: Transaction, language?: string) => {
 };
 
 export class PackageTypesController {
-  async index(language: string): Promise<PackageTypesModel[]> {
+  async index(language: string, isActive: number): Promise<PackageTypesModel[]> {
     try {
       return await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
@@ -24,7 +24,7 @@ export class PackageTypesController {
         const result = await PackageTypes.findAll({
           attributes: attributes,
           where: {
-            isActive: true,
+            isActive: isActive,
           },
           transaction: t, // pass transaction object to query
         });
