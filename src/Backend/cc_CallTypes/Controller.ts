@@ -95,7 +95,7 @@ export class CallTypesController {
 
   async deactivate(ID: number): Promise<string> {
     try {
-      const result = De_Activate<CallTypesModel>(CallTypes, 'ID', ID, 'deactivate');
+      const result = await De_Activate<CallTypesModel>(CallTypes, 'ID', ID, 'deactivate');
       return result;
     } catch (err) {
       throw new Error(`Could not deactivate CallType. Error: ${err}`);
@@ -104,7 +104,7 @@ export class CallTypesController {
 
   async activate(ID: number): Promise<string> {
     try {
-      const result = De_Activate<CallTypesModel>(CallTypes, 'ID', ID, 'activate');
+      const result = await De_Activate<CallTypesModel>(CallTypes, 'ID', ID, 'activate');
       return result;
     } catch (err) {
       throw new Error(`Could not activate CallType. Error: ${err}`);

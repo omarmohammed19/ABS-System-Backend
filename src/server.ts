@@ -30,8 +30,26 @@ import reasonsRouter from './Backend/ship_Reasons/Route';
 import recipientTypesRouter from './Backend/ship_RecepientsTypes/Route';
 import shipmentTypesRouter from './Backend/ship_ShipmentTypes/Route';
 import productsRouter from './Backend/ship_Products/Route';
+import TicketStatus from './Backend/cs_TicketStatus/Route';
+import TicketTypes from './Backend/cs_TicketTypes/Route';
+import CountriesRouter from './Backend/sys_Countries/Route';
+import BanksRouter from './Backend/sys_Banks/Route';
+import servicesRouter from './Backend/cust_Services/Route';
+import nearestBranchRouter from './Backend/cust_NearestBranch/Route';
+import pricePlanNamesRouter from './Backend/cust_PricePlanNames/Route';
+import salesChannelsRouter from './Backend/cust_SalesChannels/Route';
+import AddressTypesRouter from './Backend/client_AddressTypes/Route';
+import ContactNumberTypesRouter from './Backend/client_ContactNumberTypes/Route';
+import ContactPersonTypesRouter from './Backend/client_ContactPersonTypes/Route';
+import EmailTypesRouter from './Backend/client_EmailTypes/Route';
+import NumberTypesRouter from './Backend/client_NumberTypes/Route';
+import LegalPaperTypesRouter from './Backend/cust_LegalPaperTypes/Route';
+import InfoRouter from './Backend/cust_Info/Route';
+import zonesRouter from './Backend/cmp_Zones/Route';
+import zonesTypesRouter from './Backend/cmp_ZoneTypes/Route';
 import extraInfoRouter from './Backend/ship_ExtraInfo/Route';
 import contactLogsRouter from './Backend/ship_ContactLogs/Route';
+import languagesRouter from './Backend/sys_Languages/Route';
 
 const corsOptions = {
   origin: '*',
@@ -79,8 +97,26 @@ reasonsRouter(app);
 recipientTypesRouter(app);
 shipmentTypesRouter(app);
 productsRouter(app);
+servicesRouter(app);
+nearestBranchRouter(app);
+pricePlanNamesRouter(app);
+salesChannelsRouter(app);
+AddressTypesRouter(app);
+ContactNumberTypesRouter(app);
+ContactPersonTypesRouter(app);
+EmailTypesRouter(app);
+NumberTypesRouter(app);
+LegalPaperTypesRouter(app);
+InfoRouter(app);
+zonesRouter(app);
+zonesTypesRouter(app);
 extraInfoRouter(app);
 contactLogsRouter(app);
+languagesRouter(app);
+TicketStatus(app);
+TicketTypes(app);
+CountriesRouter(app);
+BanksRouter(app);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port http://${address}:${process.env.PORT}`);

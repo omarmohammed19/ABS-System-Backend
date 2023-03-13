@@ -1,22 +1,22 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../../Config/database';
 
-export interface BankNamesModel extends Model {
+export interface NearestBranchModel extends Model {
     ID: number;
-    bankName: string;
+    branchID: number;
     isActive: boolean;
 }
 
-export const BankNames = sequelize.define<BankNamesModel>(
-    'sys_BankNames',
+export const NearestBranch = sequelize.define<NearestBranchModel>(
+    'cust_NearestBranch',
     {
         ID: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,
         },
-        bankName: {
-            type: DataTypes.STRING,
+        branchID: {
+            type: DataTypes.INTEGER,
         },
         isActive: {
             type: DataTypes.BOOLEAN,
@@ -24,5 +24,6 @@ export const BankNames = sequelize.define<BankNamesModel>(
     },
     {
         timestamps: false,
+        tableName: 'cust_NearestBranch',
     }
 );

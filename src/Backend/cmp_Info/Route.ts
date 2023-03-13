@@ -76,12 +76,12 @@ const activate = async (req: Request, res: Response) => {
 }
 
 const infoRouter = (app: express.Application) => {
-    app.get('/info', getAll);
-    app.get('/info/:ID', getById);
-    app.post('/info', create);
-    app.put('/info/:ID', update);
-    app.put('/info/deactivate/:ID', deactivate);
-    app.put('/info/activate/:ID', activate);
+    app.get('/company-info', getAll);
+    app.get('/company-info/:ID', getById);
+    app.post('/company-info', create);
+    app.put('/company-info/:ID', update);
+    app.put('/company-info/deactivate/:ID', deactivate);
+    app.put('/company-info/activate/:ID', activate);
 }
 
 export default infoRouter;
