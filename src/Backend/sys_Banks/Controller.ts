@@ -3,10 +3,9 @@ import { De_Activate } from '../../Services/De_Activate';
 import { sequelize } from '../../Config/database';
 import { Transaction } from 'sequelize';
 
-const getById = (ID: number, t: Transaction) => {
-    const attributes = ['ID', 'bankName'];
+const getById = (ID: number, t: Transaction, language?: string) => {
     return Banks.findOne({
-        attributes: attributes,
+        attributes: language === 'en' ? ['ID', 'enBankName', 'Notes'] : [['ID', 'ID'], ['arBankName', 'اسم البنك'], ['Notes', 'ملاحظات']],
         where: {
             ID: ID,
             isActive: true,
@@ -17,12 +16,11 @@ const getById = (ID: number, t: Transaction) => {
 
 export class BanksController {
 
-    async index(isActive: number): Promise<BanksModel[]> {
+    async index(isActive: number, language?: string): Promise<BanksModel[]> {
         try {
             return await sequelize.transaction(async (t) => { // start managed transaction and pass transaction object to the callback function
-                const attributes = ['ID', 'bankName'];
                 const result = await Banks.findAll({
-                    attributes: attributes,
+                    attributes: language === 'en' ? ['ID', 'enBankName', 'Notes'] : [['ID', 'ID'], ['arBankName', 'اسم البنك'], ['Notes', 'ملاحظات']],
                     where: {
                         isActive: isActive,
                     },
@@ -38,12 +36,14 @@ export class BanksController {
 
     }
 
-    async create(bankName: BanksModel): Promise<BanksModel | string> {
+    async create(banks: BanksModel): Promise<BanksModel | string> {
         try {
             return await sequelize.transaction(async (t) => { // start managed transaction and pass transaction object to the callback function
                 const result = await Banks.create(
                     {
-                        bankName: bankName.bankName,
+                        enBankName: banks.enBankName,
+                        arBankName: banks.arBankName,
+                        Notes: banks.Notes,
                     },
                     { transaction: t } // pass transaction object to query
                 );
@@ -69,21 +69,23 @@ export class BanksController {
         }
     }
 
-    async update(bankName: BanksModel): Promise<BanksModel | string> {
+    async update(banks: BanksModel): Promise<BanksModel | string> {
         try {
             return await sequelize.transaction(async (t) => { // start managed transaction and pass transaction object to the callback function
                 await Banks.update(
                     {
-                        bankName: bankName.bankName,
+                        enBankName: banks.enBankName,
+                        arBankName: banks.arBankName,
+                        Notes: banks.Notes,
                     },
                     {
                         where: {
-                            ID: bankName.ID,
+                            ID: banks.ID,
                         },
                         transaction: t // pass transaction object to query
                     }
                 );
-                const result = await getById(Number(bankName.ID), t);
+                const result = await getById(Number(banks.ID), t);
                 return result ? result.toJSON() : 'Could not update Bank';
             });
         }

@@ -81,7 +81,7 @@ const activate = async (req: Request, res: Response) => {
 
 const TicketTypesRouter = (app: express.Application) => {
     app.get('/ticket-types/:isActive', getAll);
-    app.get('/ticket-types/:ID', getById);
+    app.get('/ticket-types-by-id/:ID', getById);
     app.post('/ticket-types', create);
     app.put('/ticket-types/:ID', update);
     app.put('/ticket-types/deactivate/:ID', deactivate);

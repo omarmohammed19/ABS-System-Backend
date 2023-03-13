@@ -81,7 +81,7 @@ const activate = async (req: Request, res: Response) => {
 
 const TemplateTypesRouter = (app: express.Application) => {
     app.get('/template-types/:isActive', getAll);
-    app.get('/template-types/:ID', getById);
+    app.get('/template-types-by-id/:ID', getById);
     app.post('/template-types', create);
     app.put('/template-types/:ID', update);
     app.put('/template-types/deactivate/:ID', deactivate);

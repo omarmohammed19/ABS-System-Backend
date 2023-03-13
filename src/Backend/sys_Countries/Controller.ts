@@ -3,10 +3,9 @@ import { De_Activate } from '../../Services/De_Activate';
 import { sequelize } from '../../Config/database';
 import { Transaction } from 'sequelize';
 
-const getById = (ID: number, t: Transaction) => {
-    const attributes = ['ID', 'countryName'];
+const getById = (ID: number, t: Transaction, language?: string) => {
     return Countries.findOne({
-        attributes: attributes,
+        attributes: language === 'en' ? ['ID', 'enCountryName', 'Notes'] : [['ID', 'ID'], ['arCountryName', 'اسم الدولة'], ['Notes', 'ملاحظات']],
         where: {
             ID: ID,
             isActive: true,
@@ -17,12 +16,11 @@ const getById = (ID: number, t: Transaction) => {
 
 export class CountriesController {
 
-    async index(isActive: number): Promise<CountriesModel[]> {
+    async index(isActive: number, language?: string): Promise<CountriesModel[]> {
         try {
             return await sequelize.transaction(async (t) => { // start managed transaction and pass transaction object to the callback function
-                const attributes = ['ID', 'countryName'];
                 const result = await Countries.findAll({
-                    attributes: attributes,
+                    attributes: language === 'en' ? ['ID', 'enCountryName', 'Notes'] : [['ID', 'ID'], ['arCountryName', 'اسم الدولة'], ['Notes', 'ملاحظات']],
                     where: {
                         isActive: isActive,
                     },
@@ -43,7 +41,9 @@ export class CountriesController {
             return await sequelize.transaction(async (t) => { // start managed transaction and pass transaction object to the callback function
                 const result = await Countries.create(
                     {
-                        countryName: country.countryName,
+                        enCountryName: country.enCountryName,
+                        arCountryName: country.arCountryName,
+                        Notes: country.Notes,
                     },
                     { transaction: t } // pass transaction object to query
                 );
@@ -74,7 +74,9 @@ export class CountriesController {
             return await sequelize.transaction(async (t) => { // start managed transaction and pass transaction object to the callback function
                 await Countries.update(
                     {
-                        countryName: country.countryName,
+                        enCountryName: country.enCountryName,
+                        arCountryName: country.arCountryName,
+                        Notes: country.Notes,
                     },
                     {
                         where: {

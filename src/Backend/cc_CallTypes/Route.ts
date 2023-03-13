@@ -81,7 +81,7 @@ const activate = async (req: Request, res: Response) => {
 
 const CallTypesRouter = (app: express.Application) => {
     app.get('/call-types/:isActive', getAll);
-    app.get('/call-types/:ID', getById);
+    app.get('/call-types-by-id/:ID', getById);
     app.post('/call-types', create);
     app.put('/call-types/:ID', update);
     app.put('/call-types/deactivate/:ID', deactivate);

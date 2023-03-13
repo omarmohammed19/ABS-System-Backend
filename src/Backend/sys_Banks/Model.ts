@@ -3,7 +3,9 @@ import { sequelize } from '../../Config/database';
 
 export interface BanksModel extends Model {
     ID: number;
-    bankName: string;
+    enBankName: string;
+    arBankName: string;
+    Notes: string;
     isActive: boolean;
 }
 
@@ -15,7 +17,13 @@ export const Banks = sequelize.define<BanksModel>(
             primaryKey: true,
             autoIncrement: true,
         },
-        bankName: {
+        enBankName: {
+            type: DataTypes.STRING,
+        },
+        arBankName: {
+            type: DataTypes.STRING,
+        },
+        Notes: {
             type: DataTypes.STRING,
         },
         isActive: {
