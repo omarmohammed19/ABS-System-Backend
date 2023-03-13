@@ -2,16 +2,13 @@ import { UsersModel, Users } from './Model';
 import { De_Activate } from '../../Services/De_Activate';
 import { SubAccounts } from '../cust_SubAccounts/Model';
 import { Roles } from '../sys_Roles/Model';
-import bcrypt from "bcrypt";
-import dotenv from "dotenv";
+import bcrypt from 'bcrypt';
+import dotenv from 'dotenv';
 
 dotenv.config();
-const {
-  SALT_ROUNDS,
-  pepper
-} = process.env
+const { SALT_ROUNDS, pepper } = process.env;
 
-const getById = (ID: Number, language?: string) => {
+const getById = (ID: number, language?: string) => {
   const lang = language === 'en' ? 'enRole' : 'arRole';
   return Users.findOne({
     where: {
@@ -20,17 +17,9 @@ const getById = (ID: Number, language?: string) => {
     },
     include: [
       { model: SubAccounts, required: true, attributes: ['subAccountName'] },
-      { model: Roles, required: true, attributes: [lang] }
-    ]
-    ,
-    attributes: [
-      'username',
-      'password',
-      'subAccountID',
-      'displayedName',
-      'roleID',
-      'avatar',
-    ]
+      { model: Roles, required: true, attributes: [lang] },
+    ],
+    attributes: ['username', 'password', 'subAccountID', 'displayedName', 'roleID', 'avatar'],
   }) as unknown as UsersModel & {
     cust_SubAccount: {
       subAccountName: string;
@@ -39,11 +28,10 @@ const getById = (ID: Number, language?: string) => {
       enRole: string;
       arRole: string;
     };
-  };;
-}
+  };
+};
 
 export class UsersController {
-
   async index(language: string): Promise<UsersModel[]> {
     try {
       const lang = language === 'en' ? 'enRole' : 'arRole';
@@ -53,17 +41,9 @@ export class UsersController {
         },
         include: [
           { model: SubAccounts, required: true, attributes: ['subAccountName'] },
-          { model: Roles, required: true, attributes: [lang] }
-        ]
-        ,
-        attributes: [
-          'username',
-          'password',
-          'subAccountID',
-          'displayedName',
-          'roleID',
-          'avatar',
-        ]
+          { model: Roles, required: true, attributes: [lang] },
+        ],
+        attributes: ['username', 'password', 'subAccountID', 'displayedName', 'roleID', 'avatar'],
       });
 
       // return result.map((item: any) => item.toJSON()) as UsersModel[];
@@ -82,7 +62,7 @@ export class UsersController {
 
   async getUserById(language: string, ID: number): Promise<UsersModel | null> {
     try {
-      const result = await getById(ID, language)
+      const result = getById(ID, language);
       if (result === null) {
         return null;
       }
@@ -92,7 +72,7 @@ export class UsersController {
         subAccountName: result.cust_SubAccount.subAccountName,
         displayedName: result.displayedName,
         role: language === 'en' ? result.sys_Role.enRole : result.sys_Role.arRole,
-        avatar: result.avatar
+        avatar: result.avatar,
       } as unknown as UsersModel;
     } catch (err) {
       throw new Error(`Could not get ContactLogTypes by ID. Error: ${err}`);
@@ -102,7 +82,7 @@ export class UsersController {
   async create(user: UsersModel): Promise<UsersModel | string> {
     try {
       //@ts-ignore
-      const hashedPassword = await bcrypt.hashSync(user.password + pepper, parseInt(SALT_ROUNDS));
+      const hashedPassword = bcrypt.hashSync(user.password + pepper, parseInt(SALT_ROUNDS));
       const result = await Users.create(
         {
           username: user.username,
@@ -113,14 +93,7 @@ export class UsersController {
           avatar: user.avatar,
         },
         {
-          fields: [
-            'username',
-            'password',
-            'subAccountID',
-            'displayedName',
-            'roleID',
-            'avatar'
-          ],
+          fields: ['username', 'password', 'subAccountID', 'displayedName', 'roleID', 'avatar'],
         }
       );
       return result ? result.toJSON() : 'Could not add new Users';
@@ -132,7 +105,7 @@ export class UsersController {
   async update(user: UsersModel): Promise<UsersModel> {
     try {
       //@ts-ignore
-      const hashedPassword = await bcrypt.hashSync(user.password + pepper, parseInt(SALT_ROUNDS));
+      const hashedPassword = bcrypt.hashSync(user.password + pepper, parseInt(SALT_ROUNDS));
       await Users.update(
         {
           username: user.username,
@@ -148,7 +121,7 @@ export class UsersController {
           },
         }
       );
-      const result = await getById(Number(user.ID));
+      const result = getById(Number(user.ID));
       return {
         username: result.username,
         password: result.password,
@@ -156,7 +129,7 @@ export class UsersController {
         displayedName: result.displayedName,
         enrole: result.sys_Role.enRole,
         arRole: result.sys_Role.arRole,
-        avatar: result.avatar
+        avatar: result.avatar,
       } as unknown as UsersModel;
     } catch (err) {
       throw new Error(`Could not update User. Error: ${err}`);
@@ -165,7 +138,7 @@ export class UsersController {
 
   async deactivate(ID: number): Promise<string> {
     try {
-      const result = De_Activate<UsersModel>(Users, ID, 'deactivate');
+      const result = await De_Activate<UsersModel>(Users, 'ID', ID, 'deactivate');
       return result;
     } catch (err) {
       throw new Error(`Could not deactivate Users. Error: ${err}`);
@@ -174,7 +147,7 @@ export class UsersController {
 
   async activate(ID: number): Promise<string> {
     try {
-      const result = De_Activate<UsersModel>(Users, ID, 'activate');
+      const result = await De_Activate<UsersModel>(Users, 'ID', ID, 'activate');
       return result;
     } catch (err) {
       throw new Error(`Could not activate Users. Error: ${err}`);
