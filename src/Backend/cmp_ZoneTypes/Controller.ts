@@ -4,9 +4,8 @@ import { sequelize } from '../../Config/database';
 import { Transaction, } from 'sequelize';
 
 const getById = (ID: number, t: Transaction, language?: string) => {
-    const attributes = (language === 'en') ? ['ID', 'enZoneType', 'Notes'] : ['ID', 'arZoneType', 'Notes'];
     return ZoneTypes.findOne({
-        attributes: attributes,
+        attributes: language === 'en' ? [['ID', 'Zone Type ID'], ['enZoneType', 'Zone Type'], 'Notes'] : [['ID', 'رقم نوع المنطقة'], ['arZoneType', 'نوع المنطقة'], ['Notes', 'ملاحظات']],
         where: {
             ID: ID,
             IsActive: true
@@ -19,9 +18,8 @@ export class ZoneTypesController {
     async index(language: string): Promise<ZoneTypesModel[]> {
         try {
             return await sequelize.transaction(async (t) => {
-                const attributes = (language === 'en') ? ['ID', 'enZoneType', 'Notes'] : ['ID', 'arZoneType', 'Notes'];
                 const result = await ZoneTypes.findAll({
-                    attributes: attributes,
+                    attributes: language === 'en' ? [['ID', 'Zone Type ID'], ['enZoneType', 'Zone Type'], 'Notes'] : [['ID', 'رقم نوع المنطقة'], ['arZoneType', 'نوع المنطقة'], ['Notes', 'ملاحظات']],
                     where: {
                         IsActive: true
                     },
@@ -58,9 +56,8 @@ export class ZoneTypesController {
     async getZoneTypeByID(ID: number, language?: string,): Promise<ZoneTypesModel | string> {
         try {
             return await sequelize.transaction(async (t) => {
-                const attributes = (language === 'en') ? ['ID', 'enZoneType', 'Notes'] : ['ID', 'arZoneType', 'Notes'];
                 const result = await ZoneTypes.findOne({
-                    attributes: attributes,
+                    attributes: language === 'en' ? [['ID', 'Zone Type ID'], ['enZoneType', 'Zone Type'], 'Notes'] : [['ID', 'رقم نوع المنطقة'], ['arZoneType', 'نوع المنطقة'], ['Notes', 'ملاحظات']],
                     where: {
                         ID: ID,
                         IsActive: true

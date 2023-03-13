@@ -132,7 +132,9 @@ export class PricePlanNamesController {
 
     async deactivate(ID: number): Promise<string> {
         try {
+
             const result = await De_Activate<PricePlanNamesModel>(PricePlanNames, 'ID', ID, 'deactivate');
+
             return result;
         } catch (err) {
             throw new Error(`Could not deactivate PricePlanNames. Error: ${err}`);
@@ -141,6 +143,7 @@ export class PricePlanNamesController {
 
     async activate(ID: number): Promise<string> {
         try {
+
             const result = await De_Activate<PricePlanNamesModel>(PricePlanNames, 'ID', ID, 'activate');
             return result;
         } catch (err) {

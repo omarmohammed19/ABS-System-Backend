@@ -7,7 +7,7 @@ const packageTypesController = new PackageTypesController();
 const getAll = async (req: Request, res: Response) => {
   try {
     const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-    const result = await packageTypesController.index(language);
+    const result = await packageTypesController.index(language, Number(req.params.isActive));
     res.json(result);
   } catch (error) {
     res.status(400);
@@ -78,7 +78,7 @@ const activate = async (req: Request, res: Response) => {
 };
 
 const packageTypesRouter = (app: express.Application) => {
-  app.get('/package-types', getAll);
+  app.get('/package-types/:isActive', getAll);
   app.get('/package-types/:ID', getById);
   app.post('/package-types', create);
   app.put('/package-types/:ID', update);

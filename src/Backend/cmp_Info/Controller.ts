@@ -4,9 +4,8 @@ import { sequelize } from '../../Config/database';
 import { Transaction } from 'sequelize';
 
 const getById = (ID: number, t: Transaction, language?: string) => {
-  const attributes = language === 'en' ? ['ID', 'enCompanyName'] : ['ID', 'arCompanyName'];
   return Info.findOne({
-    attributes: attributes,
+    attributes: language === 'en' ? [['ID', 'Company ID'], ['enCompanyName', 'Company Name']] : [['ID', 'رقم الشركة'], ['arCompanyName', 'اسم الشركة']],
     where: {
       ID: ID,
       isActive: true,
@@ -20,9 +19,8 @@ export class InfoController {
     try {
       return await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
-        const attributes = language === 'en' ? ['ID', 'enCompanyName'] : ['ID', 'arCompanyName'];
         const result = await Info.findAll({
-          attributes: attributes,
+          attributes: language === 'en' ? [['ID', 'Company ID'], ['enCompanyName', 'Company Name']] : [['ID', 'رقم الشركة'], ['arCompanyName', 'اسم الشركة']],
           where: {
             isActive: true,
           },

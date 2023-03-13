@@ -81,7 +81,9 @@ export class NearestBranchController {
 
     async deactivate(ID: number): Promise<string> {
         try {
+
             const result = await De_Activate<NearestBranchModel>(NearestBranch, 'ID', ID, 'deactivate');
+
             return result;
         } catch (err) {
             throw new Error(`Could not deactivate NearestBranch. Error: ${err}`);
@@ -90,7 +92,9 @@ export class NearestBranchController {
 
     async activate(ID: number): Promise<string> {
         try {
+
             const result = await De_Activate<NearestBranchModel>(NearestBranch, 'ID', ID, 'activate');
+
             return result;
         } catch (err) {
             throw new Error(`Could not activate NearestBranch. Error: ${err}`);
