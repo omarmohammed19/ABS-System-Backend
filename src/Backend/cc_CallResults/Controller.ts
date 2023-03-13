@@ -93,6 +93,7 @@ export class CallResultsController {
     }
   }
 
+
   async deactivate(ID: number): Promise<string> {
     try {
       const result = await De_Activate<CallResultsModel>(CallResults, 'ID', ID, 'deactivate');

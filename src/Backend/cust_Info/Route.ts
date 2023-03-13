@@ -14,6 +14,16 @@ const getAll = async (req: Request, res: Response) => {
   }
 };
 
+const getAllDeActivated = async (req: Request, res: Response) => {
+  try {
+    const result = await infoController.indexDeActivated();
+    res.json(result);
+  } catch (error) {
+    res.status(400);
+    res.json(error);
+  }
+};
+
 const getById = async (req: Request, res: Response) => {
   try {
     const result = await infoController.getInfoByID(Number(req.params.ID));
@@ -75,10 +85,11 @@ const activate = async (req: Request, res: Response) => {
 
 const InfoRouter = (app: express.Application) => {
   app.get('/customer-info', getAll);
+  app.get('/customer-info/de-activated', getAllDeActivated);
   app.get('/customer-info/:ID', getById);
   app.post('/customer-info', create);
   app.put('/customer-info/:ID', update);
-  app.put('/customer-info/deactivate/:ID', deactivate);
+  app.put('/customer-info/de-activate/:ID', deactivate);
   app.put('/customer-info/activate/:ID', activate);
 };
 

@@ -36,6 +36,26 @@ export class LegalPaperTypesController {
     }
   }
 
+  async indexDeActivated(language: string): Promise<LegalPaperTypesModel[]> {
+    try {
+      return await sequelize.transaction(async (t) => {
+        // start managed transaction and pass transaction object to the callback function
+        const attributes = language === 'en' ? ['ID', 'enLegalPaperType', 'Notes'] : ['ID', 'arLegalPaperType', 'Notes'];
+        const result = await LegalPaperTypes.findAll({
+          attributes: attributes,
+          where: {
+            isActive: false,
+          },
+          transaction: t, // pass transaction object to query
+        });
+
+        return result.map((item: any) => item.toJSON()) as LegalPaperTypesModel[]; // return the result of the query (if successful) to be committed automatically
+      });
+    } catch (err) {
+      throw new Error(`Could not get all LegalPaperTypes. Error: ${err}`);
+    }
+  }
+
   async create(LegalPaperType: LegalPaperTypesModel): Promise<LegalPaperTypesModel | string> {
     try {
       return await sequelize.transaction(async (t) => {
