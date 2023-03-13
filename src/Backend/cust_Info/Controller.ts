@@ -34,6 +34,25 @@ export class InfoController {
     }
   }
 
+  async indexDeActivated(): Promise<InfoModel[]> {
+    try {
+      return await sequelize.transaction(async (t) => {
+        // start managed transaction and pass transaction object to the callback function
+        const result = await Info.findAll({
+          attributes: ['ID', 'firstName', 'lastName'],
+          where: {
+            isActive: false,
+          },
+          transaction: t, // pass transaction object to query
+        });
+
+        return result.map((item: any) => item.toJSON()) as InfoModel[]; // return the result of the query (if successful) to be committed automatically
+      });
+    } catch (err) {
+      throw new Error(`Could not get all Info. Error: ${err}`);
+    }
+  }
+
   async create(info: InfoModel): Promise<InfoModel | string> {
     try {
       return await sequelize.transaction(async (t) => {

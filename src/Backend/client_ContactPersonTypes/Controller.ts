@@ -36,6 +36,26 @@ export class ContactPersonTypesController {
     }
   }
 
+  async indexDeActivated(language: string): Promise<ContactPersonTypesModel[]> {
+    try {
+      return await sequelize.transaction(async (t) => {
+        // start managed transaction and pass transaction object to the callback function
+        const attributes = language === 'en' ? ['ID', 'enContactPersonType', 'Notes'] : ['ID', 'arContactPersonType', 'Notes'];
+        const result = await ContactPersonTypes.findAll({
+          attributes: attributes,
+          where: {
+            isActive: false,
+          },
+          transaction: t, // pass transaction object to query
+        });
+
+        return result.map((item: any) => item.toJSON()) as ContactPersonTypesModel[]; // return the result of the query (if successful) to be committed automatically
+      });
+    } catch (err) {
+      throw new Error(`Could not get all ContactPersonTypes. Error: ${err}`);
+    }
+  }
+
   async create(ContactPersonType: ContactPersonTypesModel): Promise<ContactPersonTypesModel | string> {
     try {
       return await sequelize.transaction(async (t) => {
