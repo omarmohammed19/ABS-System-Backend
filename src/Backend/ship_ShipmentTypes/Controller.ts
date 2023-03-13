@@ -95,7 +95,7 @@ export class ShipmentTypesController {
 
   async deactivate(ID: number): Promise<string> {
     try {
-      const result = await De_Activate<ShipmentTypesModel>(ShipmentTypes, ID, 'deactivate');
+      const result = await De_Activate<ShipmentTypesModel>(ShipmentTypes, 'ID', ID, 'deactivate');
       return result;
     } catch (err) {
       throw new Error(`Could not deactivate ShipmentType. Error: ${err}`);
@@ -104,7 +104,7 @@ export class ShipmentTypesController {
 
   async activate(ID: number): Promise<string> {
     try {
-      const result = await De_Activate<ShipmentTypesModel>(ShipmentTypes, ID, 'activate');
+      const result = await De_Activate<ShipmentTypesModel>(ShipmentTypes, 'ID', ID, 'activate');
       return result;
     } catch (err) {
       throw new Error(`Could not activate ShipmentType. Error: ${err}`);

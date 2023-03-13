@@ -9,26 +9,25 @@ const getById = async (ID: Number, t: Transaction, language?: string) => {
   const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
   const result = await sequelize.query(query, options)
   return result as unknown as SubAccountsModel;
-}
+};
 
 export class SubAccountsController {
-
   async index(language: string): Promise<SubAccountsModel[]> {
     try {
       const query = 'EXEC [dbo].[p_GET_cust_SubAccounts] @language = :language, @Method = :Method';
       const replacements = { language: language, Method: 'GET' };
       const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
-      const result = sequelize.query(query, options)
+      const result = sequelize.query(query, options);
       return result as unknown as SubAccountsModel[];
-    }
-    catch (err) {
+    } catch (err) {
       throw new Error(`Could not get all PaymentMethods. Error: ${err}`);
     }
   }
 
   async create(subAccounts: SubAccountsModel): Promise<SubAccountsModel | string> {
     try {
-      return await sequelize.transaction(async (t) => { // start managed transaction and pass transaction object to the callback function
+      return await sequelize.transaction(async (t) => {
+        // start managed transaction and pass transaction object to the callback function
         const result = await SubAccounts.create(
           {
             mainAccountID: subAccounts.mainAccountID,
@@ -45,9 +44,7 @@ export class SubAccountsController {
         );
         return result ? result.toJSON() : 'Could not add new SubAccounts';
       });
-
-    }
-    catch (err) {
+    } catch (err) {
       throw new Error(`Could not add new SubAccounts. Error: ${err}`);
     }
   }
@@ -67,7 +64,8 @@ export class SubAccountsController {
 
   async update(subAccounts: SubAccountsModel, language: string): Promise<SubAccountsModel | string> {
     try {
-      return await sequelize.transaction(async (t) => { // start managed transaction and pass transaction object to the callback function
+      return await sequelize.transaction(async (t) => {
+        // start managed transaction and pass transaction object to the callback function
         await SubAccounts.update(
           {
             mainAccountID: subAccounts.mainAccountID,
@@ -90,15 +88,14 @@ export class SubAccountsController {
           const item = await getById(subAccounts.ID, t, language); // pass transaction object to getById function
           return item;
       });
-    }
-    catch (err) {
+    } catch (err) {
       throw new Error(`Could not update SubAccounts. Error: ${err}`);
     }
   }
 
   async deactivate(ID: number): Promise<string> {
     try {
-      const result = De_Activate<SubAccountsModel>(SubAccounts, ID, 'deactivate');
+      const result = De_Activate<SubAccountsModel>(SubAccounts, 'ID', ID, 'deactivate');
       return result;
     } catch (err) {
       throw new Error(`Could not deactivate SubAccounts. Error: ${err}`);
@@ -107,7 +104,7 @@ export class SubAccountsController {
 
   async activate(ID: number): Promise<string> {
     try {
-      const result = De_Activate<SubAccountsModel>(SubAccounts, ID, 'activate');
+      const result = De_Activate<SubAccountsModel>(SubAccounts, 'ID', ID, 'activate');
       return result;
     } catch (err) {
       throw new Error(`Could not activate SubAccounts. Error: ${err}`);

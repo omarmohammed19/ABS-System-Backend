@@ -82,7 +82,7 @@ const reasonsRouter = (app: express.Application) => {
   app.get('/reasons/:ID', getById);
   app.post('/reasons', create);
   app.put('/reasons/:ID', update);
-  app.put('/reasons/deactivate/:ID', deactivate);
+  app.put('/reasons/de-activate/:ID', deactivate);
   app.put('/reasons/activate/:ID', activate);
 };
 

@@ -3,7 +3,8 @@ import { sequelize } from '../../Config/database';
 
 export interface ZoneTypesModel extends Model {
     ID: number;
-    zoneType: string;
+    enZoneType: string;
+    arZoneType: string;
     Notes: string;
     isActive: boolean;
 }
@@ -16,7 +17,10 @@ export const ZoneTypes = sequelize.define<ZoneTypesModel>(
             primaryKey: true,
             autoIncrement: true,
         },
-        zoneType: {
+        enZoneType: {
+            type: DataTypes.STRING,
+        },
+        arZoneType: {
             type: DataTypes.STRING,
         },
         Notes: {
