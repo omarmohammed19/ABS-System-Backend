@@ -53,7 +53,6 @@ const update = async (req: Request, res: Response) => {
   try {
     const extraInfo = <ExtraInfoModel>{
       ID: Number(req.params.ID),
-      AWB: req.body.AWB,
       Data1: req.body.Data1,
       Data2: req.body.Data2,
       Data3: req.body.Data3,

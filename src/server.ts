@@ -48,6 +48,7 @@ import InfoRouter from './Backend/cust_Info/Route';
 import zonesRouter from './Backend/cmp_Zones/Route';
 import zonesTypesRouter from './Backend/cmp_ZoneTypes/Route';
 import extraInfoRouter from './Backend/ship_ExtraInfo/Route';
+import contactLogsRouter from './Backend/ship_ContactLogs/Route';
 import languagesRouter from './Backend/sys_Languages/Route';
 
 const corsOptions = {
@@ -110,12 +111,12 @@ InfoRouter(app);
 zonesRouter(app);
 zonesTypesRouter(app);
 extraInfoRouter(app);
+contactLogsRouter(app);
 languagesRouter(app);
 TicketStatus(app);
 TicketTypes(app);
 CountriesRouter(app);
 BanksRouter(app);
-
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port http://${address}:${process.env.PORT}`);
