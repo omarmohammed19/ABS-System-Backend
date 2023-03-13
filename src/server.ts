@@ -30,6 +30,10 @@ import reasonsRouter from './Backend/ship_Reasons/Route';
 import recipientTypesRouter from './Backend/ship_RecepientsTypes/Route';
 import shipmentTypesRouter from './Backend/ship_ShipmentTypes/Route';
 import productsRouter from './Backend/ship_Products/Route';
+import TicketStatus from './Backend/cs_TicketStatus/Route';
+import TicketTypes from './Backend/cs_TicketTypes/Route';
+import CountriesRouter from './Backend/sys_Countries/Route';
+import BanksRouter from './Backend/sys_Banks/Route';
 import servicesRouter from './Backend/cust_Services/Route';
 import nearestBranchRouter from './Backend/cust_NearestBranch/Route';
 import pricePlanNamesRouter from './Backend/cust_PricePlanNames/Route';
@@ -105,6 +109,11 @@ InfoRouter(app);
 zonesRouter(app);
 zonesTypesRouter(app);
 extraInfoRouter(app);
+TicketStatus(app);
+TicketTypes(app);
+CountriesRouter(app);
+BanksRouter(app);
+
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port http://${address}:${process.env.PORT}`);
