@@ -83,6 +83,7 @@ export class ServicesController {
 
     async deactivate(ID: number): Promise<string> {
         try {
+
             const result = await De_Activate<ServicesModel>(Services, 'ID', ID, 'deactivate');
             return result;
         } catch (err) {
@@ -92,6 +93,7 @@ export class ServicesController {
 
     async activate(ID: number): Promise<string> {
         try {
+
             const result = await De_Activate<ServicesModel>(Services, 'ID', ID, 'activate');
             return result;
         } catch (err) {

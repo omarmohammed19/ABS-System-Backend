@@ -45,12 +45,13 @@ const create = async (req: Request, res: Response) => {
 
 const update = async (req: Request, res: Response) => {
   try {
+    const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
     const mobileCash = <LocationsModel>{
         ID: Number(req.params.ID),
         locationName: req.body.locationName,
         addressID: req.body.addressID,
     };
-    const result = await locationsController.update(mobileCash);
+    const result = await locationsController.update(mobileCash,language);
     res.json(result);
   } catch (error) {
     console.log(error);
