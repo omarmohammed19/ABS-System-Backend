@@ -1,8 +1,7 @@
 import { Zones, ZonesModel } from './Model';
 import { De_Activate } from '../../Services/De_Activate';
 import { sequelize } from '../../Config/database';
-import { Transaction, } from 'sequelize';
-import Sequelize from 'sequelize';
+import Sequelize, { Transaction, } from 'sequelize';
 
 const getById = (ID: number, t: Transaction, language?: string) => {
 
@@ -85,7 +84,7 @@ export class ZonesController {
 
     async deactivate(ID: number): Promise<ZonesModel | string> {
         try {
-            const result = await De_Activate<ZonesModel>(Zones, ID, 'deactivate');
+            const result = await De_Activate<ZonesModel>(Zones, 'ID', ID, 'deactivate');
             return result;
         }
         catch (err) {
@@ -95,7 +94,7 @@ export class ZonesController {
 
     async activate(ID: number): Promise<ZonesModel | string> {
         try {
-            const result = await De_Activate<ZonesModel>(Zones, ID, 'activate');
+            const result = await De_Activate<ZonesModel>(Zones, 'ID', ID, 'activate');
             return result;
         }
         catch (err) {

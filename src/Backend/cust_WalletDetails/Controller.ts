@@ -3,7 +3,7 @@ import { De_Activate } from '../../Services/De_Activate';
 import { sequelize } from '../../Config/database';
 import { Transaction } from 'sequelize';
 
-const getById = (ID: Number, t: Transaction) => {
+const getById = (ID: number, t: Transaction) => {
   return WalletDetails.findOne({
     attributes: ['ID', 'walletNumber', 'mobileNumber'],
     where: {
@@ -92,7 +92,7 @@ export class WalletDetailsController {
 
   async deactivate(ID: number): Promise<string> {
     try {
-      const result = De_Activate<WalletDetailsModel>(WalletDetails, 'ID', ID, 'deactivate');
+      const result = await De_Activate<WalletDetailsModel>(WalletDetails, 'ID', ID, 'deactivate');
       return result;
     } catch (err) {
       throw new Error(`Could not deactivate WalletDetails. Error: ${err}`);
@@ -101,7 +101,7 @@ export class WalletDetailsController {
 
   async activate(ID: number): Promise<string> {
     try {
-      const result = De_Activate<WalletDetailsModel>(WalletDetails, 'ID', ID, 'activate');
+      const result = await De_Activate<WalletDetailsModel>(WalletDetails, 'ID', ID, 'activate');
       return result;
     } catch (err) {
       throw new Error(`Could not activate WalletDetails. Error: ${err}`);

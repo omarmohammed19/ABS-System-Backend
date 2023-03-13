@@ -2,7 +2,6 @@ import { ZoneTypes, ZoneTypesModel } from '../cmp_ZoneTypes/Model';
 import { De_Activate } from '../../Services/De_Activate';
 import { sequelize } from '../../Config/database';
 import { Transaction, } from 'sequelize';
-import Sequelize from 'sequelize';
 
 const getById = (ID: number, t: Transaction, language?: string) => {
     const attributes = (language === 'en') ? ['ID', 'enZoneType', 'Notes'] : ['ID', 'arZoneType', 'Notes'];
@@ -107,7 +106,7 @@ export class ZoneTypesController {
 
     async deactivate(ID: number): Promise<ZoneTypesModel | string> {
         try {
-            const result = await De_Activate<ZoneTypesModel>(ZoneTypes, ID, 'deactivate');
+            const result = await De_Activate<ZoneTypesModel>(ZoneTypes, 'ID', ID, 'deactivate');
             return result;
         }
         catch (err) {
@@ -117,7 +116,7 @@ export class ZoneTypesController {
 
     async activate(ID: number): Promise<ZoneTypesModel | string> {
         try {
-            const result = await De_Activate<ZoneTypesModel>(ZoneTypes, ID, 'activate');
+            const result = await De_Activate<ZoneTypesModel>(ZoneTypes, 'ID', ID, 'activate');
             return result;
         }
         catch (err) {

@@ -1,7 +1,7 @@
 import { LanguagesModel, Languages } from './Model';
 import { De_Activate } from '../../Services/De_Activate';
 import { sequelize } from '../../Config/database';
-import Sequelize, { Transaction } from 'sequelize';
+import { Transaction } from 'sequelize';
 
 const getById = (ID: number, t: Transaction) => {
     const attributes = ['ID', 'Language'];
@@ -80,7 +80,7 @@ export class LanguagesController {
                     }
                 );
                 const result = await getById(language.ID, t);
-                return result ? result.toJSON() as LanguagesModel : 'Branch not found';
+                return result ? result.toJSON() : 'Could not update Language';
             });
         }
         catch (err) {
@@ -91,7 +91,7 @@ export class LanguagesController {
 
     async deactivate(ID: number): Promise<string> {
         try {
-            const result = await De_Activate<LanguagesModel>(Languages, ID, 'deactivate');
+            const result = await De_Activate<LanguagesModel>(Languages, 'ID', ID, 'deactivate');
             return result;
         }
         catch (err) {
@@ -101,7 +101,7 @@ export class LanguagesController {
 
     async activate(ID: number): Promise<string> {
         try {
-            const result = await De_Activate<LanguagesModel>(Languages, ID, 'activate');
+            const result = await De_Activate<LanguagesModel>(Languages, 'ID', ID, 'activate');
             return result;
         }
         catch (err) {

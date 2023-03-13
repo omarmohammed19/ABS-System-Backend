@@ -95,7 +95,7 @@ export class EmailTypesController {
 
   async deactivate(ID: number): Promise<string> {
     try {
-      const result = De_Activate<EmailTypesModel>(EmailTypes, ID, 'deactivate');
+      const result = await De_Activate<EmailTypesModel>(EmailTypes, 'ID', ID, 'deactivate');
       return result;
     } catch (err) {
       throw new Error(`Could not deactivate EmailType. Error: ${err}`);
@@ -104,7 +104,7 @@ export class EmailTypesController {
 
   async activate(ID: number): Promise<string> {
     try {
-      const result = De_Activate<EmailTypesModel>(EmailTypes, ID, 'activate');
+      const result = await De_Activate<EmailTypesModel>(EmailTypes, 'ID', ID, 'activate');
       return result;
     } catch (err) {
       throw new Error(`Could not activate EmailType. Error: ${err}`);

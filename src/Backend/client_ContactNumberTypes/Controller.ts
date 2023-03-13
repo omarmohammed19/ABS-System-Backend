@@ -95,7 +95,7 @@ export class ContactNumberTypesController {
 
   async deactivate(ID: number): Promise<string> {
     try {
-      const result = De_Activate<ContactNumberTypesModel>(ContactNumberTypes, ID, 'deactivate');
+      const result = await De_Activate<ContactNumberTypesModel>(ContactNumberTypes, 'ID', ID, 'deactivate');
       return result;
     } catch (err) {
       throw new Error(`Could not deactivate ContactNumberType. Error: ${err}`);
@@ -104,7 +104,7 @@ export class ContactNumberTypesController {
 
   async activate(ID: number): Promise<string> {
     try {
-      const result = De_Activate<ContactNumberTypesModel>(ContactNumberTypes, ID, 'activate');
+      const result = await De_Activate<ContactNumberTypesModel>(ContactNumberTypes, 'ID', ID, 'activate');
       return result;
     } catch (err) {
       throw new Error(`Could not activate ContactNumberType. Error: ${err}`);
