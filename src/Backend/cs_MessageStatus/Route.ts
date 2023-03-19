@@ -81,7 +81,7 @@ const activate = async (req: Request, res: Response) => {
 
 const MessageStatusRouter = (app: express.Application) => {
     app.get('/message-status/:isActive', getAll);
-    app.get('/message-status/:ID', getById);
+    app.get('/message-status-by-id/:ID', getById);
     app.post('/message-status', create);
     app.put('/message-status/:ID', update);
     app.put('/message-status/deactivate/:ID', deactivate);

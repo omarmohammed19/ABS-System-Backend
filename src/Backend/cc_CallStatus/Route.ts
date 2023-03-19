@@ -81,7 +81,7 @@ const activate = async (req: Request, res: Response) => {
 
 const callStatusRouter = (app: express.Application) => {
     app.get('/call-status/:isActive', getAll);
-    app.get('/call-status/:ID', getById);
+    app.get('/call-status-by-id/:ID', getById);
     app.post('/call-status', create);
     app.put('/call-status/:ID', update);
     app.put('/call-status/deactivate/:ID', deactivate);

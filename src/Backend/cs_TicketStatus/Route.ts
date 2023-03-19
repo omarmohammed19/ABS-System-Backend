@@ -81,7 +81,7 @@ const activate = async (req: Request, res: Response) => {
 
 const TicketStatusRouter = (app: express.Application) => {
     app.get('/ticket-status/:isActive', getAll);
-    app.get('/ticket-status/:ID', getById);
+    app.get('/ticket-status-by-id/:ID', getById);
     app.post('/ticket-status', create);
     app.put('/ticket-status/:ID', update);
     app.put('/ticket-status/deactivate/:ID', deactivate);

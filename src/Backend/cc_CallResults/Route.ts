@@ -92,7 +92,7 @@ const getAllDeactivated = async (req: Request, res: Response) => {
 
 const callResultsRouter = (app: express.Application) => {
     app.get('/call-results/:isActive', getAll);
-    app.get('/call-results/:ID', getById);
+    app.get('/call-results-by-id/:ID', getById);
     app.post('/call-results', create);
     app.put('/call-results/:ID', update);
     app.put('/call-results/deactivate/:ID', deactivate);

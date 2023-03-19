@@ -27,7 +27,9 @@ const getById = async (req: Request, res: Response) => {
 const create = async (req: Request, res: Response) => {
     try {
         const bankName = <BanksModel>{
-            bankName: req.body.bankName,
+            enBankName: req.body.enBankName,
+            arBankName: req.body.arBankName,
+            Notes: req.body.Notes,
         };
         const result = await banksController.create(bankName);
         res.json(result);
@@ -43,7 +45,9 @@ const update = async (req: Request, res: Response) => {
     try {
         const bankName = <BanksModel>{
             ID: Number(req.params.ID),
-            bankName: req.body.bankName,
+            enBankName: req.body.enBankName,
+            arBankName: req.body.arBankName,
+            Notes: req.body.Notes,
         };
         const result = await banksController.update(bankName);
         res.json(result);
@@ -75,7 +79,7 @@ const activate = async (req: Request, res: Response) => {
 
 const BanksRouter = (app: express.Application) => {
     app.get('/banks/:isActive', getAll);
-    app.get('/banks/:ID', getById);
+    app.get('/banks-by-id/:ID', getById);
     app.post('/banks', create);
     app.put('/banks/:ID', update);
     app.put('/banks/deactivate/:ID', deactivate);
