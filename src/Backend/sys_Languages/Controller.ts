@@ -15,13 +15,13 @@ const getById = (ID: number, t: Transaction, language?: string) => {
 }
 
 export class LanguagesController {
-    async index(language: string): Promise<LanguagesModel[]> {
+    async index(language: string, isActive: number): Promise<LanguagesModel[]> {
         try {
             return await sequelize.transaction(async (t) => {
                 const result = await Languages.findAll({
                     attributes: language === 'en' ? [['ID', 'Language ID'], 'Language'] : [['ID', 'رقم اللغة'], ['Language', 'اسم اللغة']],
                     where: {
-                        IsActive: true
+                        IsActive: isActive
                     },
                     transaction: t
                 });

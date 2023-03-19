@@ -7,7 +7,7 @@ const zoneTypesController = new ZoneTypesController();
 const getAll = async (req: Request, res: Response) => {
     try {
         const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-        const result = await zoneTypesController.index(language);
+        const result = await zoneTypesController.index(language, Number(req.params.isActive));
         res.json(result);
     } catch (error) {
         res.status(400);
@@ -80,8 +80,8 @@ const activate = async (req: Request, res: Response) => {
 }
 
 const zonesTypesRouter = (app: express.Application) => {
-    app.get('/zones-types', getAll);
-    app.get('/zones-types/:ID', getById);
+    app.get('/zones-types/:isActive', getAll);
+    app.get('/zones-types-by-id/:ID', getById);
     app.post('/zones-types', create);
     app.put('/zones-types/:ID', update);
     app.put('/zones-types/de-activate/:ID', deactivate);
