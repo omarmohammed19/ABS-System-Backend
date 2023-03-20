@@ -7,7 +7,7 @@ const servicesController = new ServicesController();
 const getAll = async (req: Request, res: Response) => {
   try {
     const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-    const result = await servicesController.index(language);
+    const result = await servicesController.index(language, Number(req.params.isActive), Number(req.params.limit));
     res.json(result);
   } catch (error) {
     console.log(error);
@@ -82,11 +82,11 @@ const activate = async (req: Request, res: Response) => {
 };
 
 const servicesRouter = (app: express.Application) => {
-  app.get('/services', getAll);
-  app.get('/services/:ID', getById);
+  app.get('/services/:isActive/:limit', getAll);
+  app.get('/services-by-ID/:ID', getById);
   app.post('/services', create);
   app.put('/services/:ID', update);
-  app.put('/services/deactivate/:ID', deactivate);
+  app.put('/services/de-activate/:ID', deactivate);
   app.put('/services/activate/:ID', activate);
 };
 

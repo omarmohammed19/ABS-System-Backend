@@ -7,20 +7,7 @@ const pricePlanNamesController = new PricePlanNamesController();
 const getAll = async (req: Request, res: Response) => {
   try {
     const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-    const result = await pricePlanNamesController.index(language);
-    res.json(result);
-  } catch (error) {
-    console.log(error);
-
-    res.status(400);
-    res.json(error);
-  }
-};
-
-const getAllDeActivated = async (req: Request, res: Response) => {
-  try {
-    const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-    const result = await pricePlanNamesController.indexDeActivated(language);
+    const result = await pricePlanNamesController.index(language,Number(req.params.isActive));
     res.json(result);
   } catch (error) {
     console.log(error);
@@ -111,9 +98,8 @@ const activate = async (req: Request, res: Response) => {
 };
 
 const pricePlanNamesRouter = (app: express.Application) => {
-  app.get('/price-plan-names', getAll);
-  app.get('/price-plan-names/de-activated', getAllDeActivated);
-  app.get('/price-plan-names/:ID', getById);
+  app.get('/price-plan-names/:isActive', getAll);
+  app.get('/price-plan-names-by-ID/:ID', getById);
   app.post('/price-plan-names', create);
   app.put('/price-plan-names/:ID', update);
   app.put('/price-plan-names/de-activate/:ID', deactivate);
