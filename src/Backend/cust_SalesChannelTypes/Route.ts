@@ -7,7 +7,7 @@ const salesChannelTypesController = new SalesChannelTypesController();
 const getAll = async (req: Request, res: Response) => {
   try {
     const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-    const result = await salesChannelTypesController.index(language);
+    const result = await salesChannelTypesController.index(language, Number(req.params.isActive));
     res.json(result);
   } catch (error) {
     res.status(400);
@@ -44,13 +44,14 @@ const create = async (req: Request, res: Response) => {
 
 const update = async (req: Request, res: Response) => {
   try {
+    const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
     const salesChannelTypes = <SalesChannelTypesModel>{
       ID: Number(req.params.ID),
       enSalesChannelType: req.body.enSalesChannelType,
       arSalesChannelType: req.body.arSalesChannelType,
       Notes: req.body.Notes
     };
-    const result = await salesChannelTypesController.update(salesChannelTypes);
+    const result = await salesChannelTypesController.update(salesChannelTypes, language);
     res.json(result);
   } catch (error) {
     console.log(error);
@@ -81,12 +82,12 @@ const activate = async (req: Request, res: Response) => {
 };
 
 const salesChannelTypesRouter = (app: express.Application) => {
-  app.get('/salesChannelTypes', getAll);
-  app.get('/salesChannelTypes/:ID', getById);
-  app.post('/salesChannelTypes', create);
-  app.put('/salesChannelTypes/:ID', update);
-  app.put('/salesChannelTypes/deactivate/:ID', deactivate);
-  app.put('/salesChannelTypes/activate/:ID', activate);
+  app.get('/salesChannel-types/:isActive', getAll);
+  app.get('/salesChannel-types-by-ID/:ID', getById);
+  app.post('/salesChannel-types', create);
+  app.put('/salesChannel-types/:ID', update);
+  app.put('/salesChannel-types/de-activate/:ID', deactivate);
+  app.put('/salesChannel-types/activate/:ID', activate);
 };
 
 export default salesChannelTypesRouter;

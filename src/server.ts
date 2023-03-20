@@ -51,6 +51,8 @@ import extraInfoRouter from './Backend/ship_ExtraInfo/Route';
 import pricePlansRouter from './Backend/cust_PricePlans/Route';
 import contactLogsRouter from './Backend/ship_ContactLogs/Route';
 import languagesRouter from './Backend/sys_Languages/Route';
+import mainAccountsRouter from './Backend/cust_MainAccounts/Route';
+import paymentInfoRouter from './Backend/cust_PaymentInfo/Route';
 
 
 const corsOptions = {
@@ -120,6 +122,8 @@ TicketStatus(app);
 TicketTypes(app);
 CountriesRouter(app);
 BanksRouter(app);
+mainAccountsRouter(app);
+paymentInfoRouter(app);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port http://${address}:${process.env.PORT}`);
