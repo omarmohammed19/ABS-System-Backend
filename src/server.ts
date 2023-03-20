@@ -53,6 +53,7 @@ import contactLogsRouter from './Backend/ship_ContactLogs/Route';
 import languagesRouter from './Backend/sys_Languages/Route';
 import mainAccountsRouter from './Backend/cust_MainAccounts/Route';
 import paymentInfoRouter from './Backend/cust_PaymentInfo/Route';
+import custzonesRouter from './Backend/cust_Zones/Route';
 
 
 const corsOptions = {
@@ -124,6 +125,7 @@ CountriesRouter(app);
 BanksRouter(app);
 mainAccountsRouter(app);
 paymentInfoRouter(app);
+custzonesRouter(app);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port http://${address}:${process.env.PORT}`);
