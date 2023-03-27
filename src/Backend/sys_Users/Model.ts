@@ -1,10 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../../Config/database';
-import { SubAccounts } from '../cust_SubAccounts/Model';
-import { Roles } from '../sys_Roles/Model';
 
 export interface UsersModel extends Model {
-  [x: string]: any;
   ID: number;
   username: string;
   password: string;
@@ -30,21 +27,13 @@ export const Users = sequelize.define<UsersModel>(
       type: DataTypes.STRING,
     },
     subAccountID: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: 'SubAccounts',
-        key: 'ID',
-      },
+      type: DataTypes.INTEGER
     },
     displayedName: {
       type: DataTypes.STRING,
     },
     roleID: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: 'Roles',
-        key: 'ID',
-      },
+      type: DataTypes.INTEGER
     },
     avatar: {
       type: DataTypes.STRING,
@@ -57,8 +46,3 @@ export const Users = sequelize.define<UsersModel>(
     timestamps: false,
   }
 );
-
-// SubAccounts.hasMany(Users, { foreignKey: 'subAccountID' });
-Users.belongsTo(SubAccounts, { foreignKey: 'subAccountID' });
-// Roles.hasMany(Users, { foreignKey: 'roleID' });
-Users.belongsTo(Roles, { foreignKey: 'roleID' });

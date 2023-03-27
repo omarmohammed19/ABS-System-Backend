@@ -5,10 +5,21 @@ import verifyJWT from '../../Middlewares/verifyJWT';
 
 const usersController = new UsersController();
 
-const getAll = async (req: Request, res: Response) => {
+const getAllClients = async (req: Request, res: Response) => {
   try {
     const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-    const result = await usersController.index(language);
+    const result = await usersController.indexClients(language, Number(req.params.isActive), Number(req.params.limit));
+    res.json(result);
+  } catch (error) {
+    res.status(400);
+    res.json(error);
+  }
+};
+
+const getAllEmployees = async (req: Request, res: Response) => {
+  try {
+    const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
+    const result = await usersController.indexEmployees(language, Number(req.params.isActive), Number(req.params.limit));
     res.json(result);
   } catch (error) {
     res.status(400);
@@ -57,7 +68,7 @@ const update = async (req: Request, res: Response) => {
       roleID: req.body.roleID,
       avatar: req.body.avatar
     };
-    const result = await usersController.update(user);
+    const result = await usersController.update(user, language);
     res.json(result);
   } catch (error) {
     res.status(400);
@@ -86,11 +97,12 @@ const activate = async (req: Request, res: Response) => {
 };
 
 const usersRouter = (app: express.Application) => {
-  app.get('/users', getAll);
+  app.get('/cust-users/:isActive/:limit', getAllClients);
+  app.get('/emp-users/:isActive/:limit', getAllEmployees);
   app.get('/users/:ID', getById);
   app.post('/users', create);
   app.put('/users/:ID', update);
-  app.put('/users/deactivate/:ID', deactivate);
+  app.put('/users/de-activate/:ID', deactivate);
   app.put('/users/activate/:ID', activate);
 };
 
