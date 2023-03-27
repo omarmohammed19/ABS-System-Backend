@@ -51,9 +51,11 @@ import extraInfoRouter from './Backend/ship_ExtraInfo/Route';
 import pricePlansRouter from './Backend/cust_PricePlans/Route';
 import contactLogsRouter from './Backend/ship_ContactLogs/Route';
 import languagesRouter from './Backend/sys_Languages/Route';
+import prevStatusRouter from './Backend/ship_prevStatus/Route';
+import statusRouter from './Backend/ship_Status/Route';
+import pickupsRouter from './Backend/ship_Pickups/Route';
 import mainAccountsRouter from './Backend/cust_MainAccounts/Route';
 import paymentInfoRouter from './Backend/cust_PaymentInfo/Route';
-
 
 const corsOptions = {
   origin: '*',
@@ -122,6 +124,9 @@ TicketStatus(app);
 TicketTypes(app);
 CountriesRouter(app);
 BanksRouter(app);
+prevStatusRouter(app);
+statusRouter(app);
+pickupsRouter(app);
 mainAccountsRouter(app);
 paymentInfoRouter(app);
 

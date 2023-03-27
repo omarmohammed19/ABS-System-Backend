@@ -52,7 +52,7 @@ const update = async (req: Request, res: Response) => {
   try {
     const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
     const contactLogs = <ContactLogsModel>(<unknown>{
-      AWB: req.body.AWB,
+      AWB: req.params.AWB,
       userID: req.body.userID,
       contactTypeID: req.body.contactTypeID,
       actionDate: currentDate,
@@ -62,6 +62,7 @@ const update = async (req: Request, res: Response) => {
     const result = await contactLogsController.update(language, contactLogs);
     res.json(result);
   } catch (error) {
+    console.log('🚀 ~ file: Route.ts:66 ~ update ~ error:', error);
     res.status(400);
     res.json(error);
   }
