@@ -74,13 +74,13 @@ export class ContactLogsController {
           },
           {
             where: {
-              ID: contactLogs.ID,
+              AWB: contactLogs.AWB,
             },
             transaction: t, // pass transaction object to query
           }
         );
         const result = await getByAWB(contactLogs.AWB, language, t);
-        return result ? result.toJSON() : 'Could not update ContactLogs';
+        return result;
       });
     } catch (err) {
       throw new Error(`Could not update ContactLogs. Error: ${err}`);
