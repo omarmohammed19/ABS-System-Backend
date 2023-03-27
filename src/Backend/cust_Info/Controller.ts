@@ -110,6 +110,7 @@ export class InfoController {
 
   async deactivate(ID: number): Promise<string> {
     try {
+
       const result = await De_Activate<InfoModel>(Info, 'ID', ID, 'deactivate');
       return result;
     } catch (err) {
@@ -119,6 +120,7 @@ export class InfoController {
 
   async activate(ID: number): Promise<string> {
     try {
+
       const result = await De_Activate<InfoModel>(Info, 'ID', ID, 'activate');
       return result;
     } catch (err) {

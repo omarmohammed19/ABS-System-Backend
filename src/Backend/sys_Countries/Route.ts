@@ -6,7 +6,7 @@ const countriescontroller = new CountriesController();
 
 const getAll = async (req: Request, res: Response) => {
     try {
-        const result = await countriescontroller.index();
+        const result = await countriescontroller.index(Number(req.params.isActive));
         res.json(result);
     } catch (error) {
         res.status(400);
@@ -27,7 +27,9 @@ const getById = async (req: Request, res: Response) => {
 const create = async (req: Request, res: Response) => {
     try {
         const country = <CountriesModel>{
-            countryName: req.body.countryName,
+            enCountryName: req.body.enCountryName,
+            arCountryName: req.body.arCountryName,
+            Notes: req.body.Notes,
         };
         const result = await countriescontroller.create(country);
         res.json(result);
@@ -43,7 +45,9 @@ const update = async (req: Request, res: Response) => {
     try {
         const country = <CountriesModel>{
             ID: Number(req.params.ID),
-            countryName: req.body.countryName,
+            enCountryName: req.body.enCountryName,
+            arCountryName: req.body.arCountryName,
+            Notes: req.body.Notes,
         };
         const result = await countriescontroller.update(country);
         res.json(result);
@@ -74,8 +78,8 @@ const activate = async (req: Request, res: Response) => {
 };
 
 const CountriesRouter = (app: express.Application) => {
-    app.get('/countries', getAll);
-    app.get('/countries/:ID', getById);
+    app.get('/countries/:isActive', getAll);
+    app.get('/countries-by-id/:ID', getById);
     app.post('/countries', create);
     app.put('/countries/:ID', update);
     app.put('/countries/deactivate/:ID', deactivate);

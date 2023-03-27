@@ -15,13 +15,13 @@ const getById = (ID: number, t: Transaction, language?: string) => {
 }
 
 export class ZoneTypesController {
-    async index(language: string): Promise<ZoneTypesModel[]> {
+    async index(language: string, isActive: number): Promise<ZoneTypesModel[]> {
         try {
             return await sequelize.transaction(async (t) => {
                 const result = await ZoneTypes.findAll({
                     attributes: language === 'en' ? [['ID', 'Zone Type ID'], ['enZoneType', 'Zone Type'], 'Notes'] : [['ID', 'رقم نوع المنطقة'], ['arZoneType', 'نوع المنطقة'], ['Notes', 'ملاحظات']],
                     where: {
-                        IsActive: true
+                        IsActive: isActive
                     },
                     transaction: t
                 });

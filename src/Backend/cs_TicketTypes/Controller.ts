@@ -4,9 +4,8 @@ import { sequelize } from '../../Config/database';
 import { Transaction } from 'sequelize';
 
 const getById = (ID: number, t: Transaction, language?: string,) => {
-    const attributes = (language === 'en') ? ['ID', 'enTicketType', 'Notes'] : ['ID', 'arTicketType', 'Notes'];
     return TicketTypes.findOne({
-        attributes: attributes,
+        attributes: language === 'en' ? ['ID', 'enTicketType', 'Notes'] : [['ID', 'ID'], ['arTicketType', 'نوع التذكرة'], ['Notes', 'ملحوظات']],
         where: {
             ID: ID,
             isActive: true,
@@ -17,14 +16,13 @@ const getById = (ID: number, t: Transaction, language?: string,) => {
 
 export class TicketTypesController {
 
-    async index(language: string): Promise<TicketTypesModel[]> {
+    async index(language: string, isActive: number): Promise<TicketTypesModel[]> {
         try {
             return await sequelize.transaction(async (t) => { // start managed transaction and pass transaction object to the callback function
-                const attributes = (language === 'en') ? ['ID', 'enTicketType', 'Notes'] : ['ID', 'arTicketType', 'Notes'];
                 const result = await TicketTypes.findAll({
-                    attributes: attributes,
+                    attributes: language === 'en' ? ['ID', 'enTicketType', 'Notes'] : [['ID', 'ID'], ['arTicketType', 'نوع التذكرة'], ['Notes', 'ملحوظات']],
                     where: {
-                        isActive: true,
+                        isActive: isActive,
                     },
                     transaction: t // pass transaction object to query
                 });
@@ -99,7 +97,7 @@ export class TicketTypesController {
 
     async deactivate(ID: number): Promise<string> {
         try {
-            const result = De_Activate<TicketTypesModel>(TicketTypes, 'ID', ID, 'deactivate');
+            const result = await De_Activate<TicketTypesModel>(TicketTypes, 'ID', ID, 'deactivate');
             return result;
         } catch (err) {
             throw new Error(`Could not deactivate TicketType. Error: ${err}`);
@@ -108,7 +106,7 @@ export class TicketTypesController {
 
     async activate(ID: number): Promise<string> {
         try {
-            const result = De_Activate<TicketTypesModel>(TicketTypes, 'ID', ID, 'activate');
+            const result = await De_Activate<TicketTypesModel>(TicketTypes, 'ID', ID, 'activate');
             return result;
         } catch (err) {
             throw new Error(`Could not activate TicketType. Error: ${err}`);

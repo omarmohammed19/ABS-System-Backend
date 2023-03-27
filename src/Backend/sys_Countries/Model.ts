@@ -3,7 +3,9 @@ import { sequelize } from '../../Config/database';
 
 export interface CountriesModel extends Model {
     ID: number;
-    countryName: string;
+    enCountryName: string;
+    arCountryName: string;
+    Notes: string;
     isActive: boolean;
 }
 
@@ -15,7 +17,13 @@ export const Countries = sequelize.define<CountriesModel>(
             primaryKey: true,
             autoIncrement: true,
         },
-        countryName: {
+        enCountryName: {
+            type: DataTypes.STRING,
+        },
+        arCountryName: {
+            type: DataTypes.STRING,
+        },
+        Notes: {
             type: DataTypes.STRING,
         },
         isActive: {

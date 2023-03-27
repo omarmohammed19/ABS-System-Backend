@@ -7,7 +7,7 @@ const paymentMethodsController = new PaymentMethodsController();
 const getAll = async (req: Request, res: Response) => {
   try {
     const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-    const result = await paymentMethodsController.index(language);
+    const result = await paymentMethodsController.index(language, Number(req.params.isActive));
     res.json(result);
   } catch (error) {
     res.status(400);
@@ -18,7 +18,7 @@ const getAll = async (req: Request, res: Response) => {
 const getById = async (req: Request, res: Response) => {
   try {
     const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-    const result = await paymentMethodsController.getPaymentMethodsById(Number(req.params.ID), language);
+    const result = await paymentMethodsController.getPaymentMethodById(Number(req.params.ID), language);
     res.json(result);
   } catch (error) {
     res.status(400);
@@ -44,13 +44,14 @@ const create = async (req: Request, res: Response) => {
 
 const update = async (req: Request, res: Response) => {
   try {
+    const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
     const bankDetails = <PaymentMethodsModel>{
       ID: Number(req.params.ID),
       enPaymentMethodType: req.body.enPaymentMethodType,
       arPaymentMethodType: req.body.arPaymentMethodType,
       Notes: req.body.Notes
     };
-    const result = await paymentMethodsController.update(bankDetails);
+    const result = await paymentMethodsController.update(bankDetails,language);
     res.json(result);
   } catch (error) {
     console.log(error);
@@ -81,12 +82,12 @@ const activate = async (req: Request, res: Response) => {
 };
 
 const paymentMethodsRouter = (app: express.Application) => {
-  app.get('/paymentMethods', getAll);
-  app.get('/paymentMethods/:ID', getById);
-  app.post('/paymentMethods', create);
-  app.put('/paymentMethods/:ID', update);
-  app.put('/paymentMethods/deactivate/:ID', deactivate);
-  app.put('/paymentMethods/activate/:ID', activate);
+  app.get('/payment-methods/:isActive', getAll);
+  app.get('/payment-methods-by-ID/:ID', getById);
+  app.post('/payment-methods', create);
+  app.put('/payment-methods/:ID', update);
+  app.put('/payment-methods/de-activate/:ID', deactivate);
+  app.put('/payment-methods/activate/:ID', activate);
 };
 
 export default paymentMethodsRouter;

@@ -7,11 +7,11 @@ const locationsController = new LocationsController();
 const getAll = async (req: Request, res: Response) => {
   try {
     const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-    const result = await locationsController.index(language);
+    const result = await locationsController.index(language, Number(req.params.isActive), Number(req.params.limit));
     res.json(result);
   } catch (error) {
     console.log(error);
-    
+
     res.status(400);
     res.json(error);
   }
@@ -20,7 +20,19 @@ const getAll = async (req: Request, res: Response) => {
 const getById = async (req: Request, res: Response) => {
   try {
     const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-    const result = await locationsController.getLocationsByID(Number(req.params.ID),language);
+    const result = await locationsController.getLocationsByID(Number(req.params.ID), language);
+    res.json(result);
+  } catch (error) {
+    console.log(error);
+    res.status(400);
+    res.json(error);
+  }
+};
+
+const getBySubAccountId = async (req: Request, res: Response) => {
+  try {
+    const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
+    const result = await locationsController.getLocationsBySubAccountID(language, Number(req.params.subAccountID));
     res.json(result);
   } catch (error) {
     res.status(400);
@@ -45,16 +57,17 @@ const create = async (req: Request, res: Response) => {
 
 const update = async (req: Request, res: Response) => {
   try {
+    const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
     const mobileCash = <LocationsModel>{
-        ID: Number(req.params.ID),
-        locationName: req.body.locationName,
-        addressID: req.body.addressID,
+      ID: Number(req.params.ID),
+      locationName: req.body.locationName,
+      addressID: req.body.addressID,
     };
-    const result = await locationsController.update(mobileCash);
+    const result = await locationsController.update(mobileCash, language);
     res.json(result);
   } catch (error) {
     console.log(error);
-    
+
     res.status(400);
     res.json(error);
   }
@@ -81,11 +94,12 @@ const activate = async (req: Request, res: Response) => {
 };
 
 const locationsRouter = (app: express.Application) => {
-  app.get('/locations', getAll);
-  app.get('/locations/:ID', getById);
+  app.get('/locations/:isActive/:limit', getAll);
+  app.get('/locations-by-ID/:ID', getById);
+  app.get('/locations-by-sub-account-ID/:subAccountID', getBySubAccountId);
   app.post('/locations', create);
-  app.put('/walletDetails/:ID', update);
-  app.put('/locations/deactivate/:ID', deactivate);
+  app.put('/locations/:ID', update);
+  app.put('/locations/de-activate/:ID', deactivate);
   app.put('/locations/activate/:ID', activate);
 };
 

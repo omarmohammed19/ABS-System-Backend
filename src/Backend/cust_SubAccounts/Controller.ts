@@ -12,15 +12,15 @@ const getById = async (ID: number, t: Transaction, language?: string) => {
 };
 
 export class SubAccountsController {
-  async index(language: string): Promise<SubAccountsModel[]> {
+  async index(language: string, isActive: number, limit: number): Promise<SubAccountsModel[]> {
     try {
-      const query = 'EXEC [dbo].[p_GET_cust_SubAccounts] @language = :language, @Method = :Method';
-      const replacements = { language: language, Method: 'GET' };
+      const query = 'EXEC [dbo].[p_GET_cust_SubAccounts] @language = :language, @Method = :Method, @isActive = :isActive, @limit = :limit';
+      const replacements = { language: language, Method: 'GET', isActive: isActive, limit: limit };
       const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
       const result = await sequelize.query(query, options);
       return result as unknown as SubAccountsModel[];
     } catch (err) {
-      throw new Error(`Could not get all PaymentMethods. Error: ${err}`);
+      throw new Error(`Could not get all SubAccounts. Error: ${err}`);
     }
   }
 

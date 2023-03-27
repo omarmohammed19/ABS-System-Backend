@@ -6,11 +6,12 @@ const walletDetailsController = new WalletDetailsController();
 
 const getAll = async (req: Request, res: Response) => {
   try {
-    const result = await walletDetailsController.index();
+    const lang = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
+    const result = await walletDetailsController.index(lang, Number(req.params.isActive), Number(req.params.limit));
     res.json(result);
   } catch (error) {
     console.log(error);
-    
+
     res.status(400);
     res.json(error);
   }
@@ -18,7 +19,8 @@ const getAll = async (req: Request, res: Response) => {
 
 const getById = async (req: Request, res: Response) => {
   try {
-    const result = await walletDetailsController.getWalletDetailsByID(Number(req.params.ID));
+    const lang = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
+    const result = await walletDetailsController.getWalletDetailsByID(Number(req.params.ID), lang);
     res.json(result);
   } catch (error) {
     res.status(400);
@@ -29,8 +31,8 @@ const getById = async (req: Request, res: Response) => {
 const create = async (req: Request, res: Response) => {
   try {
     const mobileCash = <WalletDetailsModel>{
-        walletNumber: req.body.walletNumber,
-        mobileNumber: req.body.mobileNumber,
+      walletNumber: req.body.walletNumber,
+      mobileNumber: req.body.mobileNumber,
     };
     const result = await walletDetailsController.create(mobileCash);
     res.json(result);
@@ -43,16 +45,17 @@ const create = async (req: Request, res: Response) => {
 
 const update = async (req: Request, res: Response) => {
   try {
+    const lang = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
     const mobileCash = <WalletDetailsModel>{
-        ID: Number(req.params.ID),
-        walletNumber: req.body.walletNumber,
-        mobileNumber: req.body.mobileNumber,
+      ID: Number(req.params.ID),
+      walletNumber: req.body.walletNumber,
+      mobileNumber: req.body.mobileNumber,
     };
-    const result = await walletDetailsController.update(mobileCash);
+    const result = await walletDetailsController.update(mobileCash, lang);
     res.json(result);
   } catch (error) {
     console.log(error);
-    
+
     res.status(400);
     res.json(error);
   }
@@ -79,12 +82,12 @@ const activate = async (req: Request, res: Response) => {
 };
 
 const walletDetailsRouter = (app: express.Application) => {
-  app.get('/walletDetails', getAll);
-  app.get('/walletDetails/:ID', getById);
-  app.post('/walletDetails', create);
-  app.put('/walletDetails/:ID', update);
-  app.put('/walletDetails/deactivate/:ID', deactivate);
-  app.put('/walletDetails/activate/:ID', activate);
+  app.get('/wallet-details/:isActive/:limit', getAll);
+  app.get('/wallet-details-by-ID/:ID', getById);
+  app.post('/wallet-details', create);
+  app.put('/wallet-details/:ID', update);
+  app.put('/wallet-details/de-activate/:ID', deactivate);
+  app.put('/wallet-details/activate/:ID', activate);
 };
 
 export default walletDetailsRouter;

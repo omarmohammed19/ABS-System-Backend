@@ -48,11 +48,14 @@ import InfoRouter from './Backend/cust_Info/Route';
 import zonesRouter from './Backend/cmp_Zones/Route';
 import zonesTypesRouter from './Backend/cmp_ZoneTypes/Route';
 import extraInfoRouter from './Backend/ship_ExtraInfo/Route';
+import pricePlansRouter from './Backend/cust_PricePlans/Route';
 import contactLogsRouter from './Backend/ship_ContactLogs/Route';
 import languagesRouter from './Backend/sys_Languages/Route';
 import prevStatusRouter from './Backend/ship_prevStatus/Route';
 import statusRouter from './Backend/ship_Status/Route';
 import pickupsRouter from './Backend/ship_Pickups/Route';
+import mainAccountsRouter from './Backend/cust_MainAccounts/Route';
+import paymentInfoRouter from './Backend/cust_PaymentInfo/Route';
 
 const corsOptions = {
   origin: '*',
@@ -114,6 +117,7 @@ InfoRouter(app);
 zonesRouter(app);
 zonesTypesRouter(app);
 extraInfoRouter(app);
+pricePlansRouter(app);
 contactLogsRouter(app);
 languagesRouter(app);
 TicketStatus(app);
@@ -123,6 +127,8 @@ BanksRouter(app);
 prevStatusRouter(app);
 statusRouter(app);
 pickupsRouter(app);
+mainAccountsRouter(app);
+paymentInfoRouter(app);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port http://${address}:${process.env.PORT}`);
