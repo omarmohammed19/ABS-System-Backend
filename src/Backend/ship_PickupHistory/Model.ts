@@ -27,7 +27,7 @@ export const PickupHistory = sequelize.define<PickupHistoryModel>(
       type: DataTypes.INTEGER,
     },
     actionTime: {
-      type: DataTypes.DATE,
+      type: DataTypes.INTEGER,
     },
     userID: {
       type: DataTypes.INTEGER,
