@@ -3,10 +3,9 @@ import { De_Activate } from '../../Services/De_Activate';
 import { sequelize } from '../../Config/database';
 import { Transaction } from 'sequelize';
 
-const getById = (ID: number, t: Transaction, language?: string) => {
-  const attributes = language === 'en' ? ['ID', 'enServiceType', 'Notes'] : ['ID', 'arServiceType', 'Notes'];
+const getById = (ID: number, t: Transaction, language: string) => {
   return ServiceTypes.findOne({
-    attributes: attributes,
+    attributes: language === 'en' ? [['ID', 'Service Type ID'], ['enServiceType', 'Service Type'], 'Notes'] : [['ID', 'رقم التسلسل'], ['arServiceType', 'نوع الخدمة'], ['Notes', 'ملاحظات']],
     where: {
       ID: ID,
       isActive: true,
@@ -16,15 +15,14 @@ const getById = (ID: number, t: Transaction, language?: string) => {
 };
 
 export class ServiceTypesController {
-  async index(language: string): Promise<ServiceTypesModel[]> {
+  async index(language: string, isActive: number): Promise<ServiceTypesModel[]> {
     try {
-      const attributes = language === 'en' ? ['ID', 'enServiceType', 'Notes'] : ['ID', 'arServiceType', 'Notes'];
       return await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
         const result = await ServiceTypes.findAll({
-          attributes: attributes,
+          attributes: language === 'en' ? [['ID', 'Service Type ID'], ['enServiceType', 'Service Type'], 'Notes'] : [['ID', 'رقم التسلسل'], ['arServiceType', 'نوع الخدمة'], ['Notes', 'ملاحظات']],
           where: {
-            isActive: true,
+            isActive: isActive,
           },
           transaction: t, // pass transaction object to query
         });
@@ -55,7 +53,7 @@ export class ServiceTypesController {
     }
   }
 
-  async getServiceTypesById(ID: number, language: string): Promise<ServiceTypesModel | string> {
+  async getServiceTypeById(ID: number, language: string): Promise<ServiceTypesModel | string> {
     try {
       const result = await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
@@ -68,7 +66,7 @@ export class ServiceTypesController {
     }
   }
 
-  async update(serviceTypes: ServiceTypesModel): Promise<ServiceTypesModel | string> {
+  async update(serviceTypes: ServiceTypesModel,language:string): Promise<ServiceTypesModel | string> {
     try {
       return await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
@@ -86,7 +84,7 @@ export class ServiceTypesController {
           }
         );
 
-        const result = await getById(Number(serviceTypes.ID), t);
+        const result = await getById(Number(serviceTypes.ID), t,language);
         return result ? result.toJSON() : 'Could not update ServiceTypes';
       });
     } catch (err) {

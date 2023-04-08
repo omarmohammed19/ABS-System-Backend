@@ -7,7 +7,7 @@ const languagesController = new LanguagesController();
 const getAll = async (req: Request, res: Response) => {
     try {
         const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-        const result = await languagesController.index(language);
+        const result = await languagesController.index(language, Number(req.params.isActive));
         res.json(result);
     } catch (error) {
         res.status(400);
@@ -76,8 +76,8 @@ const activate = async (req: Request, res: Response) => {
 }
 
 const languagesRouter = (app: express.Application) => {
-    app.get('/languages', getAll);
-    app.get('/languages/:ID', getById);
+    app.get('/languages/:isActive', getAll);
+    app.get('/languages-by-id/:ID', getById);
     app.post('/languages', create);
     app.put('/languages/:ID', update);
     app.put('/languages/de-activate/:ID', deactivate);

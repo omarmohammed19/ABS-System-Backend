@@ -15,14 +15,14 @@ const getById = (ID: number, t: Transaction, language?: string) => {
 };
 
 export class TitlesController {
-  async index(language: string): Promise<TitlesModel[]> {
+  async index(language: string, isActive: number): Promise<TitlesModel[]> {
     try {
       return await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
         const result = await Titles.findAll({
           attributes: language === 'en' ? [['ID', 'Title ID'], ['enTitleName', 'Title']] : [['ID', 'رقم اللقب'], ['arTitleName', 'اسم اللقب']],
           where: {
-            isActive: true,
+            isActive: isActive,
           },
           transaction: t, // pass transaction object to query
         });

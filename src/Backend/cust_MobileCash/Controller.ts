@@ -3,9 +3,9 @@ import { De_Activate } from '../../Services/De_Activate';
 import { sequelize } from '../../Config/database';
 import { Transaction } from 'sequelize';
 
-const getById = (ID: number, t: Transaction) => {
+const getById = (ID: number, t: Transaction, language: string) => {
   return MobileCash.findOne({
-    attributes: ['ID', 'mobileNumber'],
+    attributes: language === 'en' ? [['ID', 'Mobile Cash ID'], ['mobileNumber', 'Mobile Number']] : [['ID', 'رقم التسلسل'], ['mobileNumber', 'رقم التليفون']],
     where: {
       ID: ID,
       isActive: true,
@@ -15,16 +15,17 @@ const getById = (ID: number, t: Transaction) => {
 };
 
 export class MobileCashController {
-  async index(): Promise<MobileCashModel[]> {
+  async index(language: string, isActive: number, limit: number): Promise<MobileCashModel[]> {
     try {
       return await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
         const result = await MobileCash.findAll({
-          attributes: ['ID', 'mobileNumber'],
+          attributes: language === 'en' ? [['ID', 'Mobile Cash ID'], ['mobileNumber', 'Mobile Number']] : [['ID', 'رقم التسلسل'], ['mobileNumber', 'رقم التليفون']],
           where: {
-            isActive: true,
+            isActive: isActive,
           },
           transaction: t, // pass transaction object to query
+          limit: limit
         });
 
         return result.map((item: any) => item.toJSON()) as MobileCashModel[]; // return the result of the query (if successful) to be committed automatically
@@ -51,11 +52,11 @@ export class MobileCashController {
     }
   }
 
-  async getMobileCashByID(ID: number): Promise<MobileCashModel | string> {
+  async getMobileCashByID(ID: number, language: string): Promise<MobileCashModel | string> {
     try {
       const result = await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
-        const item = await getById(ID, t); // pass transaction object to getById function
+        const item = await getById(ID, t, language); // pass transaction object to getById function
         return item ? item.toJSON() : 'Could not get MobileCash by ID';
       });
       return result;
@@ -64,7 +65,7 @@ export class MobileCashController {
     }
   }
 
-  async update(mobileCash: MobileCashModel): Promise<MobileCashModel | string> {
+  async update(mobileCash: MobileCashModel, language: string): Promise<MobileCashModel | string> {
     try {
       return await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
@@ -80,7 +81,7 @@ export class MobileCashController {
           }
         );
 
-        const result = await getById(Number(mobileCash.ID), t);
+        const result = await getById(Number(mobileCash.ID), t, language);
         return result ? result.toJSON() : 'Could not update MobileCash';
       });
     } catch (err) {

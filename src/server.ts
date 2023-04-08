@@ -55,7 +55,12 @@ import governoratesRouter from './Backend/sys_Governorates/Route';
 import templateRouter from './Backend/cs_Templates/Route';
 import citiesRouter from './Backend/cmp_Cities/Route';
 import ticketsRouter from './Backend/cs_Tickets/Route';
-
+import prevStatusRouter from './Backend/ship_prevStatus/Route';
+import statusRouter from './Backend/ship_Status/Route';
+import pickupsRouter from './Backend/ship_Pickups/Route';
+import mainAccountsRouter from './Backend/cust_MainAccounts/Route';
+import paymentInfoRouter from './Backend/cust_PaymentInfo/Route';
+import custzonesRouter from './Backend/cust_Zones/Route';
 
 const corsOptions = {
   origin: '*',
@@ -128,6 +133,12 @@ governoratesRouter(app);
 templateRouter(app);
 citiesRouter(app);
 ticketsRouter(app);
+prevStatusRouter(app);
+statusRouter(app);
+pickupsRouter(app);
+mainAccountsRouter(app);
+paymentInfoRouter(app);
+custzonesRouter(app);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port http://${address}:${process.env.PORT}`);

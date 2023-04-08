@@ -10,7 +10,7 @@ const currentDate = Sequalize.literal('GETDATE()');
 const getAll = async (req: Request, res: Response) => {
   try {
     const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-    const result = await subAccountsController.index(language);
+    const result = await subAccountsController.index(language, Number(req.params.isActive), Number(req.params.limit));
     res.json(result);
   } catch (error) {
     res.status(400);
@@ -97,12 +97,12 @@ const activate = async (req: Request, res: Response) => {
 };
 
 const subAccountsRouter = (app: express.Application) => {
-  app.get('/subAccounts', getAll);
-  app.get('/subAccounts/:ID', getById);
-  app.post('/subAccounts', create);
-  app.put('/subAccounts/:ID', update);
-  app.put('/subAccounts/deactivate/:ID', deactivate);
-  app.put('/subAccounts/activate/:ID', activate);
+  app.get('/sub-accounts/:isActive/:limit', getAll);
+  app.get('/sub-accounts-by-ID/:ID', getById);
+  app.post('/sub-accounts', create);
+  app.put('/sub-accounts/:ID', update);
+  app.put('/sub-accounts/de-activate/:ID', deactivate);
+  app.put('/sub-accounts/activate/:ID', activate);
 };
 
 export default subAccountsRouter;

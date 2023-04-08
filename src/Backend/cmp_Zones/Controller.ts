@@ -13,10 +13,10 @@ const getById = (ID: number, t: Transaction, language?: string) => {
 }
 
 export class ZonesController {
-    async index(language: string): Promise<ZonesModel[]> {
+    async index(language: string, isActive: number): Promise<ZonesModel[]> {
         try {
-            const query = 'EXEC [dbo].[p_GET_cmp_Zones] @language = :language, @Method = :Method';
-            const replacements = { language: language, Method: 'GET' };
+            const query = 'EXEC [dbo].[p_GET_cmp_Zones] @language = :language, @Method = :Method, @isActive = :isActive';
+            const replacements = { language: language, Method: 'GET', isActive: isActive };
             const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
             const result = await sequelize.query(query, options)
             return result as unknown as ZonesModel[];
@@ -51,6 +51,19 @@ export class ZonesController {
                 const result = getById(ID, t, language);
                 return result;
             });
+        }
+        catch (err) {
+            throw new Error(`Could not get Zone Type by ID. Error: ${err}`);
+        }
+    }
+
+    async getZoneByZoneTypeID(zoneTypeID: number, language: string): Promise<ZonesModel[]> {
+        try {
+            const query = 'EXEC [dbo].[p_GET_cmp_Zones] @language = :language, @Method = :Method, @zoneTypeID = :zoneTypeID';
+            const replacements = { language: language, Method: 'GET_ByZoneTypeID', zoneTypeID: zoneTypeID };
+            const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, };
+            const result = await sequelize.query(query, options);
+            return result as unknown as ZonesModel[];
         }
         catch (err) {
             throw new Error(`Could not get Zone Type by ID. Error: ${err}`);

@@ -7,7 +7,7 @@ const infoController = new InfoController();
 const getAll = async (req: Request, res: Response) => {
     try {
         const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-        const result = await infoController.index(language);
+        const result = await infoController.index(language, Number(req.params.isActive));
         res.json(result);
     } catch (error) {
         res.status(400);

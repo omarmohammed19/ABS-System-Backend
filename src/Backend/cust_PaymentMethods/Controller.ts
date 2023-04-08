@@ -4,9 +4,8 @@ import { sequelize } from '../../Config/database';
 import { Transaction } from 'sequelize';
 
 const getById = (ID: number, t: Transaction, language?: string) => {
-  const attributes = language === 'en' ? ['ID', 'enPaymentMethodType', 'Notes'] : ['ID', 'arPaymentMethodType', 'Notes'];
   return PaymentMethods.findOne({
-    attributes: attributes,
+    attributes: language === 'en' ? [['ID', 'Payment Method ID'], ['enPaymentMethodType', 'Payment Method Type'], 'Notes'] : [['ID', 'رقم التسلسل'], ['arPaymentMethodType', 'نوع طريقة الدفع'], ['Notes', 'ملاحظات']],
     where: {
       ID: ID,
       isActive: true,
@@ -16,15 +15,14 @@ const getById = (ID: number, t: Transaction, language?: string) => {
 };
 
 export class PaymentMethodsController {
-  async index(language: string): Promise<PaymentMethodsModel[]> {
+  async index(language: string, isActive: number): Promise<PaymentMethodsModel[]> {
     try {
-      const attributes = language === 'en' ? ['ID', 'enPaymentMethodType', 'Notes'] : ['ID', 'arPaymentMethodType', 'Notes'];
       return await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
         const result = await PaymentMethods.findAll({
-          attributes: attributes,
+          attributes: language === 'en' ? [['ID', 'Payment Method ID'], ['enPaymentMethodType', 'Payment Method Type'], 'Notes'] : [['ID', 'رقم التسلسل'], ['arPaymentMethodType', 'نوع طريقة الدفع'], ['Notes', 'ملاحظات']],
           where: {
-            isActive: true,
+            isActive: isActive,
           },
           transaction: t, // pass transaction object to query
         });
@@ -55,7 +53,7 @@ export class PaymentMethodsController {
     }
   }
 
-  async getPaymentMethodsById(ID: number, language: string): Promise<PaymentMethodsModel | string> {
+  async getPaymentMethodById(ID: number, language: string): Promise<PaymentMethodsModel | string> {
     try {
       const result = await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
@@ -68,7 +66,7 @@ export class PaymentMethodsController {
     }
   }
 
-  async update(paymentMethods: PaymentMethodsModel): Promise<PaymentMethodsModel | string> {
+  async update(paymentMethods: PaymentMethodsModel, language: string): Promise<PaymentMethodsModel | string> {
     try {
       return await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
@@ -86,7 +84,7 @@ export class PaymentMethodsController {
           }
         );
 
-        const result = await getById(Number(paymentMethods.ID), t);
+        const result = await getById(Number(paymentMethods.ID), t, language);
         return result ? result.toJSON() : 'Could not update PaymentMethods';
       });
     } catch (err) {

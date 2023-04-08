@@ -16,24 +16,10 @@ const getById = (ID: number, t: Transaction, language?: string) => {
 
 export class BranchesController {
 
-    async index(language: string): Promise<BranchesModel[]> {
+    async index(language: string, isActive: number): Promise<BranchesModel[]> {
         try {
-            const query = 'EXEC [dbo].[p_GET_cmp_Branches] @language = :language, @Method = :Method';
-            const replacements = { language: language, Method: 'GET' };
-            const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
-            const result = await sequelize.query(query, options);
-            return result as unknown as BranchesModel[];
-        }
-        catch (err) {
-            throw new Error(`Could not get all Branches. Error: ${err}`);
-        }
-    }
-
-
-    async indexDeActivated(language: string): Promise<BranchesModel[]> {
-        try {
-            const query = 'EXEC [dbo].[p_GET_cmp_Branches] @language = :language, @Method = :Method';
-            const replacements = { language: language, Method: 'GET_DeActivated' };
+            const query = 'EXEC [dbo].[p_GET_cmp_Branches] @language = :language, @Method = :Method, @isActive = :isActive';
+            const replacements = { language: language, Method: 'GET', isActive: isActive };
             const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
             const result = await sequelize.query(query, options);
             return result as unknown as BranchesModel[];
