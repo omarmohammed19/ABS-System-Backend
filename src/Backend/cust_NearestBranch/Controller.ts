@@ -12,10 +12,10 @@ const getById = async (ID: number, t: Transaction, language?: string) => {
 }
 
 export class NearestBranchController {
-    async index(language: string): Promise<NearestBranchModel[]> {
+    async index(language: string, isActive: number, limit: number): Promise<NearestBranchModel[]> {
         try {
-            const query = 'EXEC [dbo].[p_GET_cust_NearestBranch] @language = :language, @Method = :Method';
-            const replacements = { language: language, Method: 'GET' };
+            const query = 'EXEC [dbo].[p_GET_cust_NearestBranch] @language = :language, @Method = :Method, @isActive = :isActive, @limit = :limit';
+            const replacements = { language: language, Method: 'GET', isActive: isActive, limit: limit };
             const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
             const result = await sequelize.query(query, options)
             return result as unknown as NearestBranchModel[];

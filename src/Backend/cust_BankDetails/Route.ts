@@ -7,7 +7,7 @@ const bankDetailsController = new BankDetailsController();
 const getAll = async (req: Request, res: Response) => {
     try {
         const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-        const result = await bankDetailsController.index(language, Number(req.params.isActive));
+        const result = await bankDetailsController.index(language, Number(req.params.isActive), Number(req.params.limit));
         res.json(result);
     } catch (error) {
         res.status(400);
@@ -88,7 +88,7 @@ const activate = async (req: Request, res: Response) => {
 };
 
 const bankDetailsRouter = (app: express.Application) => {
-    app.get('/bank-details/:isActive', getAll);
+    app.get('/bank-details/:isActive/:limit', getAll);
     app.get('/bank-details-by-ID/:ID', getById);
     app.post('/bank-details', create);
     app.put('/bank-details/:ID', update);

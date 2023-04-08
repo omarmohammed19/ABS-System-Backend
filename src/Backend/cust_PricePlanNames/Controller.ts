@@ -4,9 +4,8 @@ import { sequelize } from '../../Config/database';
 import { Transaction } from 'sequelize';
 
 const getById = async (ID: number, t: Transaction, language?: string) => {
-    const attributes = (language === 'en') ? ['ID', 'enPricePlanName', 'pricePlanID', 'numberOfShipments', 'collectionStart', 'collectionIncrement', 'collectionFees', 'basicPlan', 'defaultPlan', 'Notes'] : ['ID', 'arPricePlanName', 'pricePlanID', 'numberOfShipments', 'collectionStart', 'collectionIncrement', 'collectionFees', 'basicPlan', 'defaultPlan', 'Notes'];
     return await PricePlanNames.findOne({
-        attributes: attributes,
+        attributes: (language === 'en') ? [['ID', 'Price Plan Name ID'], ['enPricePlanName', 'Price Plan Name'], ['pricePlanID', 'Price Plan ID'], ['numberOfShipments', 'Number Of Shipments'], ['collectionStart', 'Collection Start'], ['collectionIncrement', 'Collection Increment'], ['collectionFees', 'Collection Fees'], ['basicPlan', 'Basic Plan'], ['defaultPlan', 'Default Plan'], 'Notes'] : [['ID', 'رقم التسلسل'], ['arPricePlanName', 'اسم خطة الاسعار'], ['pricePlanID', 'رقم خطة الاسعار'], ['numberOfShipments', 'عدد الشحنات'], ['collectionStart', 'بدء التحصيل'], ['collectionIncrement', 'التحصيل يزيد ب'], ['collectionFees', 'مصاريف التحصيل'], ['basicPlan', 'خطة اساسية'], ['defaultPlan', 'خطة افتراضية'], ['Notes', 'ملاحظات']],
         where: {
             ID: ID,
             isActive: true,
@@ -16,36 +15,14 @@ const getById = async (ID: number, t: Transaction, language?: string) => {
 }
 
 export class PricePlanNamesController {
-    async index(language: string): Promise<PricePlanNamesModel[]> {
+    async index(language: string, isActive: number): Promise<PricePlanNamesModel[]> {
         try {
             return await sequelize.transaction(async (t) => {
                 // start managed transaction and pass transaction object to the callback function
-                const attributes = (language === 'en') ? ['ID', 'enPricePlanName', 'pricePlanID', 'numberOfShipments', 'collectionStart', 'collectionIncrement', 'collectionFees', 'basicPlan', 'defaultPlan', 'Notes'] : ['ID', 'arPricePlanName', 'pricePlanID', 'numberOfShipments', 'collectionStart', 'collectionIncrement', 'collectionFees', 'basicPlan', 'defaultPlan', 'Notes'];
                 const result = await PricePlanNames.findAll({
-                    attributes: attributes,
+                    attributes: (language === 'en') ? [['ID', 'Price Plan Name ID'], ['enPricePlanName', 'Price Plan Name'], ['pricePlanID', 'Price Plan ID'], ['numberOfShipments', 'Number Of Shipments'], ['collectionStart', 'Collection Start'], ['collectionIncrement', 'Collection Increment'], ['collectionFees', 'Collection Fees'], ['basicPlan', 'Basic Plan'], ['defaultPlan', 'Default Plan'], 'Notes'] : [['ID', 'رقم التسلسل'], ['arPricePlanName', 'اسم خطة الاسعار'], ['pricePlanID', 'رقم خطة الاسعار'], ['numberOfShipments', 'عدد الشحنات'], ['collectionStart', 'بدء التحصيل'], ['collectionIncrement', 'التحصيل يزيد ب'], ['collectionFees', 'مصاريف التحصيل'], ['basicPlan', 'خطة اساسية'], ['defaultPlan', 'خطة افتراضية'], ['Notes', 'ملاحظات']],
                     where: {
-                        isActive: true,
-                    },
-                    transaction: t, // pass transaction object to query
-                });
-
-                return result.map((item: any) => item.toJSON()) as PricePlanNamesModel[]; // return the result of the query (if successful) to be committed automatically
-            });
-        }
-        catch (err) {
-            throw new Error(`Could not get all PricePlanNames. Error: ${err}`);
-        }
-    }
-
-    async indexDeActivated(language: string): Promise<PricePlanNamesModel[]> {
-        try {
-            return await sequelize.transaction(async (t) => {
-                // start managed transaction and pass transaction object to the callback function
-                const attributes = (language === 'en') ? ['ID', 'enPricePlanName', 'pricePlanID', 'numberOfShipments', 'collectionStart', 'collectionIncrement', 'collectionFees', 'basicPlan', 'defaultPlan', 'Notes'] : ['ID', 'arPricePlanName', 'pricePlanID', 'numberOfShipments', 'collectionStart', 'collectionIncrement', 'collectionFees', 'basicPlan', 'defaultPlan', 'Notes'];
-                const result = await PricePlanNames.findAll({
-                    attributes: attributes,
-                    where: {
-                        isActive: false,
+                        isActive: isActive,
                     },
                     transaction: t, // pass transaction object to query
                 });

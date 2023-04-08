@@ -7,7 +7,8 @@ const branchesController = new BranchesController();
 const getAll = async (req: Request, res: Response) => {
     try {
         const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-        const result = await branchesController.index(language);
+
+        const result = await branchesController.index(language, Number(req.params.isActive));
         res.json(result);
     } catch (error) {
         res.status(400);
@@ -15,16 +16,6 @@ const getAll = async (req: Request, res: Response) => {
     }
 };
 
-const getAllDeActivated = async (req: Request, res: Response) => {
-    try {
-        const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-        const result = await branchesController.indexDeActivated(language);
-        res.json(result);
-    } catch (error) {
-        res.status(400);
-        res.json(error);
-    }
-};
 
 
 const getById = async (req: Request, res: Response) => {
@@ -90,8 +81,8 @@ const activate = async (req: Request, res: Response) => {
 }
 
 const branchesRouter = (app: express.Application) => {
-    app.get('/branches', getAll);
-    app.get('/branches/:ID', getById);
+    app.get('/branches/:isActive', getAll);
+    app.get('/branches-by-id/:ID', getById);
     app.post('/branches', create);
     app.put('/branches/:ID', update);
     app.put('/branches/de-activate/:ID', deActivate);

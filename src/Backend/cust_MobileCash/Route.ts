@@ -6,11 +6,12 @@ const mobileCashController = new MobileCashController();
 
 const getAll = async (req: Request, res: Response) => {
   try {
-    const result = await mobileCashController.index();
+    const lang = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
+    const result = await mobileCashController.index(lang, Number(req.params.isActive), Number(req.params.limit));
     res.json(result);
   } catch (error) {
     console.log(error);
-    
+
     res.status(400);
     res.json(error);
   }
@@ -18,7 +19,8 @@ const getAll = async (req: Request, res: Response) => {
 
 const getById = async (req: Request, res: Response) => {
   try {
-    const result = await mobileCashController.getMobileCashByID(Number(req.params.ID));
+    const lang = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
+    const result = await mobileCashController.getMobileCashByID(Number(req.params.ID), lang);
     res.json(result);
   } catch (error) {
     res.status(400);
@@ -29,7 +31,7 @@ const getById = async (req: Request, res: Response) => {
 const create = async (req: Request, res: Response) => {
   try {
     const mobileCash = <MobileCashModel>{
-        mobileNumber: req.body.mobileNumber,
+      mobileNumber: req.body.mobileNumber,
     };
     const result = await mobileCashController.create(mobileCash);
     res.json(result);
@@ -42,15 +44,16 @@ const create = async (req: Request, res: Response) => {
 
 const update = async (req: Request, res: Response) => {
   try {
+    const lang = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
     const mobileCash = <MobileCashModel>{
-        ID: Number(req.params.ID),
-        mobileNumber: req.body.mobileNumber,
+      ID: Number(req.params.ID),
+      mobileNumber: req.body.mobileNumber,
     };
-    const result = await mobileCashController.update(mobileCash);
+    const result = await mobileCashController.update(mobileCash, lang);
     res.json(result);
   } catch (error) {
     console.log(error);
-    
+
     res.status(400);
     res.json(error);
   }
@@ -77,12 +80,12 @@ const activate = async (req: Request, res: Response) => {
 };
 
 const mobileCashRouter = (app: express.Application) => {
-  app.get('/mobileCash', getAll);
-  app.get('/mobileCash/:ID', getById);
-  app.post('/mobileCash', create);
-  app.put('/mobileCash/:ID', update);
-  app.put('/mobileCash/deactivate/:ID', deactivate);
-  app.put('/mobileCash/activate/:ID', activate);
+  app.get('/mobile-cash/:isActive/:limit', getAll);
+  app.get('/mobile-cash-by-ID/:ID', getById);
+  app.post('/mobile-cash', create);
+  app.put('/mobile-cash/:ID', update);
+  app.put('/mobile-cash/de-activate/:ID', deactivate);
+  app.put('/mobile-cash/activate/:ID', activate);
 };
 
 export default mobileCashRouter;
