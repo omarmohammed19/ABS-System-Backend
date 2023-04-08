@@ -1,6 +1,5 @@
 import { sequelize } from '../Config/database';
 
-
 export const De_Activate = async <T extends { isActive: boolean }>(
   Model: any,
   columnName: string,
@@ -38,8 +37,8 @@ export const De_Activate = async <T extends { isActive: boolean }>(
             }
           );
           result = updateResult
-            ? `${Model.name} record with ${columnName} ${columnValue} is activated successfully`
-            : `Could not activate ${Model.name} record`;
+            ? `${Model.name.split('_')[1]} record with ${columnName} ${columnValue} is activated successfully`
+            : `Could not activate ${Model.name.split('_')[1]} record`;
         }
       } else if (type == 'deactivate') {
         if (object.isActive == false) {
@@ -57,13 +56,13 @@ export const De_Activate = async <T extends { isActive: boolean }>(
             }
           );
           result = updateResult
-            ? `${Model.name} record with ${columnName} ${columnValue} is deactivated successfully`
-            : `Could not deactivate ${Model.name} record`;
+            ? `${Model.name.split('_')[1]} record with ${columnName} ${columnValue} is deactivated successfully`
+            : `Could not deactivate ${Model.name.split('_')[1]} record`;
         }
       }
     });
   } catch (err) {
-    throw new Error(`Could not update ${Model.name}. Error: ${err}`);
+    throw new Error(`Could not update ${Model.name.split('_')[1]}. Error: ${err}`);
   }
 
   return result;

@@ -7,18 +7,7 @@ const salesChannelsController = new SalesChannelsController();
 const getAll = async (req: Request, res: Response) => {
     try {
         const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-        const result = await salesChannelsController.index(language);
-        res.json(result);
-    } catch (error) {
-        res.status(400);
-        res.json(error);
-    }
-};
-
-const getAllDeActivated = async (req: Request, res: Response) => {
-    try {
-        const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-        const result = await salesChannelsController.indexDeActivated(language);
+        const result = await salesChannelsController.index(language,Number(req.params.isActive), Number(req.params.limit));
         res.json(result);
     } catch (error) {
         res.status(400);
@@ -29,7 +18,7 @@ const getAllDeActivated = async (req: Request, res: Response) => {
 const getById = async (req: Request, res: Response) => {
     try {
         const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-        const result = await salesChannelsController.getSubAccountsById(Number(req.params.ID), language);
+        const result = await salesChannelsController.getSubAccountById(Number(req.params.ID), language);
         res.json(result);
     } catch (error) {
         res.status(400);
@@ -95,9 +84,8 @@ const activate = async (req: Request, res: Response) => {
 };
 
 const salesChannelsRouter = (app: express.Application) => {
-    app.get('/sales-channels', getAll);
-    app.get('/sales-channels/de-activated', getAllDeActivated);
-    app.get('/sales-channels/:ID', getById);
+    app.get('/sales-channels/:isActive/:limit', getAll);
+    app.get('/sales-channels-by-ID/:ID', getById);
     app.post('/sales-channels', create);
     app.put('/sales-channels/:ID', update);
     app.put('/sales-channels/de-activate/:ID', deactivate);

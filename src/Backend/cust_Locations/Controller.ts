@@ -5,19 +5,19 @@ import Sequelize, { Transaction } from 'sequelize';
 
 
 
-const getById = async (ID: number, t: Transaction, language?: string): Promise<LocationsModel> => {
-  const query = 'EXEC [dbo].[p_GET_cust_Locations] @language = :language, @Method = :Method, @ID = :ID';
-  const replacements = { language: language, Method: 'GET_ByID', ID: ID };
+const getById = async (t: Transaction, ID?: Number, language?: string, subAccountID?: number): Promise<LocationsModel> => {
+  const query = 'EXEC [dbo].[p_GET_cust_Locations] @language = :language, @Method = :Method, @ID = :ID , @subAccountID = :subAccountID';
+  const replacements = { language: language, Method: 'GET_ByID', ID: ID, subAccountID: subAccountID };
   const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
   const result = await sequelize.query(query, options);
   return result as unknown as LocationsModel;
 };
 
 export class LocationsController {
-  async index(language: string): Promise<LocationsModel[]> {
+  async index(language: string, isActive: number, limit: number): Promise<LocationsModel[]> {
     try {
-      const query = 'EXEC [dbo].[p_GET_cust_Locations] @language = :language, @Method = :Method';
-      const replacements = { language: language, Method: 'GET' };
+      const query = 'EXEC [dbo].[p_GET_cust_Locations] @language = :language, @Method = :Method , @isActive = :isActive, @limit = :limit';
+      const replacements = { language: language, Method: 'GET', isActive: isActive, limit: limit };
       const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
       const result = await sequelize.query(query, options);
       return result as unknown as LocationsModel[];
@@ -47,8 +47,23 @@ export class LocationsController {
   async getLocationsByID(ID: number, language: string): Promise<LocationsModel> {
     try {
       return await sequelize.transaction(async (t) => {
-        const result = await getById(ID, t, language);
-        return result
+        const result = await getById(t, ID, language, 0);
+
+        return result;
+
+      });
+    } catch (err) {
+      throw new Error(`Could not get Locations by ID. Error: ${err}`);
+    }
+  }
+
+  async getLocationsBySubAccountID(language: string, subAccountID: number): Promise<LocationsModel> {
+    try {
+      return await sequelize.transaction(async (t) => {
+        const result = await getById(t, 0, language, subAccountID);
+
+        return result;
+
       });
     } catch (err) {
       throw new Error(`Could not get Locations by ID. Error: ${err}`);
@@ -56,7 +71,8 @@ export class LocationsController {
   }
 
 
-  async update(locations: LocationsModel): Promise<LocationsModel | string> {
+  async update(locations: LocationsModel, language: string): Promise<LocationsModel | string> {
+
     try {
       return await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
@@ -73,8 +89,10 @@ export class LocationsController {
           }
         );
 
-        const result = await getById(Number(locations.ID), t);
-        return result ? result.toJSON() : 'Could not update Locations';
+
+        const result = await getById(t, Number(locations.ID), language , 0);
+        return result;
+
       });
     }
     catch (err) {
@@ -101,3 +119,4 @@ export class LocationsController {
     }
   }
 }
+

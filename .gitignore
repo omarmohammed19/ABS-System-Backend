@@ -2,3 +2,5 @@ node_modules/
 build/
 
 .env
+
+sqltools_20230319164440_27308.log

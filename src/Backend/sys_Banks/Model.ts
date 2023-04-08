@@ -1,21 +1,29 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../../Config/database';
 
-export interface BankNamesModel extends Model {
+export interface BanksModel extends Model {
     ID: number;
-    bankName: string;
+    enBankName: string;
+    arBankName: string;
+    Notes: string;
     isActive: boolean;
 }
 
-export const BankNames = sequelize.define<BankNamesModel>(
-    'sys_BankNames',
+export const Banks = sequelize.define<BanksModel>(
+    'sys_Banks',
     {
         ID: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,
         },
-        bankName: {
+        enBankName: {
+            type: DataTypes.STRING,
+        },
+        arBankName: {
+            type: DataTypes.STRING,
+        },
+        Notes: {
             type: DataTypes.STRING,
         },
         isActive: {

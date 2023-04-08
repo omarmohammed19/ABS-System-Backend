@@ -7,7 +7,7 @@ const callTypesController = new CallTypesController();
 const getAll = async (req: Request, res: Response) => {
     try {
         const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-        const result = await callTypesController.index(language);
+        const result = await callTypesController.index(language, Number(req.params.isActive));
         res.json(result);
     } catch (error) {
         res.status(400);
@@ -80,12 +80,12 @@ const activate = async (req: Request, res: Response) => {
 };
 
 const CallTypesRouter = (app: express.Application) => {
-    app.get('/CallTypes', getAll);
-    app.get('/CallTypes/:ID', getById);
-    app.post('/CallTypes', create);
-    app.put('/CallTypes/:ID', update);
-    app.put('/CallTypes/deactivate/:ID', deactivate);
-    app.put('/CallTypes/activate/:ID', activate);
+    app.get('/call-types/:isActive', getAll);
+    app.get('/call-types-by-id/:ID', getById);
+    app.post('/call-types', create);
+    app.put('/call-types/:ID', update);
+    app.put('/call-types/deactivate/:ID', deactivate);
+    app.put('/call-types/activate/:ID', activate);
 };
 
 export default CallTypesRouter;

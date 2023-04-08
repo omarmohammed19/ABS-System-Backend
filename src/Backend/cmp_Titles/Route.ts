@@ -7,7 +7,7 @@ const titlesController = new TitlesController();
 const getAll = async (req: Request, res: Response) => {
     try {
         const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-        const result = await titlesController.index(language);
+        const result = await titlesController.index(language, Number(req.params.isActive));
         res.json(result);
     } catch (error) {
         res.status(400);
@@ -76,8 +76,8 @@ const activate = async (req: Request, res: Response) => {
 }
 
 const titlesRouter = (app: express.Application) => {
-    app.get('/titles', getAll);
-    app.get('/titles/:ID', getById);
+    app.get('/titles/:isActive', getAll);
+    app.get('/titles-by-id/:ID', getById);
     app.post('/titles', create);
     app.put('/titles/:ID', update);
     app.put('/titles/deactivate/:ID', deactivate);

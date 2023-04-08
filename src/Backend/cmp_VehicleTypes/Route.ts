@@ -7,7 +7,7 @@ const vehicleTypesController = new VehicleTypesController();
 const getAll = async (req: Request, res: Response) => {
     try {
         const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-        const result = await vehicleTypesController.index(language);
+        const result = await vehicleTypesController.index(language, Number(req.params.isActive));
         res.json(result);
     } catch (error) {
         res.status(400);
@@ -78,8 +78,8 @@ const activate = async (req: Request, res: Response) => {
 }
 
 const vehicleTypesRouter = (app: express.Application) => {
-    app.get('/vehicle-types', getAll);
-    app.get('/vehicle-types/:ID', getById);
+    app.get('/vehicle-types/:isActive', getAll);
+    app.get('/vehicle-types-by-id/:ID', getById);
     app.post('/vehicle-types', create);
     app.put('/vehicle-types/:ID', update);
     app.put('/vehicle-types/deactivate/:ID', deactivate);

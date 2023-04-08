@@ -4,9 +4,8 @@ import { sequelize } from '../../Config/database';
 import { Transaction } from 'sequelize';
 
 const getById = (ID: number, t: Transaction, language?: string) => {
-  const attributes = language === 'en' ? ['ID', 'enDepartmentName'] : ['ID', 'arDepartmentName'];
   return Departments.findOne({
-    attributes: attributes,
+    attributes: language === 'en' ? [['ID', 'Department ID'], ['enDepartmentName', 'Department']] : [['ID', 'رقم القسم'], ['arDepartmentName', 'اسم القسم']],
     where: {
       ID: ID,
       isActive: true,
@@ -16,15 +15,15 @@ const getById = (ID: number, t: Transaction, language?: string) => {
 };
 
 export class DepartmentsController {
-  async index(language: string): Promise<DepartmentsModel[]> {
+  async index(language: string, isActive: number): Promise<DepartmentsModel[]> {
     try {
       return await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
-        const attributes = language === 'en' ? ['ID', 'enDepartmentName'] : ['ID', 'arDepartmentName'];
+        // const attributes = language === 'en' ? [['ID', 'Department ID'], ['enDepartmentName', 'Department']] : ['ID', 'arDepartmentName'];
         const result = await Departments.findAll({
-          attributes: attributes,
+          attributes: language === 'en' ? [['ID', 'Department ID'], ['enDepartmentName', 'Department']] : [['ID', 'رقم القسم'], ['arDepartmentName', 'اسم القسم']],
           where: {
-            isActive: true,
+            isActive: isActive,
           },
           transaction: t, // pass transaction object to query
         });
@@ -35,6 +34,8 @@ export class DepartmentsController {
       throw new Error(`Could not get all Departments. Error: ${err}`);
     }
   }
+
+
 
   async create(department: DepartmentsModel): Promise<DepartmentsModel | string> {
     try {

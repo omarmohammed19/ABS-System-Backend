@@ -7,7 +7,7 @@ const zonesController = new ZonesController();
 const getAll = async (req: Request, res: Response) => {
     try {
         const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-        const result = await zonesController.index(language);
+        const result = await zonesController.index(language, Number(req.params.isActive));
         res.json(result);
     } catch (error) {
         res.status(400);
@@ -25,6 +25,18 @@ const getById = async (req: Request, res: Response) => {
         res.json(error);
     }
 }
+
+const getByZoneTypeID = async (req: Request, res: Response) => {
+    try {
+        const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
+        const result = await zonesController.getZoneByZoneTypeID(Number(req.params.zoneTypeID), language);
+        res.json(result);
+    } catch (error) {
+        res.status(400);
+        res.json(error);
+    }
+}
+
 
 const create = async (req: Request, res: Response) => {
     try {
@@ -78,8 +90,9 @@ const activate = async (req: Request, res: Response) => {
 }
 
 const zonesRouter = (app: express.Application) => {
-    app.get('/zones', getAll);
-    app.get('/zones/:ID', getById);
+    app.get('/zones/:isActive', getAll);
+    app.get('/zones-by-id/:ID', getById);
+    app.get('/zones-by-zone-type/:zoneTypeID', getByZoneTypeID);
     app.post('/zones', create);
     app.put('/zones/:ID', update);
     app.put('/zones/deactivate/:ID', deactivate);
