@@ -5,15 +5,29 @@ import { BankDetailsModel } from './Model';
 const bankDetailsController = new BankDetailsController();
 
 const getAll = async (req: Request, res: Response) => {
-  try {
-    const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-    const result = await bankDetailsController.index(language, Number(req.params.isActive), Number(req.params.limit));
-    res.json(result);
-  } catch (error) {
-    res.status(400);
-    res.json(error);
-  }
+    try {
+        const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
+        const result = await bankDetailsController.index(language, Number(req.params.isActive), Number(req.params.limit));
+        res.json(result);
+    } catch (error) {
+        res.status(400);
+        res.json(error);
+    }
 };
+
+const getById = async (req: Request, res: Response) => {
+    try {
+        const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
+        const result = await bankDetailsController.getBankDetialsById(Number(req.params.ID), language);
+        res.json(result);
+    } catch (error) {
+        console.log(error);
+
+        res.status(400);
+        res.json(error);
+    }
+};
+
 const create = async (req: Request, res: Response) => {
     try {
         const bankDetails = <BankDetailsModel>{
@@ -74,12 +88,12 @@ const activate = async (req: Request, res: Response) => {
 };
 
 const bankDetailsRouter = (app: express.Application) => {
-  app.get('/bank-details/:isActive/:limit', getAll);
-  app.get('/bank-details-by-ID/:ID', getById);
-  app.post('/bank-details', create);
-  app.put('/bank-details/:ID', update);
-  app.put('/bank-details/de-activate/:ID', deactivate);
-  app.put('/bank-details/activate/:ID', activate);
+    app.get('/bank-details/:isActive/:limit', getAll);
+    app.get('/bank-details-by-ID/:ID', getById);
+    app.post('/bank-details', create);
+    app.put('/bank-details/:ID', update);
+    app.put('/bank-details/de-activate/:ID', deactivate);
+    app.put('/bank-details/activate/:ID', activate);
 };
 
 export default bankDetailsRouter;
