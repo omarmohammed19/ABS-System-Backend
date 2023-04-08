@@ -3,8 +3,10 @@ import { sequelize } from '../../Config/database';
 
 export interface GovernoratesModel extends Model {
     ID: number;
-    governorateName: string;
+    enGovernorateName: string;
+    arGovernorateName: string;
     countryID: number;
+    Notes: string;
     isActive: boolean;
 }
 
@@ -16,11 +18,17 @@ export const Governorates = sequelize.define<GovernoratesModel>(
             primaryKey: true,
             autoIncrement: true,
         },
-        governorateName: {
+        enGovernorateName: {
+            type: DataTypes.STRING,
+        },
+        arGovernorateName: {
             type: DataTypes.STRING,
         },
         countryID: {
             type: DataTypes.INTEGER,
+        },
+        Notes: {
+            type: DataTypes.STRING,
         },
         isActive: {
             type: DataTypes.BOOLEAN,
