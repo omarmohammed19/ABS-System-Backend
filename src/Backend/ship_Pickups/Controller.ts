@@ -72,32 +72,45 @@ export class PickupsController {
     }
   }
 
-  // async update(language: string, pickups: PickupsModel): Promise<PickupsModel | string> {
-  //   try {
-  //     return await sequelize.transaction(async (t) => {
-  //       // start managed transaction and pass transaction object to the callback function
-  //       await Pickups.update(
-  //         {
-  //           enStatus: pickups.enStatus,
-  //           arStatus: pickups.arStatus,
-  //           custDisplayedStatusID: pickups.custDisplayedStatusID,
-  //           requireReason: pickups.requireReason,
-  //           Notes: pickups.Notes,
-  //         },
-  //         {
-  //           where: {
-  //             ID: pickups.ID,
-  //           },
-  //           transaction: t, // pass transaction object to query
-  //         }
-  //       );
-  //       const result = await getByID(pickups.ID, language, t);
-  //       return result;
-  //     });
-  //   } catch (err) {
-  //     throw new Error(`Could not update Pickups. Error: ${err}`);
-  //   }
-  // }
+  async update(language: string, pickups: PickupsModel): Promise<PickupsModel | string> {
+    try {
+      return await sequelize.transaction(async (t) => {
+        // start managed transaction and pass transaction object to the callback function
+        await Pickups.update(
+          {
+            mainAccountID: pickups.mainAccountID,
+            subAccountID: pickups.subAccountID,
+            pickupLocationID: pickups.pickupLocationID,
+            transHdrID: pickups.transHdrID,
+            pickupTypeID: pickups.pickupTypeID,
+            vehicleTypeID: pickups.vehicleTypeID,
+            noOfAWBs: pickups.noOfAWBs,
+            actualAWBs: pickups.actualAWBs,
+            pickedUpDate: pickups.pickedUpDate,
+            timeFrom: pickups.timeFrom,
+            toTime: pickups.toTime,
+            statusID: pickups.statusID,
+            userID: pickups.userID,
+            creationDate: pickups.creationDate,
+            assignedBy: pickups.assignedBy,
+            assignedTo: pickups.assignedTo,
+            createdAWBs: pickups.createdAWBs,
+            Notes: pickups.Notes,
+          },
+          {
+            where: {
+              ID: pickups.ID,
+            },
+            transaction: t, // pass transaction object to query
+          }
+        );
+        const result = await getByID(pickups.ID, language, t);
+        return result;
+      });
+    } catch (err) {
+      throw new Error(`Could not update Pickups. Error: ${err}`);
+    }
+  }
 
   async deactivate(PickupID: number): Promise<string> {
     try {
