@@ -7,7 +7,23 @@ const getById = async (ID: number, t: Transaction, language?: string) => {
   const query = 'EXEC [dbo].[p_GET_cust_MainAccounts] @language = :language, @Method = :Method, @ID = :ID';
   const replacements = { language: language, Method: 'GET_ByID', ID: ID };
   const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
-  const result = await sequelize.query(query, options)
+  const result = await sequelize.query(query, options);
+  return result as unknown as MainAccountsModel;
+};
+
+const getByUserId = async (userID: number, t: Transaction, language?: string) => {
+  const query = 'EXEC [dbo].[p_GET_cust_MainAccounts] @language = :language, @Method = :Method, @userID = :userID';
+  const replacements = { language: language, Method: 'GET_ByUserID', userID: userID };
+  const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
+  const result = await sequelize.query(query, options);
+  return result as unknown as MainAccountsModel;
+};
+
+const getSubAccountByMainAccountID = async (ID: number, t: Transaction, language?: string) => {
+  const query = 'EXEC [dbo].[p_GET_cust_MainAccounts] @language = :language, @Method = :Method, @ID = :ID';
+  const replacements = { language: language, Method: 'GET_SubAccount', ID: ID };
+  const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
+  const result = await sequelize.query(query, options);
   return result as unknown as MainAccountsModel;
 };
 
@@ -48,8 +64,37 @@ export class MainAccountsController {
 
   async getMainAccountsById(ID: number, language: string): Promise<MainAccountsModel | string> {
     try {
-      const result = await sequelize.transaction(async (t) => { // start managed transaction and pass transaction object to the callback function
+      const result = await sequelize.transaction(async (t) => {
+        // start managed transaction and pass transaction object to the callback function
         const item = await getById(ID, t, language); // pass transaction object to getById function
+        return item;
+      });
+      return result;
+    } catch (err) {
+      console.log(err);
+      throw new Error(`Could not get MainAccounts by ID. Error: ${err}`);
+    }
+  }
+
+  async getMainAccountsByUserId(ID: number, language: string): Promise<MainAccountsModel | string> {
+    try {
+      const result = await sequelize.transaction(async (t) => {
+        // start managed transaction and pass transaction object to the callback function
+        const item = await getByUserId(ID, t, language); // pass transaction object to getById function
+        return item;
+      });
+      return result;
+    } catch (err) {
+      console.log(err);
+      throw new Error(`Could not get MainAccounts by ID. Error: ${err}`);
+    }
+  }
+
+  async getSubAccountsByMainAccountId(ID: number, language: string): Promise<MainAccountsModel | string> {
+    try {
+      const result = await sequelize.transaction(async (t) => {
+        // start managed transaction and pass transaction object to the callback function
+        const item = await getSubAccountByMainAccountID(ID, t, language); // pass transaction object to getById function
         return item;
       });
       return result;
@@ -75,8 +120,9 @@ export class MainAccountsController {
             where: {
               ID: mainAccounts.ID,
             },
-            transaction: t // pass transaction object to query
-          });
+            transaction: t, // pass transaction object to query
+          }
+        );
 
         const item = await getById(mainAccounts.ID, t, language); // pass transaction object to getById function
         return item;
