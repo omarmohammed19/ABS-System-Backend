@@ -16,7 +16,7 @@ import departmentsRouter from './Backend/cmp_Departments/Route';
 import infoRouter from './Backend/cmp_Info/Route';
 import titlesRouter from './Backend/cmp_Titles/Route';
 import vehicleTypesRouter from './Backend/cmp_VehicleTypes/Route';
-import bankDetailsRouter from './Backend/cust_BankDetails/Route';
+//import bankDetailsRouter from './Backend/cust_BankDetails/Route';
 import mobileCashRouter from './Backend/cust_MobileCash/Route';
 import paymentMethodsRouter from './Backend/cust_PaymentMethods/Route';
 import salesChannelTypesRouter from './Backend/cust_SalesChannelTypes/Route';
@@ -51,6 +51,10 @@ import extraInfoRouter from './Backend/ship_ExtraInfo/Route';
 import pricePlansRouter from './Backend/cust_PricePlans/Route';
 import contactLogsRouter from './Backend/ship_ContactLogs/Route';
 import languagesRouter from './Backend/sys_Languages/Route';
+import governoratesRouter from './Backend/sys_Governorates/Route';
+import templateRouter from './Backend/cs_Templates/Route';
+import citiesRouter from './Backend/cmp_Cities/Route';
+import ticketsRouter from './Backend/cs_Tickets/Route';
 
 
 const corsOptions = {
@@ -85,7 +89,7 @@ departmentsRouter(app);
 infoRouter(app);
 titlesRouter(app);
 vehicleTypesRouter(app);
-bankDetailsRouter(app);
+//bankDetailsRouter(app);
 mobileCashRouter(app);
 paymentMethodsRouter(app);
 salesChannelTypesRouter(app);
@@ -120,6 +124,10 @@ TicketStatus(app);
 TicketTypes(app);
 CountriesRouter(app);
 BanksRouter(app);
+governoratesRouter(app);
+templateRouter(app);
+citiesRouter(app);
+ticketsRouter(app);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port http://${address}:${process.env.PORT}`);

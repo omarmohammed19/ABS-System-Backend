@@ -6,7 +6,8 @@ const countriescontroller = new CountriesController();
 
 const getAll = async (req: Request, res: Response) => {
     try {
-        const result = await countriescontroller.index(Number(req.params.isActive));
+        const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
+        const result = await countriescontroller.index(Number(req.params.isActive), language);
         res.json(result);
     } catch (error) {
         res.status(400);
@@ -16,7 +17,8 @@ const getAll = async (req: Request, res: Response) => {
 
 const getById = async (req: Request, res: Response) => {
     try {
-        const result = await countriescontroller.getCountryByID(Number(req.params.ID));
+        const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
+        const result = await countriescontroller.getCountryByID(language, Number(req.params.ID));
         res.json(result);
     } catch (error) {
         res.status(400);

@@ -57,10 +57,10 @@ export class CountriesController {
     }
 
 
-    async getCountryByID(ID: number): Promise<CountriesModel | string> {
+    async getCountryByID(language: string, ID: number): Promise<CountriesModel | string> {
         try {
             const result = await sequelize.transaction(async (t) => { // start managed transaction and pass transaction object to the callback function
-                const item = await getById(ID, t); // pass transaction object to getById function
+                const item = await getById(ID, t, language); // pass transaction object to getById function
                 return item ? item.toJSON() : 'Could not get Country by ID';
             });
             return result;
