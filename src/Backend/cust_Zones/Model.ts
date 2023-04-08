@@ -1,34 +1,30 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../../Config/database';
 
-export interface TemplatesModel extends Model {
+export interface ZonesModel extends Model {
     ID: number;
-    enMessage: string;
-    arMessage: string;
-    templateTypeID: number;
-    Notes: string;
+    subAccountID: number;
+    cityID: number;
+    zoneID: number;
     isActive: boolean;
 }
 
-export const Templates = sequelize.define<TemplatesModel>(
-    'cs_Templates',
+export const Zones = sequelize.define<ZonesModel>(
+    'cust_Zones',
     {
         ID: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,
         },
-        enMessage: {
-            type: DataTypes.STRING,
-        },
-        arMessage: {
-            type: DataTypes.STRING,
-        },
-        templateTypeID: {
+        subAccountID: {
             type: DataTypes.INTEGER,
         },
-        Notes: {
-            type: DataTypes.STRING,
+        cityID: {
+            type: DataTypes.INTEGER,
+        },
+        zoneID: {
+            type: DataTypes.INTEGER,
         },
         isActive: {
             type: DataTypes.BOOLEAN,
