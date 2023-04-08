@@ -6,6 +6,7 @@ export interface TemplatesModel extends Model {
     enMessage: string;
     arMessage: string;
     templateTypeID: number;
+    Notes: string;
     isActive: boolean;
 }
 
@@ -25,6 +26,9 @@ export const Templates = sequelize.define<TemplatesModel>(
         },
         templateTypeID: {
             type: DataTypes.INTEGER,
+        },
+        Notes: {
+            type: DataTypes.STRING,
         },
         isActive: {
             type: DataTypes.BOOLEAN,

@@ -7,6 +7,7 @@ export interface CitiesModel extends Model {
     arCityName: string;
     governorateID: number;
     zoneID: number;
+    Notes: string;
     isActive: boolean;
 }
 
@@ -29,6 +30,9 @@ export const Cities = sequelize.define<CitiesModel>(
         },
         zoneID: {
             type: DataTypes.INTEGER,
+        },
+        Notes: {
+            type: DataTypes.STRING,
         },
         isActive: {
             type: DataTypes.BOOLEAN,

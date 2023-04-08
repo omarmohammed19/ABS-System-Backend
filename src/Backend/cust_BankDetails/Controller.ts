@@ -4,11 +4,11 @@ import { sequelize } from '../../Config/database';
 import Sequelize, { Transaction } from 'sequelize';
 
 const getById = async (ID: Number, t: Transaction, language: string) => {
-  const query = 'EXEC [dbo].[p_GET_cust_BankDetails] @language = :language, @Method = :Method, @ID = :ID';
-  const replacements = { language: language, Method: 'GET_ByID', ID: ID };
-  const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
-  const result = await sequelize.query(query, options)
-  return result as unknown as BankDetailsModel;
+    const query = 'EXEC [dbo].[p_GET_cust_BankDetails] @language = :language, @Method = :Method, @ID = :ID';
+    const replacements = { language: language, Method: 'GET_ByID', ID: ID };
+    const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
+    const result = await sequelize.query(query, options)
+    return result as unknown as BankDetailsModel;
 };
 
 export class BankDetailsController {
@@ -45,47 +45,47 @@ export class BankDetailsController {
   }
 
 
-  async getBankDetialsById(ID: number, language: string): Promise<BankDetailsModel | string> {
-    try {
-      const result = await sequelize.transaction(async (t) => {
-        // start managed transaction and pass transaction object to the callback function
-        const item = await getById(ID, t, language); // pass transaction object to getById function
-        return item;
-      });
-      return result;
-    } catch (err) {
-      throw new Error(`Could not get BankDetails by ID. Error: ${err}`);
+    async getBankDetialsById(ID: number, language: string): Promise<BankDetailsModel | string> {
+        try {
+            const result = await sequelize.transaction(async (t) => {
+                // start managed transaction and pass transaction object to the callback function
+                const item = await getById(ID, t, language); // pass transaction object to getById function
+                return item;
+            });
+            return result;
+        } catch (err) {
+            throw new Error(`Could not get BankDetails by ID. Error: ${err}`);
+        }
     }
   }
 
-  async update(bankDetails: BankDetailsModel, language: string): Promise<BankDetailsModel | string> {
-    try {
-      return await sequelize.transaction(async (t) => {
-        // start managed transaction and pass transaction object to the callback function
-        await BankDetails.update(
-          {
-            accountHolderName: bankDetails.accountHolderName,
-            accountNumber: bankDetails.accountNumber,
-            bankNameID: bankDetails.bankNameID,
-            IBAN: bankDetails.IBAN,
-            swiftCode: bankDetails.swiftCode,
-          },
-          {
-            where: {
-              ID: bankDetails.ID,
-            },
-            transaction: t, // pass transaction object to query
-          }
-        );
+    async update(bankDetails: BankDetailsModel, language: string): Promise<BankDetailsModel | string> {
+        try {
+            return await sequelize.transaction(async (t) => {
+                // start managed transaction and pass transaction object to the callback function
+                await BankDetails.update(
+                    {
+                        accountHolderName: bankDetails.accountHolderName,
+                        accountNumber: bankDetails.accountNumber,
+                        bankNameID: bankDetails.bankNameID,
+                        IBAN: bankDetails.IBAN,
+                        swiftCode: bankDetails.swiftCode,
+                    },
+                    {
+                        where: {
+                            ID: bankDetails.ID,
+                        },
+                        transaction: t, // pass transaction object to query
+                    }
+                );
 
-        const result = await getById(Number(bankDetails.ID), t, language);
-        return result;
-      });
-    } catch (err) {
-      throw new Error(`Could not update BankDetails. Error: ${err}`);
+                const result = await getById(Number(bankDetails.ID), t, language);
+                return result;
+            });
+        } catch (err) {
+            throw new Error(`Could not update BankDetails. Error: ${err}`);
+        }
     }
-  }
-
   async deactivate(ID: number): Promise<string> {
     try {
       const result = await De_Activate<BankDetailsModel>(BankDetails, 'ID', ID, 'deactivate');
