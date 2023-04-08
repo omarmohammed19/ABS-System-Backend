@@ -46,7 +46,10 @@ import zonesTypesRouter from './Backend/cmp_ZoneTypes/Route';
 import extraInfoRouter from './Backend/ship_ExtraInfo/Route';
 import addressesRouter from './Backend/cnee_Addresses/Route';
 import contactNumbersRouter from './Backend/cnee_ContactNumbers/Route';
-
+import emailRouter from './Backend/cnee_Emails/Route';
+import legalPaperRouter from './Backend/cust_LegalPapers/Route';
+import contactPersonRouter from './Backend/cust_ContactPersons/Route';
+import custAddressesRouter from './Backend/cust_Addresses/Route';
 const corsOptions = {
   origin: '*',
   credentials: true,
@@ -109,7 +112,10 @@ zonesTypesRouter(app);
 extraInfoRouter(app);
 addressesRouter(app);
 contactNumbersRouter(app);
-
+emailRouter(app);
+legalPaperRouter(app);
+contactPersonRouter(app);
+custAddressesRouter(app);
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port http://${address}:${process.env.PORT}`);
 });
