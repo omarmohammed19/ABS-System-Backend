@@ -16,7 +16,7 @@ import departmentsRouter from './Backend/cmp_Departments/Route';
 import infoRouter from './Backend/cmp_Info/Route';
 import titlesRouter from './Backend/cmp_Titles/Route';
 import vehicleTypesRouter from './Backend/cmp_VehicleTypes/Route';
-//import bankDetailsRouter from './Backend/cust_BankDetails/Route';
+import bankDetailsRouter from './Backend/cust_BankDetails/Route';
 import mobileCashRouter from './Backend/cust_MobileCash/Route';
 import paymentMethodsRouter from './Backend/cust_PaymentMethods/Route';
 import salesChannelTypesRouter from './Backend/cust_SalesChannelTypes/Route';
@@ -68,9 +68,12 @@ import mainAccountsRouter from './Backend/cust_MainAccounts/Route';
 import paymentInfoRouter from './Backend/cust_PaymentInfo/Route';
 import pickupHistoryRouter from './Backend/ship_PickupHistory/Route';
 import custzonesRouter from './Backend/cust_Zones/Route';
+import trackShipmentRouter from './ClientServices/TrackShipment/Route';
+import pickupServicesRouter from './ClientServices/Pickups/Route';
 import transactionHdrRouter from './Backend/ship_TransactionHdr/Route';
 import transactionsRouter from './Backend/ship_Transactions/Route';
 import transactionHistoryRouter from './Backend/ship_TransactionHistory/Route';
+import walletServicesRouter from './ClientServices/Wallet/Route';
 
 const corsOptions = {
   origin: '*',
@@ -104,7 +107,7 @@ departmentsRouter(app);
 infoRouter(app);
 titlesRouter(app);
 vehicleTypesRouter(app);
-//bankDetailsRouter(app);
+bankDetailsRouter(app);
 mobileCashRouter(app);
 paymentMethodsRouter(app);
 salesChannelTypesRouter(app);
@@ -156,9 +159,12 @@ mainAccountsRouter(app);
 paymentInfoRouter(app);
 pickupHistoryRouter(app);
 custzonesRouter(app);
+trackShipmentRouter(app);
+pickupServicesRouter(app);
 transactionHdrRouter(app);
 transactionsRouter(app);
 transactionHistoryRouter(app);
+walletServicesRouter(app);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port http://${address}:${process.env.PORT}`);
