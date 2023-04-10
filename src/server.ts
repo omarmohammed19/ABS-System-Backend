@@ -73,6 +73,7 @@ import pickupServicesRouter from './ClientServices/Pickups/Route';
 import transactionHdrRouter from './Backend/ship_TransactionHdr/Route';
 import transactionsRouter from './Backend/ship_Transactions/Route';
 import transactionHistoryRouter from './Backend/ship_TransactionHistory/Route';
+import walletServicesRouter from './ClientServices/Wallet/Route';
 
 const corsOptions = {
   origin: '*',
@@ -163,6 +164,7 @@ pickupServicesRouter(app);
 transactionHdrRouter(app);
 transactionsRouter(app);
 transactionHistoryRouter(app);
+walletServicesRouter(app);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port http://${address}:${process.env.PORT}`);
