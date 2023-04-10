@@ -128,7 +128,7 @@ export class TransactionHdrController {
     }
   }
 
-  async deactivate(ID: number): Promise<string> {
+  async deactivateByID(ID: number): Promise<string> {
     try {
       const result = await De_Activate<TransactionHdrModel>(TransactionHdr, 'ID', ID, 'deactivate');
       return result;
@@ -137,9 +137,45 @@ export class TransactionHdrController {
     }
   }
 
-  async activate(ID: number): Promise<string> {
+  async activateByID(ID: number): Promise<string> {
     try {
       const result = await De_Activate<TransactionHdrModel>(TransactionHdr, 'ID', ID, 'activate');
+      return result;
+    } catch (err) {
+      throw new Error(`Could not activate TransactionHdr. Error: ${err}`);
+    }
+  }
+
+  async deactivateBySubAccountID(subAccountID: number): Promise<string> {
+    try {
+      const result = await De_Activate<TransactionHdrModel>(TransactionHdr, 'subAccountID', subAccountID, 'deactivate');
+      return result;
+    } catch (err) {
+      throw new Error(`Could not deactivate TransactionHdr. Error: ${err}`);
+    }
+  }
+
+  async activateBySubAccountID(subAccountID: number): Promise<string> {
+    try {
+      const result = await De_Activate<TransactionHdrModel>(TransactionHdr, 'subAccountID', subAccountID, 'activate');
+      return result;
+    } catch (err) {
+      throw new Error(`Could not activate TransactionHdr. Error: ${err}`);
+    }
+  }
+
+  async deactivateByMainAccountID(mainAccountID: number): Promise<string> {
+    try {
+      const result = await De_Activate<TransactionHdrModel>(TransactionHdr, 'mainAccountID', mainAccountID, 'deactivate');
+      return result;
+    } catch (err) {
+      throw new Error(`Could not deactivate TransactionHdr. Error: ${err}`);
+    }
+  }
+
+  async activateByMainAccountID(mainAccountID: number): Promise<string> {
+    try {
+      const result = await De_Activate<TransactionHdrModel>(TransactionHdr, 'mainAccountID', mainAccountID, 'activate');
       return result;
     } catch (err) {
       throw new Error(`Could not activate TransactionHdr. Error: ${err}`);

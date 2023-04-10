@@ -33,7 +33,8 @@
     "lint": "eslint   src/**/*.ts",
     "jasmine": "jasmine",
     "test": "npm run build && npm run jasmine",
-    "start": "nodemon --exec npx ts-node src/server.ts"
+    "start": "nodemon --exec npx ts-node src/server.ts",
+    "starty": "nodemon --exec npx ts-node src2/server2.ts"
   },
   "keywords": [],
   "author": "",

@@ -19,8 +19,23 @@ const getByAWB = async (AWB: string, language: string, t: Transaction) => {
   return result as unknown as TransactionsModel;
 };
 
-export class TransactionsController {
+const getByMainAccountID = async (mainAccountID: number, language: string, t: Transaction) => {
+  const query = 'EXEC [dbo].[p_GET_ship_Transactions] @language = :language , @Method = :Method, @mainAccountID = :mainAccountID';
+  const replacements = { language: language, Method: 'GET_ByMainAccountID', mainAccountID: mainAccountID };
+  const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
+  const result = await sequelize.query(query, options);
+  return result as unknown as TransactionsModel;
+};
 
+const getBySubAccountID = async (subAccountID: number, language: string, t: Transaction) => {
+  const query = 'EXEC [dbo].[p_GET_ship_Transactions] @language = :language , @Method = :Method, @subAccountID = :subAccountID';
+  const replacements = { language: language, Method: 'GET_BySubAccountID', subAccountID: subAccountID };
+  const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
+  const result = await sequelize.query(query, options);
+  return result as unknown as TransactionsModel;
+};
+
+export class TransactionsController {
   async index(language: string, isActive: number, limits?: number): Promise<TransactionsModel[]> {
     const limit = limits || 10;
     try {
@@ -71,8 +86,6 @@ export class TransactionsController {
             height: transactions.height,
             actualWeight: transactions.actualWeight,
             Cash: transactions.Cash,
-            collectedFromRunner: transactions.collectedFromRunner,
-            collectedFromBranch: transactions.collectedFromBranch,
           },
           { transaction: t } // pass transaction object to query
         );
@@ -88,6 +101,32 @@ export class TransactionsController {
       const result = await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
         const item = await getByTransHdrID(TransHdrID, language, t); // pass transaction object to getById function
+        return item;
+      });
+      return result;
+    } catch (err) {
+      throw new Error(`Could not get Transactions by ID. Error: ${err}`);
+    }
+  }
+
+  async getTransactionsBymainAccountID(mainAccountID: number, language: string): Promise<TransactionsModel | string> {
+    try {
+      const result = await sequelize.transaction(async (t) => {
+        // start managed transaction and pass transaction object to the callback function
+        const item = await getByMainAccountID(mainAccountID, language, t); // pass transaction object to getById function
+        return item;
+      });
+      return result;
+    } catch (err) {
+      throw new Error(`Could not get Transactions by ID. Error: ${err}`);
+    }
+  }
+
+  async getTransactionsBysubAccountID(subAccountID: number, language: string): Promise<TransactionsModel | string> {
+    try {
+      const result = await sequelize.transaction(async (t) => {
+        // start managed transaction and pass transaction object to the callback function
+        const item = await getBySubAccountID(subAccountID, language, t); // pass transaction object to getById function
         return item;
       });
       return result;
@@ -147,6 +186,7 @@ export class TransactionsController {
             Cash: transactions.Cash,
             collectedFromRunner: transactions.collectedFromRunner,
             collectedFromBranch: transactions.collectedFromBranch,
+            isPaid: transactions.isPaid,
           },
           {
             where: {
@@ -201,6 +241,7 @@ export class TransactionsController {
             Cash: transactions.Cash,
             collectedFromRunner: transactions.collectedFromRunner,
             collectedFromBranch: transactions.collectedFromBranch,
+            isPaid: transactions.isPaid,
           },
           {
             where: {
@@ -247,6 +288,42 @@ export class TransactionsController {
   async activateByTransHdrID(TransHdrID: number): Promise<string> {
     try {
       const result = await De_Activate<TransactionsModel>(Transactions, 'transHdrID', TransHdrID, 'activate');
+      return result;
+    } catch (err) {
+      throw new Error(`Could not activate Transactions. Error: ${err}`);
+    }
+  }
+
+  async deactivateByMainAccountID(mainAccountID: number): Promise<string> {
+    try {
+      const result = await De_Activate<TransactionsModel>(Transactions, 'mainAccountID', mainAccountID, 'deactivate');
+      return result;
+    } catch (err) {
+      throw new Error(`Could not deactivate Transactions. Error: ${err}`);
+    }
+  }
+
+  async activateByMainAccountID(mainAccountID: number): Promise<string> {
+    try {
+      const result = await De_Activate<TransactionsModel>(Transactions, 'mainAccountID', mainAccountID, 'activate');
+      return result;
+    } catch (err) {
+      throw new Error(`Could not activate Transactions. Error: ${err}`);
+    }
+  }
+
+  async deactivateBySubAccountID(subAccountID: number): Promise<string> {
+    try {
+      const result = await De_Activate<TransactionsModel>(Transactions, 'subAccountID', subAccountID, 'deactivate');
+      return result;
+    } catch (err) {
+      throw new Error(`Could not deactivate Transactions. Error: ${err}`);
+    }
+  }
+
+  async activateBySubAccountID(subAccountID: number): Promise<string> {
+    try {
+      const result = await De_Activate<TransactionsModel>(Transactions, 'subAccountID', subAccountID, 'activate');
       return result;
     } catch (err) {
       throw new Error(`Could not activate Transactions. Error: ${err}`);

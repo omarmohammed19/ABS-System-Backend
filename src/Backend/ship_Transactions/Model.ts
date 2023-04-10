@@ -37,6 +37,7 @@ export interface TransactionsModel extends Model {
   Cash: number;
   collectedFromRunner: boolean;
   collectedFromBranch: boolean;
+  isPaid: boolean;
   isActive: boolean;
 }
 
@@ -148,6 +149,9 @@ export const Transactions = sequelize.define<TransactionsModel>(
       type: DataTypes.BOOLEAN,
     },
     collectedFromBranch: {
+      type: DataTypes.BOOLEAN,
+    },
+    isPaid: {
       type: DataTypes.BOOLEAN,
     },
     isActive: {
