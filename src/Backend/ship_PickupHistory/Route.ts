@@ -21,7 +21,7 @@ const getAll = async (req: Request, res: Response) => {
 const getById = async (req: Request, res: Response) => {
   try {
     const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-    const result = await pickupHistoryController.getPickupsByID(Number(req.params.PickupID), language);
+    const result = await pickupHistoryController.getPickupHistoryByID(Number(req.params.PickupID), language);
     res.json(result);
   } catch (error) {
     res.status(400);

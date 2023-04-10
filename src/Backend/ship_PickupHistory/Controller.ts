@@ -47,7 +47,7 @@ export class PickupHistoryController {
     }
   }
 
-  async getPickupsByID(PickupID: number, language: string): Promise<PickupHistoryModel | string> {
+  async getPickupHistoryByID(PickupID: number, language: string): Promise<PickupHistoryModel | string> {
     try {
       const result = await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function

@@ -62,6 +62,9 @@ import mainAccountsRouter from './Backend/cust_MainAccounts/Route';
 import paymentInfoRouter from './Backend/cust_PaymentInfo/Route';
 import pickupHistoryRouter from './Backend/ship_PickupHistory/Route';
 import custzonesRouter from './Backend/cust_Zones/Route';
+import transactionHdrRouter from './Backend/ship_TransactionHdr/Route';
+import transactionsRouter from './Backend/ship_Transactions/Route';
+import transactionHistoryRouter from './Backend/ship_TransactionHistory/Route';
 
 const corsOptions = {
   origin: '*',
@@ -141,6 +144,9 @@ mainAccountsRouter(app);
 paymentInfoRouter(app);
 pickupHistoryRouter(app);
 custzonesRouter(app);
+transactionHdrRouter(app);
+transactionsRouter(app);
+transactionHistoryRouter(app);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port http://${address}:${process.env.PORT}`);
