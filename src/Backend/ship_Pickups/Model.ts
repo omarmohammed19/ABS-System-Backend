@@ -60,10 +60,10 @@ export const Pickups = sequelize.define<PickupsModel>(
       type: DataTypes.DATE,
     },
     timeFrom: {
-      type: DataTypes.DATE,
+      type: DataTypes.INTEGER,
     },
     toTime: {
-      type: DataTypes.DATE,
+      type: DataTypes.INTEGER,
     },
     statusID: {
       type: DataTypes.INTEGER,
