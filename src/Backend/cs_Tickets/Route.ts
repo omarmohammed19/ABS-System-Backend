@@ -46,6 +46,20 @@ const getByAWB = async (req: Request, res: Response) => {
     }
 };
 
+const getBySubAccountID = async (req: Request, res: Response) => {
+    try {
+        const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
+        const isActive = Number(req.params.isActive);
+        const subAccountID = Number(req.params.subAccountID);
+        const limit = Number(req.params.subAccountID);
+        const result = await ticketsController.getTicketsBySubAccountID(language, isActive, subAccountID, limit);
+        res.json(result);
+    } catch (error) {
+        res.status(400);
+        res.json(error);
+    }
+};
+
 const create = async (req: Request, res: Response) => {
     try {
         const ticket = <TicketsModel><unknown>{
@@ -116,6 +130,7 @@ const ticketsRouter = (app: express.Application) => {
     app.put('/tickets/de-activate/:ID', deActivate);
     app.put('/tickets/activate/:ID', activate);
     app.get('/tickets-by-awb/:AWB/:isActive', getByAWB);
+    app.get('/tickets-by-sub-account-id/:subAccountID/:isActive/:limit?', getBySubAccountID);
 }
 
 export default ticketsRouter;
