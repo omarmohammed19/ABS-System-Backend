@@ -77,7 +77,20 @@ export class TicketsController {
             return result as unknown as TicketsModel[];
         }
         catch (err) {
-            throw new Error(`Could not get Tickets by Governorate ID. Error: ${err}`);
+            throw new Error(`Could not get Tickets by AWB. Error: ${err}`);
+        }
+    }
+
+    async getTicketsBySubAccountID(language: string, isActive: number, subAccountID: number, limit: number): Promise<TicketsModel[]> {
+        try {
+            const query = 'EXEC [dbo].[p_GET_cs_Tickets] @language = :language, @Method = :Method, @isActive= :isActive, @subAccountID= :subAccountID, @limit= :limit';
+            const replacements = { language: language, Method: 'GET_BySubAccountID', isActive: isActive, subAccountID: subAccountID, limit: limit };
+            const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
+            const result = await sequelize.query(query, options);
+            return result as unknown as TicketsModel[];
+        }
+        catch (err) {
+            throw new Error(`Could not get Tickets by sub-account ID. Error: ${err}`);
         }
     }
 
