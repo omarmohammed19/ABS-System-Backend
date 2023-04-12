@@ -19,7 +19,7 @@ export interface PickupsModel extends Model {
   creationDate: Date;
   assignedBy: number;
   assignedTo: number;
-  createdAWBs: number;
+  createdAWBs: boolean;
   Notes: string;
   isActive: boolean;
 }
@@ -81,7 +81,7 @@ export const Pickups = sequelize.define<PickupsModel>(
       type: DataTypes.INTEGER,
     },
     createdAWBs: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.BOOLEAN,
     },
     Notes: {
       type: DataTypes.STRING,
