@@ -50,8 +50,6 @@ import rolesRoutes from './Routes2/RolesRoute';
 import mail_route from './Routes2/mailRoute';
 import { ticketCategories_endpoints } from './Routes2/ticketCategoriesRoutes';
 
-
-
 const corsOptions = {
   origin: '*',
   credentials: true,
@@ -119,9 +117,8 @@ ticketCategories_endpoints(app);
 
 app.use('/images', imageRouter);
 
-
-app.listen(process.env.PORT, () => {
-  console.log(`Server running on port http://${address}:${process.env.PORT}`);
+app.listen(process.env.PORT2, () => {
+  console.log(`Server running on port http://${address}:${process.env.PORT2}`);
 });
 
 export default app;
