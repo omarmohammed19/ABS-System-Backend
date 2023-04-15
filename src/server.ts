@@ -63,6 +63,7 @@ import paymentInfoRouter from './Backend/cust_PaymentInfo/Route';
 import custzonesRouter from './Backend/cust_Zones/Route';
 import trackShipmentRouter from './ClientServices/TrackShipment/Route';
 import pickupServicesRouter from './ClientServices/Pickups/Route';
+import awbRouter from './Backend/AWBGenerator/Route';
 
 const corsOptions = {
   origin: '*',
@@ -143,6 +144,7 @@ paymentInfoRouter(app);
 custzonesRouter(app);
 trackShipmentRouter(app);
 pickupServicesRouter(app);
+awbRouter(app);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port http://${address}:${process.env.PORT}`);
