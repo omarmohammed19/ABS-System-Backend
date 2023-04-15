@@ -11,17 +11,19 @@ const getByID = async (ID: number, language: string, t: Transaction) => {
   return result as unknown as TransactionHdrModel;
 };
 
-const getBySubAccountID = async (subAccountID: number, language: string, t: Transaction) => {
-  const query = 'EXEC [dbo].[p_GET_ship_TransactionHdr] @language = :language , @Method = :Method, @subAccountID = :subAccountID';
-  const replacements = { language: language, Method: 'GET_BySubAccountID', subAccountID: subAccountID };
+const getBySubAccountID = async (subAccountID: number, language: string, t: Transaction, limits?: number) => {
+  const limit = limits || 10;
+  const query = 'EXEC [dbo].[p_GET_ship_TransactionHdr] @limit = :limit ,@language = :language , @Method = :Method, @subAccountID = :subAccountID';
+  const replacements = { limit: limit, language: language, Method: 'GET_BySubAccountID', subAccountID: subAccountID };
   const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
   const result = await sequelize.query(query, options);
   return result as unknown as TransactionHdrModel;
 };
 
-const getByMainAccountID = async (mainAccountID: number, language: string, t: Transaction) => {
-  const query = 'EXEC [dbo].[p_GET_ship_TransactionHdr] @language = :language , @Method = :Method, @mainAccountID = :mainAccountID';
-  const replacements = { language: language, Method: 'GET_ByMainAccountID', mainAccountID: mainAccountID };
+const getByMainAccountID = async (mainAccountID: number, language: string, t: Transaction, limits?: number) => {
+  const limit = limits || 10;
+  const query = 'EXEC [dbo].[p_GET_ship_TransactionHdr] @limit = :limit ,@language = :language , @Method = :Method, @mainAccountID = :mainAccountID';
+  const replacements = { limit: limit, language: language, Method: 'GET_ByMainAccountID', mainAccountID: mainAccountID };
   const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
   const result = await sequelize.query(query, options);
   return result as unknown as TransactionHdrModel;
@@ -75,11 +77,11 @@ export class TransactionHdrController {
     }
   }
 
-  async getTransactionHdrBySubAccountID(SubAccountID: number, language: string): Promise<TransactionHdrModel | string> {
+  async getTransactionHdrBySubAccountID(SubAccountID: number, language: string, limit?: number): Promise<TransactionHdrModel | string> {
     try {
       const result = await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
-        const item = await getBySubAccountID(SubAccountID, language, t); // pass transaction object to getById function
+        const item = await getBySubAccountID(SubAccountID, language, t, limit); // pass transaction object to getById function
         return item;
       });
       return result;
@@ -88,11 +90,11 @@ export class TransactionHdrController {
     }
   }
 
-  async getTransactionHdrByMainAccountID(MainAccountID: number, language: string): Promise<TransactionHdrModel | string> {
+  async getTransactionHdrByMainAccountID(MainAccountID: number, language: string, limit?: number): Promise<TransactionHdrModel | string> {
     try {
       const result = await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
-        const item = await getByMainAccountID(MainAccountID, language, t); // pass transaction object to getById function
+        const item = await getByMainAccountID(MainAccountID, language, t, limit); // pass transaction object to getById function
         return item;
       });
       return result;
@@ -128,7 +130,7 @@ export class TransactionHdrController {
     }
   }
 
-  async deactivate(ID: number): Promise<string> {
+  async deactivateByID(ID: number): Promise<string> {
     try {
       const result = await De_Activate<TransactionHdrModel>(TransactionHdr, 'ID', ID, 'deactivate');
       return result;
@@ -137,9 +139,45 @@ export class TransactionHdrController {
     }
   }
 
-  async activate(ID: number): Promise<string> {
+  async activateByID(ID: number): Promise<string> {
     try {
       const result = await De_Activate<TransactionHdrModel>(TransactionHdr, 'ID', ID, 'activate');
+      return result;
+    } catch (err) {
+      throw new Error(`Could not activate TransactionHdr. Error: ${err}`);
+    }
+  }
+
+  async deactivateBySubAccountID(subAccountID: number): Promise<string> {
+    try {
+      const result = await De_Activate<TransactionHdrModel>(TransactionHdr, 'subAccountID', subAccountID, 'deactivate');
+      return result;
+    } catch (err) {
+      throw new Error(`Could not deactivate TransactionHdr. Error: ${err}`);
+    }
+  }
+
+  async activateBySubAccountID(subAccountID: number): Promise<string> {
+    try {
+      const result = await De_Activate<TransactionHdrModel>(TransactionHdr, 'subAccountID', subAccountID, 'activate');
+      return result;
+    } catch (err) {
+      throw new Error(`Could not activate TransactionHdr. Error: ${err}`);
+    }
+  }
+
+  async deactivateByMainAccountID(mainAccountID: number): Promise<string> {
+    try {
+      const result = await De_Activate<TransactionHdrModel>(TransactionHdr, 'mainAccountID', mainAccountID, 'deactivate');
+      return result;
+    } catch (err) {
+      throw new Error(`Could not deactivate TransactionHdr. Error: ${err}`);
+    }
+  }
+
+  async activateByMainAccountID(mainAccountID: number): Promise<string> {
+    try {
+      const result = await De_Activate<TransactionHdrModel>(TransactionHdr, 'mainAccountID', mainAccountID, 'activate');
       return result;
     } catch (err) {
       throw new Error(`Could not activate TransactionHdr. Error: ${err}`);
