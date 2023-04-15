@@ -16,7 +16,6 @@ export class PaymentInfoController {
     try {
       const query = 'EXEC [dbo].[p_GET_cust_PaymentInfo] @language = :language, @Method = :Method, @isActive = :isActive, @limit = :limit, @paymentMethodID = :paymentMethodID';
       const replacements = { language: language, Method: 'GET', isActive: isActive, limit: limit, paymentMethodID: paymentMethodID };
-      console.log(replacements);
       const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
       const result = await sequelize.query(query, options);
       return result as unknown as PaymentInfoModel[];

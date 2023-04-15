@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import { WalletController } from './Controller';
+import { log } from 'console';
 
 const walletController = new WalletController();
 
@@ -11,6 +12,7 @@ const getABSFees = async (req: Request, res: Response) => {
         const result = await walletController.getABSFees(subAccountID, fromDate, toDate);
         res.json(result);
     } catch (error) {
+        console.log(error);
         res.status(400);
         res.json(error);
     }
