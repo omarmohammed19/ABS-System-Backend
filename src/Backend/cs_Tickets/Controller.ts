@@ -38,7 +38,7 @@ export class TicketsController {
                     {
                         AWB: ticket.AWB,
                         ticketTypeID: ticket.ticketTypeID,
-                        ticketStatusID: ticket.ticketStatusID,
+                        ticketStatusID: 1,
                         Description: ticket.Description,
                         lastActionDate: ticket.lastActionDate,
                         userID: ticket.userID,
