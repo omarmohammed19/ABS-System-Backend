@@ -1,16 +1,18 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../../Config/database';
 
-export interface LegalPapersModel extends Model {
+export interface TransactionHdrModel extends Model {
   ID: number;
   mainAccountID: number;
-  legalPaperTypeID: number;
-  legalPaperImage: string;
+  subAccountID: number;
+  userID: number;
+  creationDate: Date;
+  noOfAWBs: number;
   isActive: boolean;
 }
 
-export const LegalPapers = sequelize.define<LegalPapersModel>(
-  'cust_LegalPapers',
+export const TransactionHdr = sequelize.define<TransactionHdrModel>(
+  'ship_TransactionHdr',
   {
     ID: {
       type: DataTypes.INTEGER,
@@ -20,17 +22,24 @@ export const LegalPapers = sequelize.define<LegalPapersModel>(
     mainAccountID: {
       type: DataTypes.INTEGER,
     },
-    legalPaperTypeID: {
+    subAccountID: {
       type: DataTypes.INTEGER,
     },
-    legalPaperImage: {
-      type: DataTypes.STRING,
+    userID: {
+      type: DataTypes.INTEGER,
+    },
+    creationDate: {
+      type: DataTypes.DATE,
+    },
+    noOfAWBs: {
+      type: DataTypes.INTEGER,
     },
     isActive: {
       type: DataTypes.BOOLEAN,
     },
   },
   {
+    tableName: 'ship_TransactionHdr',
     timestamps: false,
   }
 );
