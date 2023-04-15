@@ -13,6 +13,7 @@ export class WalletController {
             return result as unknown as WalletModel;
         }
         catch (err) {
+            console.log(err);
             throw new Error(`Could not get ABS Fees. Error: ${err}`);
         }
     }

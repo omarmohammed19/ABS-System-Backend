@@ -38,8 +38,9 @@ export class TicketsController {
                     {
                         AWB: ticket.AWB,
                         ticketTypeID: ticket.ticketTypeID,
-                        ticketStatusID: ticket.ticketStatusID,
+                        ticketStatusID: 1,
                         Description: ticket.Description,
+                        creationDate: ticket.creationDate,
                         lastActionDate: ticket.lastActionDate,
                         userID: ticket.userID,
                         documentPath: ticket.documentPath,
@@ -104,6 +105,7 @@ export class TicketsController {
                         ticketTypeID: ticket.ticketTypeID,
                         ticketStatusID: ticket.ticketStatusID,
                         Description: ticket.Description,
+                        creationDate: ticket.creationDate,
                         lastActionDate: ticket.lastActionDate,
                         userID: ticket.userID,
                         documentPath: ticket.documentPath,

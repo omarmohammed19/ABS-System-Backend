@@ -7,6 +7,7 @@ export interface TicketsModel extends Model {
     ticketTypeID: number;
     ticketStatusID: number;
     Description: string;
+    creationDate: Date;
     lastActionDate: Date;
     isClosed: boolean;
     userID: number;
@@ -33,6 +34,9 @@ export const Tickets = sequelize.define<TicketsModel>(
         },
         Description: {
             type: DataTypes.STRING,
+        },
+        creationDate: {
+            type: DataTypes.DATE,
         },
         lastActionDate: {
             type: DataTypes.DATE,

@@ -3,9 +3,9 @@ import { De_Activate } from '../../Services/De_Activate';
 import { sequelize } from '../../Config/database';
 import Sequelize, { Transaction } from 'sequelize';
 
-const getByID = async (ID: number, t: Transaction, language?: string) => {
-  const query = 'EXEC [dbo].[p_GET_cust_Addresses] @language = :language, @Method = :Method, @ID = :ID';
-  const replacements = { language: language, Method: 'GET_ByID', ID: ID };
+const getByID = async (ID: number, t: Transaction, Method: string, subAccountID?: number, language?: string) => {
+  const query = 'EXEC [dbo].[p_GET_cust_Addresses] @language = :language, @Method = :Method, @ID = :ID , @subAccountID = :subAccountID';
+  const replacements = { language: language, Method: Method, ID: ID, subAccountID: subAccountID };
   const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
   const result = await sequelize.query(query, options);
   return result as unknown as AddressesModel;
@@ -50,11 +50,11 @@ export class AddressesController {
     }
   }
 
-  async getAddressesByID(ID: number, language: string): Promise<AddressesModel | string> {
+  async getAddressesByID(ID: number, Method: string, subAccountID: number, language: string): Promise<AddressesModel | string> {
     try {
       const result = await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
-        const item = await getByID(ID, t, language); // pass transaction object to getById function
+        const item = await getByID(ID, t, Method, subAccountID, language); // pass transaction object to getById function
         return item;
       });
       return result;

@@ -1,6 +1,7 @@
 import { TrackShipmentModel } from './Model';
 import { sequelize } from '../../Config/database';
 import Sequelize from 'sequelize';
+import { Transactions } from '../../Backend/ship_Transactions/Model';
 
 
 export class TrackShipmentController {
@@ -16,6 +17,22 @@ export class TrackShipmentController {
         }
         catch (err) {
             throw new Error(`Could not get Status History by AWB. Error: ${err}`);
+        }
+    }
+
+
+    async checkAWBExistence(AWB: string): Promise<Boolean> {
+        try {
+            const result = await Transactions.findOne({
+                where: {
+                    AWB: AWB,
+                    isActive: true,
+                },
+            });
+            return result ? true : false;
+        }
+        catch (err){
+            throw new Error(`Could not check AWB Existence. Error: ${err}`);
         }
     }
 }

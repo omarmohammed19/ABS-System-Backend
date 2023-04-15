@@ -65,8 +65,8 @@ const create = async (req: Request, res: Response) => {
         const ticket = <TicketsModel><unknown>{
             AWB: req.body.AWB,
             ticketTypeID: req.body.ticketTypeID,
-            ticketStatusID: req.body.ticketStatusID,
             Description: req.body.Description,
+            creationDate: Sequalize.literal('GETDATE()'),
             lastActionDate: Sequalize.literal('GETDATE()'),
             userID: req.body.userID,
             documentPath: req.body.documentPath,
@@ -88,6 +88,7 @@ const update = async (req: Request, res: Response) => {
             ticketTypeID: req.body.ticketTypeID,
             ticketStatusID: req.body.ticketStatusID,
             Description: req.body.Description,
+            creationDate : req.body.creationDate,
             lastActionDate: Sequalize.literal('GETDATE()'),
             userID: req.body.userID,
             documentPath: req.body.documentPath,
