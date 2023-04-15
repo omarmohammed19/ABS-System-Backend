@@ -20,7 +20,7 @@ const getStatusByAWB = async (req: Request, res: Response) => {
 const checkAWBExistence = async (req: Request, res: Response) => {
     try {
         const AWB = req.params.AWB;
-        const result = await trackShipmentController.checkAWBExistence(AWB);
+        const result = await trackShipmentController.checkAWBExistence(AWB, Number(req.params.subAccountID));
         res.json(result);
     } catch (error) {
         res.status(400);
@@ -30,6 +30,6 @@ const checkAWBExistence = async (req: Request, res: Response) => {
 
 const trackShipmentRouter = (app: express.Application) => {
     app.get('/track-shipment/:AWB/:isActive', getStatusByAWB);
-    app.get('/check-awb/:AWB', checkAWBExistence);
+    app.get('/check-awb/:AWB/:subAccountID', checkAWBExistence);
 };
 export default trackShipmentRouter;

@@ -21,17 +21,18 @@ export class TrackShipmentController {
     }
 
 
-    async checkAWBExistence(AWB: string): Promise<Boolean> {
+    async checkAWBExistence(AWB: string, subAccountID: number): Promise<Boolean> {
         try {
             const result = await Transactions.findOne({
                 where: {
                     AWB: AWB,
+                    subAccountID: subAccountID,
                     isActive: true,
                 },
             });
             return result ? true : false;
         }
-        catch (err){
+        catch (err) {
             throw new Error(`Could not check AWB Existence. Error: ${err}`);
         }
     }
