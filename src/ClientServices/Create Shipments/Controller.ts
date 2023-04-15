@@ -10,6 +10,8 @@ import { ContactPersonsModel, ContactPersons } from '../../Backend/cnee_ContactP
 import { ContactNumbersModel, ContactNumbers } from '../../Backend/cnee_ContactNumbers/Model';
 import { AddressesModel, Addresses } from '../../Backend/cnee_Addresses/Model';
 import { SubAccounts } from '../../Backend/cust_SubAccounts/Model';
+import xlsx from 'xlsx'
+import { rows } from 'mssql';
 
 const getPrefix = async (subAccountID: number) => {
   const result: any = await SubAccounts.findOne({ where: { ID: subAccountID } });
@@ -39,8 +41,8 @@ const generateAWB = async (subAccountID: number) => {
   return AWB;
 };
 
-export class CreateSingleShipmentController {
-  async createShipment(
+export class CreateShipmentsController {
+  async createSingleShipment(
     transactionHdr: TransactionHdrModel,
     pickup: PickupsModel,
     pickupHistory: PickupHistoryModel,
@@ -171,5 +173,182 @@ export class CreateSingleShipmentController {
     } catch (err) {
       throw new Error(`Could not add new TransactionHdr. Error: ${err}`);
     }
+  }
+
+  // async CreateMultipleShipments(excelPath: string, subAccountID: number): Promise<any> {
+  //   const workbook = xlsx.readFile(excelPath);
+  //   const sheet = workbook.Sheets[workbook.SheetNames[0]];
+  //   const data = xlsx.utils.sheet_to_json(sheet, { header: ['Ref', 'Main Account ID'] });
+
+  //   // Use a Sequelize transaction to insert the data into the database
+  //   await sequelize.transaction(async (t) => {
+  //     // Insert each row into the Transaction and Person tables
+  //     await Promise.all(data.slice(1).map(async (row: any) => {
+  //       const AWB = await generateAWB(subAccountID);
+  //       // Insert into the Transaction table
+  //       await Transactions.create({
+  //         AWB: AWB,
+  //         Ref: row.Ref
+  //       }, { transaction: t });
+
+  //       await TransactionHdr.create({
+  //         mainAccountID: row['Main Account ID']
+  //       }, { transaction: t });
+  //     }));
+  //   });
+  // }
+
+  // transactionHdr: TransactionHdrModel,
+  // pickup: PickupsModel,
+  // pickupHistory: PickupHistoryModel,
+  // transactions: TransactionsModel,
+  // transactionHistory: TransactionHistoryModel,
+  // contactPersons: ContactPersonsModel,
+  // contactNumbers: ContactNumbersModel,
+  // addresses: AddressesModel
+  async CreateMultipleShipments(excelPath: string, transactionHdr: TransactionHdrModel,
+    pickup: PickupsModel,
+    pickupHistory: PickupHistoryModel,
+    transactions: TransactionsModel, transactionHistory: TransactionHistoryModel,
+    contactNumbers: ContactNumbersModel,
+  )
+    : Promise<any> {
+    const workbook = xlsx.readFile(excelPath);
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    const data: any = xlsx.utils.sheet_to_json(sheet, {
+      header: ['Ref', 'shipmentTypeID'
+        , 'productID', 'specialInstructions',
+        'packageTypeID', 'noOfPcs', 'contents', 'weight',
+        'Cash', 'firstName', 'lastName', 'contactNumber',
+        'streetName', 'apartmentNumber', 'floorNumber', 'buildingNumber'
+        , 'cityID', 'postalCode', 'longitude', 'latitude']
+    });
+    // No of rows in sheet
+    const numRows = data.length - 1;
+
+    // Use a Sequelize transaction to insert the data into the database
+    await sequelize.transaction(async (t) => {
+      const newTransactionHdr = await TransactionHdr.create(
+        {
+          mainAccountID: transactionHdr.mainAccountID,
+          subAccountID: transactionHdr.subAccountID,
+          userID: transactionHdr.userID,
+          creationDate: transactionHdr.creationDate,
+          noOfAWBs: numRows,
+        },
+        { transaction: t, returning: ['ID'] } // pass transaction object and specify returning column(s)
+      );
+
+      const newPickup = await Pickups.create(
+        {
+          mainAccountID: pickup.mainAccountID,
+          subAccountID: pickup.subAccountID,
+          pickupLocationID: pickup.pickupLocationID,
+          transHdrID: newTransactionHdr.ID,
+          pickupTypeID: pickup.pickupTypeID,
+          vehicleTypeID: pickup.vehicleTypeID,
+          noOfAWBs: numRows,
+          actualAWBs: numRows,
+          timeFrom: pickup.timeFrom,
+          toTime: pickup.toTime,
+          statusID: 1,
+          userID: pickup.userID,
+          creationDate: pickup.creationDate,
+          createdAWBs: 0,
+          Notes: pickup.Notes,
+        },
+        { transaction: t, returning: ['ID'] } // pass transaction object to query
+      );
+
+      await PickupHistory.create(
+        {
+          pickupID: newPickup.ID,
+          statusID: 1,
+          actionTime: pickupHistory.actionTime,
+          userID: pickupHistory.userID,
+        },
+        { transaction: t }
+      );
+      // Insert data into the Transaction and TransactionHdr tables using bulkCreate
+      const transactionData = await Promise.all(data.slice(1).map(async (row: any) => {
+        return {
+          transHdrID: newTransactionHdr.ID,
+          AWB: await generateAWB(transactions.subAccountID),
+          mainAccountID: transactions.mainAccountID,
+          subAccountID: transactions.subAccountID,
+          statusID: 1,
+          expectedDeliveryDate: transactions.expectedDeliveryDate,
+          creationDate: transactions.creationDate,
+          lastChangeDate: transactions.lastChangeDate,
+          userID: transactions.userID,
+          expiryDate: transactions.expiryDate,
+          deliveryBranchID: transactions.deliveryBranchID,
+          toBranchID: transactions.toBranchID,
+          shipmentTypeID: row.shipmentTypeID,
+          Ref: row.Ref,
+          specialInstructions: row.specialInstructions,
+          productID: row.productID,
+          packageTypeID: row.packageTypeID,
+          noOfPcs: row.noOfPcs,
+          contents: row.contents,
+          weight: row.weight,
+          Cash: row.Cash,
+        }
+      }));
+
+      const createdTransactions = await Transactions.bulkCreate(transactionData, { transaction: t, returning: ['ID', 'AWB'] });
+      const transIDs = createdTransactions.map((transaction: TransactionsModel) => transaction.ID);
+      // Insert data into the TransactionHistory table using bulkCreate
+      const transactionHistoryData = transIDs.map((transID: number, index: number) => {
+        return {
+          transID: transID,
+          shipmentTypeID: data[index + 1].shipmentTypeID,
+          statusID: 1,
+          auditDate: transactionHistory.auditDate,
+          userID: transactionHistory.userID,
+          toBranchID: transactionHistory.toBranchID,
+        }
+      });
+      await TransactionHistory.bulkCreate(transactionHistoryData, { transaction: t });
+
+      const contactPersonData = await Promise.all(data.slice(1).map(async (row: any) => {
+        return {
+          firstName: row.firstName,
+          lastName: row.firstName,
+        }
+      }));
+
+      const createdContactPerson = await ContactPersons.bulkCreate(contactPersonData, { transaction: t, returning: ['ID'] });
+
+      const AWBs = createdTransactions.map((transaction: TransactionsModel) => transaction.AWB);
+      const ContactPersonIDs = createdContactPerson.map((contactPerson: ContactPersonsModel) => contactPerson.ID);
+
+      const addressData = AWBs.map((AWB: string, index: number) => {
+
+        return {
+          AWB: AWB,
+          streetName: data[index + 1].streetName,
+          apartmentNumber: data[index + 1].apartmentNumber,
+          floorNumber: data[index + 1].floorNumber,
+          buildingNumber: data[index + 1].buildingNumber,
+          cityID: data[index + 1].cityID,
+          postalCode: data[index + 1].postalCode,
+          cneeContactPersonID: ContactPersonIDs[index],
+          longitude: data[index + 1].longitude,
+          latitude: data[index + 1].latitude,
+        }
+      });
+      await Addresses.bulkCreate(addressData, { transaction: t });
+
+      const contactNumberData = ContactPersonIDs.map((ContactPersonID: number, index: number) => {
+        return {
+          contactNumber: data[index + 1].contactNumber,
+          cneeContactPersonID: ContactPersonID,
+          numberTypeID: contactNumbers.numberTypeID,
+        }
+      });
+      await ContactNumbers.bulkCreate(contactNumberData, { transaction: t });
+
+    });
   }
 }

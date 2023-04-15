@@ -31,7 +31,7 @@ const getByTransHdrID = async (req: Request, res: Response) => {
 const getBymainAccountID = async (req: Request, res: Response) => {
   try {
     const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-    const result = await transactionsController.getTransactionsBymainAccountID(Number(req.params.mainAccountID), language);
+    const result = await transactionsController.getTransactionsBymainAccountID(Number(req.params.mainAccountID), language, Number(req.params.limit));
     res.json(result);
   } catch (error) {
     res.status(400);
@@ -42,9 +42,10 @@ const getBymainAccountID = async (req: Request, res: Response) => {
 const getBysubAccountID = async (req: Request, res: Response) => {
   try {
     const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-    const result = await transactionsController.getTransactionsBysubAccountID(Number(req.params.subAccountID), language);
+    const result = await transactionsController.getTransactionsBysubAccountID(Number(req.params.subAccountID), language, Number(req.params.limit));
     res.json(result);
   } catch (error) {
+    console.log(error)
     res.status(400);
     res.json(error);
   }
@@ -288,8 +289,8 @@ const transactionsRouter = (app: express.Application) => {
   app.get('/transactions/:isActive/:limit?', getAll);
   app.get('/transactions-by-transHdrID/:transHdrID', getByTransHdrID);
   app.get('/transactions-by-AWB/:AWB', getByAWB);
-  app.get('/transactions-by-mainAccountID/:mainAccountID', getBymainAccountID);
-  app.get('/transactions-by-subAccountID/:subAccountID', getBysubAccountID);
+  app.get('/transactions-by-mainAccountID/:mainAccountID/:limit?', getBymainAccountID);
+  app.get('/transactions-by-subAccountID/:subAccountID/:limit?', getBysubAccountID);
   app.post('/transactions', create);
   app.put('/transactions-by-transHdrID/:transHdrID', updateByTransHdrID);
   app.put('/transactions-by-AWB/:AWB', updateByAWB);
