@@ -65,7 +65,6 @@ const create = async (req: Request, res: Response) => {
         const ticket = <TicketsModel><unknown>{
             AWB: req.body.AWB,
             ticketTypeID: req.body.ticketTypeID,
-            ticketStatusID: req.body.ticketStatusID,
             Description: req.body.Description,
             creationDate: Sequalize.literal('GETDATE()'),
             lastActionDate: Sequalize.literal('GETDATE()'),
