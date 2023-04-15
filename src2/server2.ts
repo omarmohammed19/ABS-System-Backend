@@ -120,8 +120,8 @@ ticketCategories_endpoints(app);
 app.use('/images', imageRouter);
 
 
-app.listen(process.env.PORT, () => {
-  console.log(`Server running on port http://${address}:${process.env.PORT}`);
+app.listen(process.env.PORT2, () => {
+  console.log(`Server running on port http://${address}:${process.env.PORT2}`);
 });
 
 export default app;
