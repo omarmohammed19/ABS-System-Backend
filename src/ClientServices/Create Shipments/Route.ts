@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { CreateSingleShipmentController } from './Controller';
+import { CreateShipmentsController } from './Controller';
 import { Sequelize } from 'sequelize';
 import { TransactionHdrModel } from '../../Backend/ship_TransactionHdr/Model';
 import { PickupsModel } from '../../Backend/ship_Pickups/Model';
@@ -10,13 +10,16 @@ import { ContactPersonsModel } from '../../Backend/cnee_ContactPersons/Model';
 import { ContactNumbersModel } from '../../Backend/cnee_ContactNumbers/Model';
 import { AddressesModel } from '../../Backend/cnee_Addresses/Model';
 
-const createSingleShipmentController = new CreateSingleShipmentController();
+const createShipmentsController = new CreateShipmentsController();
+
+const currentDate = Sequelize.literal('GETDATE()');
+const expectedDeliveryDate = Sequelize.literal('GETDATE()+1');
+const expiryDate = Sequelize.literal('GETDATE()+3');
 
 const createSingleShipment = async (req: Request, res: Response) => {
   try {
-    const currentDate = Sequelize.literal('GETDATE()');
-    const expectedDeliveryDate = Sequelize.literal('GETDATE()+1');
-    const expiryDate = Sequelize.literal('GETDATE()+3');
+
+
     const transactionHdr = <TransactionHdrModel>(<unknown>{
       mainAccountID: req.body.mainAccountID,
       subAccountID: req.body.subAccountID,
@@ -94,7 +97,7 @@ const createSingleShipment = async (req: Request, res: Response) => {
       latitude: req.body.latitude,
     });
 
-    const result = await createSingleShipmentController.createShipment(
+    const result = await createShipmentsController.createSingleShipment(
       transactionHdr,
       pickup,
       pickupHistory,
@@ -106,7 +109,66 @@ const createSingleShipment = async (req: Request, res: Response) => {
     );
     res.json(result);
   } catch (error) {
-    console.log('🚀 ~ file: Route.ts:109 ~ createSingleShipment ~ error:', error);
+    res.status(400);
+    res.json(error);
+  }
+};
+
+const createMultipleShipments = async (req: Request, res: Response) => {
+  try {
+    const excelPath = req.body.excelPath
+    const transactionHdr = <TransactionHdrModel>(<unknown>{
+      mainAccountID: req.body.mainAccountID,
+      subAccountID: req.params.subAccountID,
+      userID: req.body.userID,
+      creationDate: currentDate,
+    });
+
+    const pickup = <PickupsModel>(<unknown>{
+      mainAccountID: req.body.mainAccountID,
+      subAccountID: req.params.subAccountID,
+      pickupLocationID: req.body.pickupLocationID,
+      pickupTypeID: req.body.pickupTypeID,
+      vehicleTypeID: req.body.vehicleTypeID,
+      timeFrom: req.body.timeFrom,
+      toTime: req.body.toTime,
+      userID: req.body.userID,
+      creationDate: currentDate,
+      Notes: req.body.pickupNotes,
+    });
+
+    const pickupHistory = <PickupHistoryModel>(<unknown>{
+      actionTime: currentDate,
+      userID: req.body.userID,
+    });
+
+    const transaction = <TransactionsModel>(<unknown>{
+      subAccountID: req.params.subAccountID,
+      mainAccountID: req.body.mainAccountID,
+      userID: req.body.userID,
+      expectedDeliveryDate: expectedDeliveryDate,
+      creationDate: currentDate,
+      lastChangeDate: currentDate,
+      expiryDate: expiryDate,
+      deliveryBranchID: req.body.deliveryBranchID,
+      toBranchID: req.body.toBranchID,
+    });
+
+    const transactionHistory = <TransactionHistoryModel>(<unknown>{
+      auditDate: currentDate,
+      userID: req.body.userID,
+      toBranchID: req.body.toBranchID,
+    });
+
+
+    const contactNumber = <ContactNumbersModel>(<unknown>{
+      numberTypeID: req.body.numberTypeID,
+    });
+
+    const result = await createShipmentsController.CreateMultipleShipments(excelPath, transactionHdr, pickup, pickupHistory, transaction, transactionHistory, contactNumber);
+    res.json(result);
+  } catch (error) {
+    console.log('🚀 ~ file: Route.ts:47 ~ create ~ error:', error);
     res.status(400);
     res.json(error);
   }
@@ -114,5 +176,6 @@ const createSingleShipment = async (req: Request, res: Response) => {
 
 const CreateShipmentServicesRouter = (app: express.Application) => {
   app.post('/create-single-shipment', createSingleShipment);
+  app.post('/create-multiple-shipment/:subAccountID', createMultipleShipments);
 };
 export default CreateShipmentServicesRouter;

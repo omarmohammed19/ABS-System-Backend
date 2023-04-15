@@ -32,7 +32,7 @@ const getById = async (req: Request, res: Response) => {
 const getBySubAccountId = async (req: Request, res: Response) => {
   try {
     const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-    const result = await transactionHdrController.getTransactionHdrBySubAccountID(Number(req.params.subAccountID), language);
+    const result = await transactionHdrController.getTransactionHdrBySubAccountID(Number(req.params.subAccountID), language, Number(req.params.limit));
     res.json(result);
   } catch (error) {
     console.log('subID:' + error);
@@ -44,7 +44,7 @@ const getBySubAccountId = async (req: Request, res: Response) => {
 const getByMainAccountId = async (req: Request, res: Response) => {
   try {
     const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-    const result = await transactionHdrController.getTransactionHdrByMainAccountID(Number(req.params.mainAccountID), language);
+    const result = await transactionHdrController.getTransactionHdrByMainAccountID(Number(req.params.mainAccountID), language, Number(req.params.limit));
     res.json(result);
   } catch (error) {
     console.log('mainID:' + error);
@@ -158,8 +158,8 @@ const activateByMainAccountID = async (req: Request, res: Response) => {
 const transactionHdrRouter = (app: express.Application) => {
   app.get('/transactionHdr/:isActive/:limit?', getAll);
   app.get('/transactionHdr-by-ID/:ID', getById);
-  app.get('/transactionHdr-by-subAccountID/:subAccountID', getBySubAccountId);
-  app.get('/transactionHdr-by-mainAccountID/:mainAccountID', getByMainAccountId);
+  app.get('/transactionHdr-by-subAccountID/:subAccountID/:limit?', getBySubAccountId);
+  app.get('/transactionHdr-by-mainAccountID/:mainAccountID/:limit?', getByMainAccountId);
   app.post('/transactionHdr', create);
   app.put('/transactionHdr/:ID', update);
   app.put('/transactionHdr/de-activate-by-ID/:ID', deactivateByID);

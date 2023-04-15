@@ -6,7 +6,6 @@ export interface ContactPersonsModel extends Model {
     subAccountID: number;
     firstName: string;
     lastName: string;
-    contactPersonTypeID: number;
     isActive: boolean;
 }
 
@@ -27,9 +26,6 @@ export const ContactPersons = sequelize.define<ContactPersonsModel>(
         },
         lastName: {
             type: DataTypes.STRING,
-        },
-        contactPersonTypeID: {
-            type: DataTypes.INTEGER,
         },
         isActive: {
             type: DataTypes.BOOLEAN,
