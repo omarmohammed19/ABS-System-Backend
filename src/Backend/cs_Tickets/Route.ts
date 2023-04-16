@@ -57,6 +57,7 @@ const getBySubAccountID = async (req: Request, res: Response) => {
     } catch (error) {
         res.status(400);
         res.json(error);
+        console.log(error);
     }
 };
 
