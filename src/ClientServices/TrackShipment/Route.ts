@@ -1,3 +1,4 @@
+import { subAccount } from './../../../src2/Models2/subAccount';
 import express, { Request, Response } from 'express';
 import { TrackShipmentController } from './Controller';
 import Sequalize from 'sequelize';
@@ -20,7 +21,8 @@ const getStatusByAWB = async (req: Request, res: Response) => {
 const checkAWBExistence = async (req: Request, res: Response) => {
   try {
     const AWB = req.params.AWB;
-    const result = await trackShipmentController.checkAWBExistence(AWB);
+    const subAccountID = Number(req.params.subAccountID);
+    const result = await trackShipmentController.checkAWBExistence(AWB, subAccountID);
     res.json(result);
   } catch (error) {
     res.status(400);
@@ -30,6 +32,6 @@ const checkAWBExistence = async (req: Request, res: Response) => {
 
 const trackShipmentRouter = (app: express.Application) => {
   app.get('/track-shipment/:subAccountID/:AWB', getStatusByAWB);
-  app.get('/check-awb/:AWB', checkAWBExistence);
+  app.get('/check-awb/:AWB/:subAccountID', checkAWBExistence);
 };
 export default trackShipmentRouter;
