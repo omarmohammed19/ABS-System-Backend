@@ -51,8 +51,8 @@ const getBySubAccountID = async (req: Request, res: Response) => {
         const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
         const isActive = Number(req.params.isActive);
         const subAccountID = Number(req.params.subAccountID);
-        const limit = Number(req.params.subAccountID);
-        const result = await ticketsController.getTicketsBySubAccountID(language, isActive, subAccountID, limit);
+        const limit = Number(req.params.limit);
+        const result = await ticketsController.getTicketsBySubAccountID(language, subAccountID, isActive, limit);
         res.json(result);
     } catch (error) {
         res.status(400);
@@ -88,7 +88,7 @@ const update = async (req: Request, res: Response) => {
             ticketTypeID: req.body.ticketTypeID,
             ticketStatusID: req.body.ticketStatusID,
             Description: req.body.Description,
-            creationDate : req.body.creationDate,
+            creationDate: req.body.creationDate,
             lastActionDate: Sequalize.literal('GETDATE()'),
             userID: req.body.userID,
             documentPath: req.body.documentPath,

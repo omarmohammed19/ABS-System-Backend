@@ -82,7 +82,7 @@ export class TicketsController {
         }
     }
 
-    async getTicketsBySubAccountID(language: string, isActive: number, subAccountID: number, limit: number): Promise<TicketsModel[]> {
+    async getTicketsBySubAccountID(language: string, subAccountID: number, isActive: number, limit: number): Promise<TicketsModel[]> {
         try {
             const query = 'EXEC [dbo].[p_GET_cs_Tickets] @language = :language, @Method = :Method, @isActive= :isActive, @subAccountID= :subAccountID, @limit= :limit';
             const replacements = { language: language, Method: 'GET_BySubAccountID', isActive: isActive, subAccountID: subAccountID, limit: limit };
