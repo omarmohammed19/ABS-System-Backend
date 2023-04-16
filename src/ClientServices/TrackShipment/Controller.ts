@@ -1,3 +1,4 @@
+import { subAccount } from './../../../src2/Models2/subAccount';
 import { TrackShipmentModel } from './Model';
 import { sequelize } from '../../Config/database';
 import Sequelize from 'sequelize';
@@ -16,11 +17,12 @@ export class TrackShipmentController {
     }
   }
 
-  async checkAWBExistence(AWB: string): Promise<Boolean> {
+  async checkAWBExistence(AWB: string, subAccountID: number): Promise<Boolean> {
     try {
       const result = await Transactions.findOne({
         where: {
           AWB: AWB,
+          subAccountID: subAccountID,
           isActive: true,
         },
       });
