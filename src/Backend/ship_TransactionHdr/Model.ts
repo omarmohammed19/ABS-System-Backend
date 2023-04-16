@@ -8,6 +8,7 @@ export interface TransactionHdrModel extends Model {
   userID: number;
   creationDate: Date;
   noOfAWBs: number;
+  BranchID: number;
   isActive: boolean;
 }
 

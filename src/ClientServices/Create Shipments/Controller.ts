@@ -9,7 +9,13 @@ import { ContactPersonsModel, ContactPersons } from '../../Backend/cnee_ContactP
 import { ContactNumbersModel, ContactNumbers } from '../../Backend/cnee_ContactNumbers/Model';
 import { AddressesModel, Addresses } from '../../Backend/cnee_Addresses/Model';
 import { SubAccounts } from '../../Backend/cust_SubAccounts/Model';
+import { BranchesController } from '../../Backend/cmp_Branches/Controller';
 import xlsx from 'xlsx';
+import { TransactionsController } from '../../Backend/ship_Transactions/Controller';
+
+const branchesController = new BranchesController();
+
+const transactionsController = new TransactionsController();
 
 const getPrefix = async (subAccountID: number) => {
   const result: any = await SubAccounts.findOne({ where: { ID: subAccountID } });
@@ -326,7 +332,16 @@ export class CreateShipmentsController {
           latitude: data[index + 1].latitude,
         };
       });
-      await Addresses.bulkCreate(addressData, { transaction: t });
+      const addresses = await Addresses.bulkCreate(addressData, { transaction: t });
+
+      const branchIDs = [];
+
+      for (const address of addresses) {
+        const branch = await branchesController.getBranchByCityID(address.cityID);
+        branchIDs.push(branch.ID);
+
+        console.log(`AWB: ${address.AWB}, City ID: ${address.cityID}, Branch ID: ${branch.ID}`);
+      }
 
       const contactNumberData = ContactPersonIDs.map((ContactPersonID: number, index: number) => {
         return {
