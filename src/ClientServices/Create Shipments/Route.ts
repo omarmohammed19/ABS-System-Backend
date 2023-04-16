@@ -9,6 +9,7 @@ import { TransactionHistoryModel } from '../../Backend/ship_TransactionHistory/M
 import { ContactPersonsModel } from '../../Backend/cnee_ContactPersons/Model';
 import { ContactNumbersModel } from '../../Backend/cnee_ContactNumbers/Model';
 import { AddressesModel } from '../../Backend/cnee_Addresses/Model';
+import path from 'path';
 
 const createShipmentsController = new CreateShipmentsController();
 
@@ -18,8 +19,6 @@ const expiryDate = Sequelize.literal('GETDATE()+3');
 
 const createSingleShipment = async (req: Request, res: Response) => {
   try {
-
-
     const transactionHdr = <TransactionHdrModel>(<unknown>{
       mainAccountID: req.body.mainAccountID,
       subAccountID: req.body.subAccountID,
@@ -116,7 +115,8 @@ const createSingleShipment = async (req: Request, res: Response) => {
 
 const createMultipleShipments = async (req: Request, res: Response) => {
   try {
-    const excelPath = req.body.excelPath
+    const fileName = req.body.fileName;
+    const excelPath = path.join(__dirname, '../../../uploads/', fileName);
     const transactionHdr = <TransactionHdrModel>(<unknown>{
       mainAccountID: req.body.mainAccountID,
       subAccountID: req.params.subAccountID,
@@ -160,12 +160,20 @@ const createMultipleShipments = async (req: Request, res: Response) => {
       toBranchID: req.body.toBranchID,
     });
 
-
     const contactNumber = <ContactNumbersModel>(<unknown>{
       numberTypeID: req.body.numberTypeID,
     });
 
-    const result = await createShipmentsController.CreateMultipleShipments(excelPath, transactionHdr, pickup, pickupHistory, transaction, transactionHistory, contactNumber);
+    const result = await createShipmentsController.CreateMultipleShipments(
+      excelPath,
+      transactionHdr,
+      pickup,
+      pickupHistory,
+      transaction,
+      transactionHistory,
+      contactNumber
+    );
+
     res.json(result);
   } catch (error) {
     console.log('🚀 ~ file: Route.ts:47 ~ create ~ error:', error);
