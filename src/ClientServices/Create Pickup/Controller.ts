@@ -19,7 +19,8 @@ export class CreatePickupController {
 
   async CreatePickup(transactionHdr: TransactionHdrModel, pickup: PickupsModel, pickupHistory: PickupHistoryModel): Promise<any> {
     try {
-      const result = await sequelize.transaction(async (t) => {
+      let newPickup: any;
+      await sequelize.transaction(async (t) => {
         const newTransactionHdr = await TransactionHdr.create(
           {
             mainAccountID: transactionHdr.mainAccountID,
@@ -30,7 +31,7 @@ export class CreatePickupController {
           { transaction: t, returning: ['ID'] } // pass transaction object and specify returning column(s)
         );
 
-        const newPickup = await Pickups.create(
+        newPickup = await Pickups.create(
           {
             mainAccountID: pickup.mainAccountID,
             subAccountID: pickup.subAccountID,
@@ -62,7 +63,7 @@ export class CreatePickupController {
         return newPickup.ID; // return the PickupID
       });
 
-      return result;
+      return newPickup.ID;
     } catch (err) {
       throw new Error(`Could not add new TransactionHdr. Error: ${err}`);
     }
