@@ -6,7 +6,8 @@ const walletController = new WalletController();
 
 const getABSFees = async (req: Request, res: Response) => {
     try {
-        const subAccountID = Number(req.params.subAccountID);
+        //@ts-ignore
+        const subAccountID = req.subAccountID;
         const fromDate = req.body.fromDate;
         const toDate = req.body.toDate;
         const result = await walletController.getABSFees(subAccountID, fromDate, toDate);
@@ -20,10 +21,11 @@ const getABSFees = async (req: Request, res: Response) => {
 
 const getPaidCash = async (req: Request, res: Response) => {
     try {
-        const subAccountID = Number(req.params.subAccountID);
+        //@ts-ignore
+        const subAccountID = req.subAccountID;
         const fromDate = req.body.fromDate;
         const toDate = req.body.toDate;
-        const result = await walletController.getCash('paidCash',subAccountID, fromDate, toDate);
+        const result = await walletController.getCash('paidCash', subAccountID, fromDate, toDate);
         res.json(result);
     } catch (error) {
         res.status(400);
@@ -33,12 +35,13 @@ const getPaidCash = async (req: Request, res: Response) => {
 
 const getExpectedCash = async (req: Request, res: Response) => {
     try {
-        const subAccountID = Number(req.params.subAccountID);
-        const result = await walletController.getCash('expectedCash',subAccountID);
+        //@ts-ignore
+        const subAccountID = req.subAccountID;
+        const result = await walletController.getCash('expectedCash', subAccountID);
         res.json(result);
     } catch (error) {
         console.log(error);
-        
+
         res.status(400);
         res.json(error);
     }
@@ -46,7 +49,8 @@ const getExpectedCash = async (req: Request, res: Response) => {
 
 const getShipments = async (req: Request, res: Response) => {
     try {
-        const subAccountID = Number(req.params.subAccountID);
+        //@ts-ignore
+        const subAccountID = req.subAccountID;
         const fromDate = req.body.fromDate;
         const toDate = req.body.toDate;
         const limit = Number(req.params.limit);
@@ -60,9 +64,9 @@ const getShipments = async (req: Request, res: Response) => {
 }
 
 const walletServicesRouter = (app: express.Application) => {
-    app.post('/wallet-ABS-Fees/:subAccountID/', getABSFees);
-    app.post('/wallet-paid-cash/:subAccountID/', getPaidCash);
-    app.post('/wallet-expected-cash/:subAccountID/', getExpectedCash);
-    app.post('/wallet-shipments/:subAccountID/:limit/', getShipments);
-};
+    app.post('/wallet-ABS-Fees', getABSFees);
+    app.post('/wallet-paid-cash', getPaidCash);
+    app.post('/wallet-expected-cash', getExpectedCash);
+    app.post('/wallet-shipments/:limit/', getShipments);
+}
 export default walletServicesRouter;

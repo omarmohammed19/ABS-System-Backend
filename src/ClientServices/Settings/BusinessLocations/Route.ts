@@ -10,8 +10,10 @@ const businessLocationsController = new BusinessLocationsController();
 
 const addBusinessLocation = async (req: Request, res: Response) => {
   try {
+    //@ts-ignore
+    const subAccountID = req.subAccountID;
     const address = <AddressesModel>(<unknown>{
-      subAccountID: req.body.subAccountID,
+      subAccountID: subAccountID,
       streetName: req.body.streetName,
       apartmentNumber: req.body.apartmentNumber,
       floorNumber: req.body.floorNumber,
@@ -28,14 +30,14 @@ const addBusinessLocation = async (req: Request, res: Response) => {
     })
 
     const contactPerson = <ContactPersonsModel>(<unknown>{
-      subAccountID: req.body.subAccountID,
+      subAccountID: subAccountID,
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       contactPersonTypeID: req.body.contactPersonTypeID
     })
 
     const contactNumber = <ContactNumbersModel>(<unknown>{
-      subAccountID: req.body.subAccountID,
+      subAccountID: subAccountID,
       contactNumber: req.body.contactNumber,
       contactTypeID: req.body.contactTypeID,
       numberTypeID: req.body.numberTypeID
