@@ -19,17 +19,24 @@ const expiryDate = Sequelize.literal('GETDATE()+3');
 
 const createSingleShipment = async (req: Request, res: Response) => {
   try {
+
+    //@ts-ignore
+    const subAccountID = req.subAccountID;
+    //@ts-ignore
+    const mainAccountID = req.mainAccountID;
+    //@ts-ignore
+    const userID = req.userID;
     const transactionHdr = <TransactionHdrModel>(<unknown>{
-      mainAccountID: req.body.mainAccountID,
-      subAccountID: req.body.subAccountID,
-      userID: req.body.userID,
+      mainAccountID: mainAccountID,
+      subAccountID: subAccountID,
+      userID: userID,
       creationDate: currentDate,
       noOfAWBs: req.body.noOfAWBs,
     });
 
     const pickup = <PickupsModel>(<unknown>{
-      mainAccountID: req.body.mainAccountID,
-      subAccountID: req.body.subAccountID,
+      mainAccountID: mainAccountID,
+      subAccountID: subAccountID,
       pickupLocationID: req.body.pickupLocationID,
       pickupTypeID: req.body.pickupTypeID,
       vehicleTypeID: req.body.vehicleTypeID,
@@ -37,26 +44,26 @@ const createSingleShipment = async (req: Request, res: Response) => {
       actualAWBs: req.body.actualAWBs,
       timeFrom: req.body.timeFrom,
       toTime: req.body.toTime,
-      userID: req.body.userID,
+      userID: userID,
       creationDate: currentDate,
       Notes: req.body.pickupNotes,
     });
 
     const pickupHistory = <PickupHistoryModel>(<unknown>{
       actionTime: currentDate,
-      userID: req.body.userID,
+      userID: userID,
     });
 
     const transaction = <TransactionsModel>(<unknown>{
       Ref: req.body.Ref,
-      mainAccountID: req.body.mainAccountID,
-      subAccountID: req.body.subAccountID,
+      mainAccountID: mainAccountID,
+      subAccountID: subAccountID,
       shipmentTypeID: req.body.shipmentTypeID,
       expectedDeliveryDate: expectedDeliveryDate,
       productID: req.body.productID,
       creationDate: currentDate,
       lastChangeDate: currentDate,
-      userID: req.body.userID,
+      userID: userID,
       expiryDate: expiryDate,
       deliveryBranchID: req.body.deliveryBranchID,
       toBranchID: req.body.toBranchID,
@@ -71,7 +78,7 @@ const createSingleShipment = async (req: Request, res: Response) => {
     const transactionHistory = <TransactionHistoryModel>(<unknown>{
       shipmentTypeID: req.body.shipmentTypeID,
       auditDate: currentDate,
-      userID: req.body.userID,
+      userID: userID,
       toBranchID: req.body.toBranchID,
     });
 
@@ -115,37 +122,43 @@ const createSingleShipment = async (req: Request, res: Response) => {
 
 const createMultipleShipments = async (req: Request, res: Response) => {
   try {
+    //@ts-ignore
+    const subAccountID = req.subAccountID;
+    //@ts-ignore
+    const mainAccountID = req.mainAccountID;
+    //@ts-ignore
+    const userID = req.userID;
     const fileName = req.body.fileName;
     const excelPath = path.join(__dirname, '../../../uploads/', fileName);
     const transactionHdr = <TransactionHdrModel>(<unknown>{
-      mainAccountID: req.body.mainAccountID,
-      subAccountID: req.params.subAccountID,
-      userID: req.body.userID,
+      mainAccountID: mainAccountID,
+      subAccountID: subAccountID,
+      userID: userID,
       creationDate: currentDate,
     });
 
     const pickup = <PickupsModel>(<unknown>{
-      mainAccountID: req.body.mainAccountID,
-      subAccountID: req.params.subAccountID,
+      mainAccountID: mainAccountID,
+      subAccountID: subAccountID,
       pickupLocationID: req.body.pickupLocationID,
       pickupTypeID: req.body.pickupTypeID,
       vehicleTypeID: req.body.vehicleTypeID,
       timeFrom: req.body.timeFrom,
       toTime: req.body.toTime,
-      userID: req.body.userID,
+      userID: userID,
       creationDate: currentDate,
       Notes: req.body.pickupNotes,
     });
 
     const pickupHistory = <PickupHistoryModel>(<unknown>{
       actionTime: currentDate,
-      userID: req.body.userID,
+      userID: userID,
     });
 
     const transaction = <TransactionsModel>(<unknown>{
-      subAccountID: req.params.subAccountID,
-      mainAccountID: req.body.mainAccountID,
-      userID: req.body.userID,
+      subAccountID: subAccountID,
+      mainAccountID: mainAccountID,
+      userID: userID,
       expectedDeliveryDate: expectedDeliveryDate,
       creationDate: currentDate,
       lastChangeDate: currentDate,
@@ -156,7 +169,7 @@ const createMultipleShipments = async (req: Request, res: Response) => {
 
     const transactionHistory = <TransactionHistoryModel>(<unknown>{
       auditDate: currentDate,
-      userID: req.body.userID,
+      userID: userID,
       toBranchID: req.body.toBranchID,
     });
 
@@ -184,6 +197,6 @@ const createMultipleShipments = async (req: Request, res: Response) => {
 
 const CreateShipmentServicesRouter = (app: express.Application) => {
   app.post('/create-single-shipment', createSingleShipment);
-  app.post('/create-multiple-shipment/:subAccountID', createMultipleShipments);
+  app.post('/create-multiple-shipment', createMultipleShipments);
 };
 export default CreateShipmentServicesRouter;

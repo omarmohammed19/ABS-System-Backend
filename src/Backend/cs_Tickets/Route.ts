@@ -61,13 +61,15 @@ const getBySubAccountID = async (req: Request, res: Response) => {
 
 const create = async (req: Request, res: Response) => {
   try {
+    //@ts-ignore
+    const userID = req.userID
     const ticket = <TicketsModel>(<unknown>{
       AWB: req.body.AWB,
       ticketTypeID: req.body.ticketTypeID,
       Description: req.body.Description,
       creationDate: Sequalize.literal('GETDATE()'),
       lastActionDate: Sequalize.literal('GETDATE()'),
-      userID: req.body.userID,
+      userID: userID,
       documentPath: req.body.documentPath,
     });
     const result = await ticketsController.create(ticket);
@@ -80,6 +82,8 @@ const create = async (req: Request, res: Response) => {
 
 const update = async (req: Request, res: Response) => {
   try {
+    //@ts-ignore
+    const userID = req.userID
     const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
     const ticket = <TicketsModel>(<unknown>{
       ID: Number(req.params.ID),
@@ -89,7 +93,7 @@ const update = async (req: Request, res: Response) => {
       Description: req.body.Description,
       creationDate: req.body.creationDate,
       lastActionDate: Sequalize.literal('GETDATE()'),
-      userID: req.body.userID,
+      userID: userID,
       documentPath: req.body.documentPath,
       isClosed: req.body.isClosed,
     });

@@ -78,6 +78,7 @@ import walletServicesRouter from './ClientServices/Wallet/Route';
 import HomeServicesRouter from './ClientServices/Home/Route';
 import CreatePickupServicesRouter from './ClientServices/Create Pickup/Route';
 import CreateShipmentServicesRouter from './ClientServices/Create Shipments/Route';
+import BusinessLocationsRouter from './ClientServices/Settings/BusinessLocations/Route';
 import shipmentsRouter from './ClientServices/Shipments/Route';
 
 const corsOptions = {
@@ -174,6 +175,7 @@ walletServicesRouter(app);
 HomeServicesRouter(app);
 CreatePickupServicesRouter(app);
 CreateShipmentServicesRouter(app);
+BusinessLocationsRouter(app);
 shipmentsRouter(app);
 
 app.listen(process.env.PORT, () => {

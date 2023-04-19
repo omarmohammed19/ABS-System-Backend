@@ -30,8 +30,10 @@ const getByID = async (req: Request, res: Response) => {
 
 const getBysubAccountID = async (req: Request, res: Response) => {
   try {
+    //@ts-ignore
+    const subAccountID = req.subAccountID;
     const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-    const result = await addressesController.getAddressesByID(0, 'GET_BysubAccountID', Number(req.params.subAccountID), language);
+    const result = await addressesController.getAddressesByID(0, 'GET_BysubAccountID', subAccountID, language);
     res.json(result);
   } catch (error) {
     res.status(400);
@@ -107,7 +109,7 @@ const activate = async (req: Request, res: Response) => {
 const custAddressesRouter = (app: express.Application) => {
   app.get('/cust-addresses/:isActive/:limit', getAll);
   app.get('/cust-addresses-by-id/:ID', getByID);
-  app.get('/cust-addresses-by-subAccountID/:subAccountID', getBysubAccountID);
+  app.get('/cust-addresses-by-subAccountID', getBysubAccountID);
   app.post('/cust-addresses', create);
   app.put('/cust-addresses/:ID', update);
   app.put('/cust-addresses/de-activate/:ID', deactivate);

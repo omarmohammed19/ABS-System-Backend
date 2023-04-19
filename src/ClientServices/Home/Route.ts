@@ -5,7 +5,8 @@ const homeController = new HomeController();
 
 const getStatusCountOfShipmentsBySubAccountID = async (req: Request, res: Response) => {
   try {
-    const subAccountID = Number(req.params.subAccountID);
+    //@ts-ignore
+    const subAccountID = req.subAccountID
     const fromDate = req.body.fromDate;
     const toDate = req.body.toDate;
     const result = await homeController.getStatusCountOfShipmentsBySubAccountID(subAccountID, fromDate, toDate);
@@ -18,7 +19,8 @@ const getStatusCountOfShipmentsBySubAccountID = async (req: Request, res: Respon
 
 const getStatusCountOfShipmentsByMainAccountID = async (req: Request, res: Response) => {
   try {
-    const mainAccount = Number(req.params.mainAccount);
+    //@ts-ignore
+    const mainAccount = req.mainAccount
     const fromDate = req.body.fromDate;
     const toDate = req.body.toDate;
     const result = await homeController.getStatusCountOfShipmentsByMainAccountID(mainAccount, fromDate, toDate);
@@ -31,7 +33,8 @@ const getStatusCountOfShipmentsByMainAccountID = async (req: Request, res: Respo
 
 const getPaid_NotPaidShipmentsCountBySubAccountID = async (req: Request, res: Response) => {
   try {
-    const subAccountID = Number(req.params.subAccountID);
+    //@ts-ignore
+    const subAccountID = req.subAccountID
     const fromDate = req.body.fromDate;
     const toDate = req.body.toDate;
     const result = await homeController.getPaid_NotPaidShipmentsCountBySubAccountID(subAccountID, fromDate, toDate);
@@ -44,7 +47,8 @@ const getPaid_NotPaidShipmentsCountBySubAccountID = async (req: Request, res: Re
 
 const getPaid_NotPaidShipmentsCountByByMainAccountID = async (req: Request, res: Response) => {
   try {
-    const mainAccount = Number(req.params.mainAccount);
+    //@ts-ignore
+    const mainAccount = req.mainAccount
     const fromDate = req.body.fromDate;
     const toDate = req.body.toDate;
     const result = await homeController.getPaid_NotPaidShipmentsCountByByMainAccountID(mainAccount, fromDate, toDate);
@@ -56,9 +60,9 @@ const getPaid_NotPaidShipmentsCountByByMainAccountID = async (req: Request, res:
 };
 
 const HomeServicesRouter = (app: express.Application) => {
-  app.post('/status-count-by-subAccountID/:subAccountID/', getStatusCountOfShipmentsBySubAccountID);
-  app.post('/status-count-by-mainAccount/:mainAccount/', getStatusCountOfShipmentsByMainAccountID);
-  app.post('/paid-not-paid-count-by-subAccountID/:subAccountID/', getPaid_NotPaidShipmentsCountBySubAccountID);
-  app.post('/paid-not-paid-count-by-mainAccount/:mainAccount/', getPaid_NotPaidShipmentsCountByByMainAccountID);
+  app.post('/status-count-by-subAccountID', getStatusCountOfShipmentsBySubAccountID);
+  app.post('/status-count-by-mainAccount', getStatusCountOfShipmentsByMainAccountID);
+  app.post('/paid-not-paid-count-by-subAccountID', getPaid_NotPaidShipmentsCountBySubAccountID);
+  app.post('/paid-not-paid-count-by-mainAccount', getPaid_NotPaidShipmentsCountByByMainAccountID);
 };
 export default HomeServicesRouter;

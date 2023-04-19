@@ -16,8 +16,10 @@ const getByTransHdrID = async (req: Request, res: Response) => {
 
 const getBymainAccountID = async (req: Request, res: Response) => {
   try {
+    //@ts-ignore
+    const mainAccountID = req.mainAccountID
     const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-    const result = await shipmentsController.getTransactionsBymainAccountID(Number(req.params.mainAccountID), language, Number(req.params.limit));
+    const result = await shipmentsController.getTransactionsBymainAccountID(mainAccountID, language, Number(req.params.limit));
     res.json(result);
   } catch (error) {
     res.status(400);
@@ -27,8 +29,10 @@ const getBymainAccountID = async (req: Request, res: Response) => {
 
 const getBysubAccountID = async (req: Request, res: Response) => {
   try {
+    //@ts-ignore
+    const subAccountID = req.subAccountID;
     const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-    const result = await shipmentsController.getTransactionsBysubAccountID(Number(req.params.subAccountID), language, Number(req.params.limit));
+    const result = await shipmentsController.getTransactionsBysubAccountID(subAccountID, language, Number(req.params.limit));
     res.json(result);
   } catch (error) {
     console.log(error);
@@ -39,8 +43,10 @@ const getBysubAccountID = async (req: Request, res: Response) => {
 
 const getByAWB = async (req: Request, res: Response) => {
   try {
+    //@ts-ignore
+    const subAccountID = req.subAccountID;
     const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-    const result = await shipmentsController.getTransactionsByAWB(String(req.params.AWB), language, Number(req.params.subAccountID));
+    const result = await shipmentsController.getTransactionsByAWB(String(req.params.AWB), language, subAccountID);
     res.json(result);
   } catch (error) {
     res.status(400);
@@ -50,9 +56,9 @@ const getByAWB = async (req: Request, res: Response) => {
 
 const shipmentsRouter = (app: express.Application) => {
   app.get('/transactions-for-client-by-transHdrID/:transHdrID', getByTransHdrID);
-  app.get('/transactions-for-client-by-AWB/:subAccountID/:AWB', getByAWB);
-  app.get('/transactions-for-client-by-mainAccountID/:mainAccountID/:limit?', getBymainAccountID);
-  app.get('/transactions-for-client-by-subAccountID/:subAccountID/:limit?', getBysubAccountID);
+  app.get('/transactions-for-client-by-AWB/:AWB', getByAWB);
+  app.get('/transactions-for-client-by-mainAccountID/:limit?', getBymainAccountID);
+  app.get('/transactions-for-client-by-subAccountID/:limit?', getBysubAccountID);
 };
 
 export default shipmentsRouter;

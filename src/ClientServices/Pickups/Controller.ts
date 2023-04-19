@@ -6,11 +6,11 @@ import Sequelize from 'sequelize';
 export class PickupsController {
 
 
-    async getHistoryPickups(language: string, isActive: number, subAccountID: number, limits?: number): Promise<PickupsModel[]> {
+    async getHistoryPickups(language: string, subAccountID: number, limits?: number): Promise<PickupsModel[]> {
         const limit = limits || 10;
         try {
-            const query = 'EXEC [dbo].[p_Pickups] @language = :language, @Method = :Method, @isActive= :isActive, @subAccountID= :subAccountID, @limit = :limit';
-            const replacements = { language: language, Method: 'GET_HistoryPickups', isActive: isActive, subAccountID: subAccountID, limit: limit };
+            const query = 'EXEC [dbo].[p_Pickups] @language = :language, @Method = :Method, @subAccountID= :subAccountID, @limit = :limit';
+            const replacements = { language: language, Method: 'GET_HistoryPickups', subAccountID: subAccountID, limit: limit };
             const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
             const result = await sequelize.query(query, options);
             return result as unknown as PickupsModel[];
@@ -20,11 +20,11 @@ export class PickupsController {
         }
     }
 
-    async getUpcomingPickups(language: string, isActive: number, subAccountID: number, limits?: number): Promise<PickupsModel[]> {
+    async getUpcomingPickups(language: string, subAccountID: number, limits?: number): Promise<PickupsModel[]> {
         const limit = limits || 10;
         try {
-            const query = 'EXEC [dbo].[p_Pickups] @language = :language, @Method = :Method, @isActive= :isActive, @subAccountID= :subAccountID, @limit = :limit';
-            const replacements = { language: language, Method: 'GET_UpcomingPickups', isActive: isActive, subAccountID: subAccountID, limit: limit };
+            const query = 'EXEC [dbo].[p_Pickups] @language = :language, @Method = :Method, @subAccountID= :subAccountID, @limit = :limit';
+            const replacements = { language: language, Method: 'GET_UpcomingPickups', subAccountID: subAccountID, limit: limit };
             const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
             const result = await sequelize.query(query, options);
             return result as unknown as PickupsModel[];
