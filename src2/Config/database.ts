@@ -4,7 +4,7 @@ dotenv.config();
 
 const {
     SQL_HOST,
-    SQL_DB,
+    SQL_DB2,
     SQL_USER,
     SQL_PASSWORD
 } = process.env;
@@ -12,7 +12,7 @@ const {
 export const sqlConfig = {
     user: SQL_USER,
     password: SQL_PASSWORD,
-    database: SQL_DB,
+    database: SQL_DB2,
     server: SQL_HOST,
     driver: 'msnodesqlv8',
 }
