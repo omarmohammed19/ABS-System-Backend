@@ -83,6 +83,7 @@ import shipmentsRouter from './ClientServices/Shipments/Route';
 import ClientTypesRouter from './Backend/cust_ClientTypes/Route';
 import RegisterRouter from './ClientServices/Register/Route';
 import mail_route from './ClientServices/Mail Sender/Route';
+import imageRouter from './Backend/Upload_Files/Routes';
 
 const corsOptions = {
   origin: '*',
@@ -183,7 +184,7 @@ CreateShipmentServicesRouter(app);
 BusinessLocationsRouter(app);
 shipmentsRouter(app);
 ClientTypesRouter(app);
-
+app.use('/images', imageRouter);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port http://${address}:${process.env.PORT}`);

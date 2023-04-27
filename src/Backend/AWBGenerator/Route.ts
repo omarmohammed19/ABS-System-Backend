@@ -6,10 +6,7 @@ const awbController = new AWBController();
 
 const generatePdf = async (req: Request, res: Response) => {
     try {
-        const pdfBytes = await awbController.generatePdf(req.body.accountName, req.body.accountNumber, req.body.senderContactPerson,
-            req.body.senderContactNumber, req.body.senderAddress, req.body.receiverContactPerson, req.body.receiverContactNumber,
-            req.body.receiverAddress, req.body.COD, req.body.absFees, req.body.total, req.body.content, req.body.weight,
-            req.body.pieces, req.body.serviceType, req.body.ref, req.body.specialInstructions);
+        const pdfBytes = await awbController.generatePdf(req.params.AWB);
         res.contentType('application/pdf');
         res.send(pdfBytes);
     } catch (error) {
@@ -19,7 +16,7 @@ const generatePdf = async (req: Request, res: Response) => {
 }
 
 const awbRouter = (app: express.Application) => {
-    app.post('/generate-awb', generatePdf);
+    app.post('/generate-awb/:AWB', generatePdf);
 }
 
 export default awbRouter;
