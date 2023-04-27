@@ -334,14 +334,14 @@ export class CreateShipmentsController {
       });
       const addresses = await Addresses.bulkCreate(addressData, { transaction: t });
 
-      const branchIDs = [];
+      // const branchIDs = [];
 
-      for (const address of addresses) {
-        const branch = await branchesController.getBranchByCityID(address.cityID);
-        branchIDs.push(branch.ID);
+      // for (const address of addresses) {
+      //   const branch = await branchesController.getBranchByCityID(address.cityID);
+      //   branchIDs.push(branch.ID);
 
-        console.log(`AWB: ${address.AWB}, City ID: ${address.cityID}, Branch ID: ${branch.ID}`);
-      }
+      //   console.log(`AWB: ${address.AWB}, City ID: ${address.cityID}, Branch ID: ${branch.ID}`);
+      // }
 
       const contactNumberData = ContactPersonIDs.map((ContactPersonID: number, index: number) => {
         return {
