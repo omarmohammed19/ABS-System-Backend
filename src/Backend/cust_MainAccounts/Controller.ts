@@ -51,6 +51,7 @@ export class MainAccountsController {
             salesmanID: mainAccounts.salesmanID,
             custInfoID: mainAccounts.custInfoID,
             cmpInfoID: mainAccounts.cmpInfoID,
+            clientTypeID: mainAccounts.clientTypeID,
             creationDate: mainAccounts.creationDate,
           },
           { transaction: t } // pass transaction object to query
@@ -115,6 +116,7 @@ export class MainAccountsController {
             salesmanID: mainAccounts.salesmanID,
             custInfoID: mainAccounts.custInfoID,
             cmpInfoID: mainAccounts.cmpInfoID,
+            clientTypeID: mainAccounts.clientTypeID,
           },
           {
             where: {

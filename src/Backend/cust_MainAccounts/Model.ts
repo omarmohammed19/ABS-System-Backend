@@ -8,6 +8,7 @@ export interface MainAccountsModel extends Model {
   salesmanID: number;
   custInfoID: number;
   cmpInfoID: number;
+  clientTypeID: number;
   creationDate: Date;
   isActive: boolean;
 }
@@ -33,6 +34,9 @@ export const MainAccounts = sequelize.define<MainAccountsModel>(
       type: DataTypes.INTEGER,
     },
     cmpInfoID: {
+      type: DataTypes.INTEGER,
+    },
+    clientTypeID: {
       type: DataTypes.INTEGER,
     },
     creationDate: {
