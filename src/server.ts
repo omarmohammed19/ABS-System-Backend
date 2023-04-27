@@ -80,6 +80,9 @@ import CreatePickupServicesRouter from './ClientServices/Create Pickup/Route';
 import CreateShipmentServicesRouter from './ClientServices/Create Shipments/Route';
 import BusinessLocationsRouter from './ClientServices/Settings/BusinessLocations/Route';
 import shipmentsRouter from './ClientServices/Shipments/Route';
+import ClientTypesRouter from './Backend/cust_ClientTypes/Route';
+import RegisterRouter from './ClientServices/Register/Route';
+import mail_route from './ClientServices/Mail Sender/Route';
 
 const corsOptions = {
   origin: '*',
@@ -99,6 +102,8 @@ app.use(bodyParser.json());
 //without authorization
 AuthenticationRouter(app);
 UsersRouter(app);
+RegisterRouter(app);
+mail_route(app);
 
 //with authorization
 app.use(verifyJWT);
@@ -177,6 +182,8 @@ CreatePickupServicesRouter(app);
 CreateShipmentServicesRouter(app);
 BusinessLocationsRouter(app);
 shipmentsRouter(app);
+ClientTypesRouter(app);
+
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port http://${address}:${process.env.PORT}`);
