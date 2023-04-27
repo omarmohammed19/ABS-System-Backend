@@ -103,12 +103,12 @@ app.use(bodyParser.json());
 
 //without authorization
 AuthenticationRouter(app);
-UsersRouter(app);
 RegisterRouter(app);
 mail_route(app);
 
 //with authorization
 app.use(verifyJWT);
+UsersRouter(app);
 contactLogTypesRouter(app);
 callResultsRouter(app);
 callStatusRouter(app);
