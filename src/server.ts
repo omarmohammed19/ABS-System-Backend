@@ -99,10 +99,11 @@ app.use(bodyParser.json());
 
 //without authorization
 AuthenticationRouter(app);
-UsersRouter(app);
+// UsersRouter(app);
 
 //with authorization
 app.use(verifyJWT);
+UsersRouter(app);
 contactLogTypesRouter(app);
 callResultsRouter(app);
 callStatusRouter(app);
