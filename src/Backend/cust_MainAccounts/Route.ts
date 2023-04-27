@@ -59,6 +59,7 @@ const create = async (req: Request, res: Response) => {
       salesmanID: req.body.salesmanID,
       custInfoID: req.body.custInfoID,
       cmpInfoID: req.body.cmpInfoID,
+      clientTypeID: req.body.clientTypeID,
       creationDate: currentDate,
     });
     const result = await mainAccountsController.create(MainAccount);
@@ -80,6 +81,7 @@ const update = async (req: Request, res: Response) => {
       salesmanID: req.body.salesmanID,
       custInfoID: req.body.custInfoID,
       cmpInfoID: req.body.cmpInfoID,
+      clientTypeID: req.body.clientTypeID,
       creationDate: req.body.creationDate,
     };
     const result = await mainAccountsController.update(MainAccount, language);

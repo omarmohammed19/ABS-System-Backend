@@ -80,6 +80,9 @@ import CreatePickupServicesRouter from './ClientServices/Create Pickup/Route';
 import CreateShipmentServicesRouter from './ClientServices/Create Shipments/Route';
 import BusinessLocationsRouter from './ClientServices/Settings/BusinessLocations/Route';
 import shipmentsRouter from './ClientServices/Shipments/Route';
+import ClientTypesRouter from './Backend/cust_ClientTypes/Route';
+import RegisterRouter from './ClientServices/Register/Route';
+import mail_route from './ClientServices/Mail Sender/Route';
 import imageRouter from './Backend/Upload_Files/Routes';
 
 const corsOptions = {
@@ -100,6 +103,8 @@ app.use(bodyParser.json());
 //without authorization
 AuthenticationRouter(app);
 UsersRouter(app);
+RegisterRouter(app);
+mail_route(app);
 
 //with authorization
 app.use(verifyJWT);
@@ -178,6 +183,7 @@ CreatePickupServicesRouter(app);
 CreateShipmentServicesRouter(app);
 BusinessLocationsRouter(app);
 shipmentsRouter(app);
+ClientTypesRouter(app);
 app.use('/images', imageRouter);
 
 app.listen(process.env.PORT, () => {
