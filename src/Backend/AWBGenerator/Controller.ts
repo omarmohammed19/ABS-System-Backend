@@ -4,15 +4,21 @@ import fontkit from '@pdf-lib/fontkit';
 import bwipjs from 'bwip-js';
 import QRCode from 'qrcode';
 import path from 'path';
+import { sequelize } from '../../Config/database';
+import Sequelize from 'sequelize';
+
 
 
 export class AWBController {
 
-    async generatePdf(accountName: string, accountNumber: string, senderContactPerson: string,
-        senderContactNumber: string, senderAddress: string, receiverContactPerson: string, receiverContactNumber: string,
-        receiverAddress: string, COD: string, absFees: string, total: string, content: string, weight: string, pieces: string,
-        serviceType: string, ref: string, specialInstructions: string): Promise<Buffer> {
+    async generatePdf(AWB: string): Promise<Buffer> {
         try {
+            //call a stored procedure from the database to fill the fields in the pdf
+            const query = 'EXEC [dbo].[p_Generate_AWB] @Method = :Method, @AWB= :AWB';
+            const replacements = { Method: 'GET_ByAWB', AWB: AWB };
+            const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
+            const result: any = await sequelize.query(query, options);
+
 
             // Create a new PDF document
             const pdfDoc = await PDFDocument.create();
@@ -29,7 +35,7 @@ export class AWBController {
             // Generate the barcode image using bwip-js
             const barcodeOptions = {
                 bcid: 'code128', // Replace with your desired barcode format
-                text: '123456789', // Replace with your desired barcode value
+                text: result[0].AWB, // Replace with your desired barcode value
                 scale: 3, // Replace with your desired barcode scale
                 height: 10, // Replace with your desired barcode height
                 includetext: true, // Replace with true/false depending on whether or not you want the text to be included in the barcode image
@@ -77,15 +83,15 @@ export class AWBController {
             //Add data
             this.drawTextWithUnderline(page, 'Sender', 20, 345, font, 12, true);
             this.drawTextWithUnderline(page, 'Account Name : ', 20, 330, font, 8, false);
-            this.drawTextWithUnderline(page, accountName, 83, 330, dataFont, 8, false);
+            this.drawTextWithUnderline(page, result[0]['Main Account Name'] + " - " + result[0]['Sub Account Name'], 83, 330, dataFont, 8, false);
             this.drawTextWithUnderline(page, 'Account Number : ', 250, 330, font, 8, false);
-            this.drawTextWithUnderline(page, accountNumber, 321, 330, dataFont, 8, false);
+            this.drawTextWithUnderline(page, result[0]['Account Number'], 321, 330, dataFont, 8, false);
             this.drawTextWithUnderline(page, 'Contact Person : ', 20, 315, font, 8, false);
-            this.drawTextWithUnderline(page, senderContactPerson, 86, 315, dataFont, 8, false);
+            this.drawTextWithUnderline(page, result[0].firstName + " " + result[0].lastName, 86, 315, dataFont, 8, false);
             this.drawTextWithUnderline(page, 'Contact Number : ', 250, 315, font, 8, false);
-            this.drawTextWithUnderline(page, senderContactNumber, 320, 315, dataFont, 8, false);
+            this.drawTextWithUnderline(page, result[0].contactNumber, 320, 315, dataFont, 8, false);
             this.drawTextWithUnderline(page, 'Address : ', 20, 300, font, 8, false);
-            this.drawTextWithUnderline(page, senderAddress, 60, 300, dataFont, 8, false);
+            this.drawTextWithUnderline(page, result[0].buildingNumber + ", " + result[0].streetName + ", " + result[0].floorNumber + ", " + result[0].apartmentNumber + ", " + result[0].enCityName, 60, 300, dataFont, 8, false);
             page.drawLine({
                 start: { x: 0, y: 290 },
                 end: { x: page.getWidth(), y: 290 },
@@ -95,37 +101,44 @@ export class AWBController {
 
             this.drawTextWithUnderline(page, 'Receiver', 20, 270, font, 12, true);
             this.drawTextWithUnderline(page, 'Contact Person : ', 20, 255, font, 8, false);
-            this.drawTextWithUnderline(page, receiverContactPerson, 86, 255, dataFont, 8, false);
+            this.drawTextWithUnderline(page, result[0]['Rec First Name'] + " " + result[0]['Rec Last Name'], 86, 255, dataFont, 8, false);
             this.drawTextWithUnderline(page, 'Contact Number : ', 250, 255, font, 8, false);
-            this.drawTextWithUnderline(page, receiverContactNumber, 320, 255, dataFont, 8, false);
+            this.drawTextWithUnderline(page, result[0]['Rec Contact Number'], 320, 255, dataFont, 8, false);
             this.drawTextWithUnderline(page, 'Address : ', 20, 240, font, 8, false);
-            this.drawTextWithUnderline(page, receiverAddress, 60, 240, dataFont, 8, false);
+            this.drawTextWithUnderline(page, result[0]['Rec Build'] + ", " + result[0]['Rec Street Name'] + ", " + result[0]['Rec Floor'] + ", " + result[0]['Rec Apartment'] + ", " + result[0]['Rec City'], 60, 240, dataFont, 8, false);
             page.drawLine({
                 start: { x: 0, y: 230 },
                 end: { x: page.getWidth(), y: 230 },
                 thickness: 1,
                 color: rgb(0, 0, 0),
             });
+            const cash = result[0].Cash.toString();
+            const absFees = result[0]['ABS Fees'].toString();
+            const total = result[0].Total.toString();
+            const weight = result[0].Weight.toString();
+            const pieces = result[0]['No Of Pcs'].toString();
 
             this.drawTextWithUnderline(page, 'Shipment', 20, 210, font, 12, true);
             this.drawTextWithUnderline(page, 'COD : ', 20, 195, font, 8, false);
-            this.drawTextWithUnderline(page, COD, 45, 195, dataFont, 8, false);
+            this.drawTextWithUnderline(page, cash + " EGP", 45, 195, dataFont, 8, false);
             this.drawTextWithUnderline(page, 'ABS Fees : ', 250, 195, font, 8, false);
-            this.drawTextWithUnderline(page, absFees, 294, 195, dataFont, 8, false);
+            this.drawTextWithUnderline(page, absFees + " EGP", 294, 195, dataFont, 8, false);
             this.drawTextWithUnderline(page, 'Total : ', 465, 195, font, 8, false);
-            this.drawTextWithUnderline(page, total, 491, 195, dataFont, 8, false);
+            this.drawTextWithUnderline(page, total + " EGP", 491, 195, dataFont, 8, false);
             this.drawTextWithUnderline(page, 'Content : ', 20, 180, font, 8, false);
-            this.drawTextWithUnderline(page, content, 58, 180, dataFont, 8, false);
+            this.drawTextWithUnderline(page, result[0].Contents, 58, 180, dataFont, 8, false);
             this.drawTextWithUnderline(page, 'Weight : ', 250, 180, font, 8, false);
-            this.drawTextWithUnderline(page, weight, 284, 180, dataFont, 8, false);
+            this.drawTextWithUnderline(page, weight + " KG", 284, 180, dataFont, 8, false);
             this.drawTextWithUnderline(page, 'Pieces : ', 465, 180, font, 8, false);
             this.drawTextWithUnderline(page, pieces, 496, 180, dataFont, 8, false);
             this.drawTextWithUnderline(page, 'Service Type : ', 20, 165, font, 8, false);
-            this.drawTextWithUnderline(page, serviceType, 76, 165, dataFont, 8, false);
+            this.drawTextWithUnderline(page, result[0].enShipmentType, 76, 165, dataFont, 8, false);
             this.drawTextWithUnderline(page, 'Ref : ', 250, 165, font, 8, false);
-            this.drawTextWithUnderline(page, ref, 269, 165, dataFont, 8, false);
+            this.drawTextWithUnderline(page, result[0].Ref, 269, 165, dataFont, 8, false);
             this.drawTextWithUnderline(page, 'Special Instructions : ', 20, 150, font, 8, false);
-            this.drawTextWithUnderline(page, specialInstructions, 103, 150, dataFont, 8, false);
+            this.drawTextWithUnderline(page, result[0]['Special Instructions'], 103, 150, dataFont, 8, false);
+            this.drawTextWithUnderline(page, 'Runner Code : ', 465, 165, font, 8, false);
+            this.drawTextWithUnderline(page, result[0]['Runner Code'], 522, 165, dataFont, 8, false);
             page.drawLine({
                 start: { x: 0, y: 140 },
                 end: { x: page.getWidth(), y: 140 },
