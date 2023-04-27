@@ -51,6 +51,30 @@ export class PricePlansController {
     }
   }
 
+  async getPricePlanBySubAccountID(subAccountID: number, language: string): Promise<PricePlansModel | string> {
+    try {
+      const query = 'EXEC [dbo].[p_GET_cust_PricePlans] @language = :language, @Method = :Method, @subAccountID = :subAccountID';
+      const replacements = { language: language, Method: 'GET_BySubAccountID', subAccountID: subAccountID };
+      const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
+      const result = sequelize.query(query, options);
+      return result as unknown as PricePlansModel;
+    } catch (err) {
+      throw new Error(`Could not get PricePlans by subAccountID. Error: ${err}`);
+    }
+  }
+
+  async getPricePlanMatrixBySubAccountID(subAccountID: number): Promise<PricePlansModel[] | string> {
+    try {
+      const query = 'EXEC [dbo].[p_GET_cust_PricePlans]  @Method = :Method, @subAccountID = :subAccountID';
+      const replacements = { Method: 'GET_PricePlanMatrix', subAccountID: subAccountID };
+      const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
+      const result = sequelize.query(query, options);
+      return result as unknown as PricePlansModel[];
+    } catch (err) {
+      throw new Error(`Could not get PricePlans matrix by subAccountID. Error: ${err}`);
+    }
+  }
+
   async update(pricePlans: PricePlansModel, language: string): Promise<PricePlansModel | string> {
     try {
       return await sequelize.transaction(async (t) => {

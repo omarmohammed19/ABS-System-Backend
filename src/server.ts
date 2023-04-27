@@ -80,6 +80,7 @@ import CreatePickupServicesRouter from './ClientServices/Create Pickup/Route';
 import CreateShipmentServicesRouter from './ClientServices/Create Shipments/Route';
 import BusinessLocationsRouter from './ClientServices/Settings/BusinessLocations/Route';
 import shipmentsRouter from './ClientServices/Shipments/Route';
+import TeamMembersRouter from './ClientServices/Settings/TeamMembers/Route';
 
 const corsOptions = {
   origin: '*',
@@ -177,6 +178,7 @@ CreatePickupServicesRouter(app);
 CreateShipmentServicesRouter(app);
 BusinessLocationsRouter(app);
 shipmentsRouter(app);
+TeamMembersRouter(app);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port http://${address}:${process.env.PORT}`);
