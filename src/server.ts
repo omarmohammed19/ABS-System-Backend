@@ -80,6 +80,7 @@ import CreatePickupServicesRouter from './ClientServices/Create Pickup/Route';
 import CreateShipmentServicesRouter from './ClientServices/Create Shipments/Route';
 import BusinessLocationsRouter from './ClientServices/Settings/BusinessLocations/Route';
 import shipmentsRouter from './ClientServices/Shipments/Route';
+import TeamMembersRouter from './ClientServices/Settings/TeamMembers/Route';
 import ClientTypesRouter from './Backend/cust_ClientTypes/Route';
 import RegisterRouter from './ClientServices/Register/Route';
 import mail_route from './ClientServices/Mail Sender/Route';
@@ -183,6 +184,7 @@ CreatePickupServicesRouter(app);
 CreateShipmentServicesRouter(app);
 BusinessLocationsRouter(app);
 shipmentsRouter(app);
+TeamMembersRouter(app);
 ClientTypesRouter(app);
 app.use('/images', imageRouter);
 
