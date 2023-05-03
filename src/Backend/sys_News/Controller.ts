@@ -89,51 +89,23 @@ export class NewsController {
     }
 
 
-
-
-
-
-
-
-    async deactivate(ID: number, language?: string): Promise<NewsModel | string> {
+    async deactivate(ID: number): Promise<string> {
         try {
-            return await sequelize.transaction(async (t) => {
-                const result = await getById(ID, t, language);
-                if (result) {
-                    const updated = await result.update(
-                        {
-                            IsActive: false,
-                        },
-                        { transaction: t }
-                    );
-                    return updated.toJSON();
-                }
-                return 'Could not deactivate News';
-            });
+            const result = await De_Activate<NewsModel>(News, 'ID', ID, 'deactivate');
+            return result;
         }
         catch (err) {
-            throw new Error(`Could not deactivate News. Error: ${err}`);
+            throw new Error(`Could not deactivate Branch. Error: ${err}`);
         }
     }
 
-    async activate(ID: number, language?: string): Promise<NewsModel | string> {
+    async activate(ID: number): Promise<string> {
         try {
-            return await sequelize.transaction(async (t) => {
-                const result = await getById(ID, t, language);
-                if (result) {
-                    const updated = await result.update(
-                        {
-                            IsActive: true,
-                        },
-                        { transaction: t }
-                    );
-                    return updated.toJSON();
-                }
-                return 'Could not activate News';
-            });
+            const result = await De_Activate<NewsModel>(News, 'ID', ID, 'activate');
+            return result;
         }
         catch (err) {
-            throw new Error(`Could not activate News. Error: ${err}`);
+            throw new Error(`Could not activate Branch. Error: ${err}`);
         }
     }
 }

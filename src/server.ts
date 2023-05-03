@@ -50,6 +50,9 @@ import zonesTypesRouter from './Backend/cmp_ZoneTypes/Route';
 import extraInfoRouter from './Backend/ship_ExtraInfo/Route';
 import contactLogsRouter from './Backend/ship_ContactLogs/Route';
 import languagesRouter from './Backend/sys_Languages/Route';
+import roleTypeRouter from './Backend/sys_RoleTypes/Route';
+import userSessionsRouter from './Backend/sys_UserSessions/Route';
+import employeesRouter from './Backend/cmp_Employees/Route';
 
 const corsOptions = {
   origin: '*',
@@ -117,6 +120,9 @@ TicketStatus(app);
 TicketTypes(app);
 CountriesRouter(app);
 BanksRouter(app);
+roleTypeRouter(app);
+userSessionsRouter(app);
+employeesRouter(app);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port http://${address}:${process.env.PORT}`);
