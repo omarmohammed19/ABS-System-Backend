@@ -7,7 +7,7 @@ const nearestBranchController = new NearestBranchController();
 const getAll = async (req: Request, res: Response) => {
   try {
     const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-    const result = await nearestBranchController.index(language);
+    const result = await nearestBranchController.index(language, Number(req.params.isActive), Number(req.params.limit));
     res.json(result);
   } catch (error) {
     console.log(error);
@@ -80,12 +80,12 @@ const activate = async (req: Request, res: Response) => {
 };
 
 const nearestBranchRouter = (app: express.Application) => {
-  app.get('/nearestbranch', getAll);
-  app.get('/nearestbranch/:ID', getById);
-  app.post('/nearestbranch', create);
-  app.put('/nearestbranch/:ID', update);
-  app.put('/nearestbranch/deactivate/:ID', deactivate);
-  app.put('/nearestbranch/activate/:ID', activate);
+  app.get('/nearest-branch/:isActive/:limit', getAll);
+  app.get('/nearest-branch-by-ID/:ID', getById);
+  app.post('/nearest-branch', create);
+  app.put('/nearest-branch/:ID', update);
+  app.put('/nearest-branch/de-activate/:ID', deactivate);
+  app.put('/nearest-branch/activate/:ID', activate);
 };
 
 export default nearestBranchRouter;

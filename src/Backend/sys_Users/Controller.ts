@@ -1,60 +1,48 @@
 import { UsersModel, Users } from './Model';
 import { De_Activate } from '../../Services/De_Activate';
-import { SubAccounts } from '../cust_SubAccounts/Model';
-import { Roles } from '../sys_Roles/Model';
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
+import { Transaction } from 'sequelize';
+import Sequelize from 'sequelize';
+import { sequelize } from '../../Config/database';
 
 dotenv.config();
 const { SALT_ROUNDS, pepper } = process.env;
 
-const getById = (ID: number, language?: string) => {
-  const lang = language === 'en' ? 'enRole' : 'arRole';
-  return Users.findOne({
-    where: {
-      isActive: true,
-      ID: ID,
-    },
-    include: [
-      { model: SubAccounts, required: true, attributes: ['subAccountName'] },
-      { model: Roles, required: true, attributes: [lang] },
-    ],
-    attributes: ['username', 'password', 'subAccountID', 'displayedName', 'roleID', 'avatar'],
-  }) as unknown as UsersModel & {
-    cust_SubAccount: {
-      subAccountName: string;
-    };
-    sys_Role: {
-      enRole: string;
-      arRole: string;
-    };
-  };
+const getById = async (t: Transaction, ID: Number, language?: string): Promise<UsersModel> => {
+  const query = 'EXEC [dbo].[p_GET_sys_Users] @language = :language, @Method = :Method, @ID = :ID';
+  const replacements = { language: language, Method: 'GET_ByID', ID: ID };
+  const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
+  const result = await sequelize.query(query, options);
+  return result as unknown as UsersModel;
 };
-
+const GetPersonalInfoById = async (t: Transaction, ID: Number): Promise<UsersModel> => {
+  const query = 'EXEC [dbo].[p_GET_sys_Users] @Method = :Method, @ID = :ID';
+  const replacements = { Method: 'GET_Personal_Info', ID: ID };
+  const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
+  const result = await sequelize.query(query, options);
+  return result as unknown as UsersModel;
+};
 export class UsersController {
-  async index(language: string): Promise<UsersModel[]> {
+  async indexClients(language: string, isActive: number, limit: number): Promise<UsersModel[]> {
     try {
-      const lang = language === 'en' ? 'enRole' : 'arRole';
-      const result = await Users.findAll({
-        where: {
-          isActive: true,
-        },
-        include: [
-          { model: SubAccounts, required: true, attributes: ['subAccountName'] },
-          { model: Roles, required: true, attributes: [lang] },
-        ],
-        attributes: ['username', 'password', 'subAccountID', 'displayedName', 'roleID', 'avatar'],
-      });
+      const query = 'EXEC [dbo].[p_GET_sys_Users] @language = :language, @Method = :Method , @isActive = :isActive, @limit = :limit';
+      const replacements = { language: language, Method: 'GET_Clients', isActive: isActive, limit: limit };
+      const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
+      const result = await sequelize.query(query, options);
+      return result as unknown as UsersModel[];
+    } catch (err) {
+      throw new Error(`Could not get all Users. Error: ${err}`);
+    }
+  }
 
-      // return result.map((item: any) => item.toJSON()) as UsersModel[];
-      return result.map((item: any) => ({
-        username: item.username,
-        password: item.password,
-        subAccountName: item.cust_SubAccount.subAccountName,
-        displayedName: item.displayedName,
-        role: language === 'en' ? item.sys_Role.enRole : item.sys_Role.arRole,
-        avatar: item.avatar,
-      })) as unknown as UsersModel[];
+  async indexEmployees(language: string, isActive: number, limit: number): Promise<UsersModel[]> {
+    try {
+      const query = 'EXEC [dbo].[p_GET_sys_Users] @language = :language, @Method = :Method , @isActive = :isActive, @limit = :limit';
+      const replacements = { language: language, Method: 'GET_Employees', isActive: isActive, limit: limit };
+      const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
+      const result = await sequelize.query(query, options);
+      return result as unknown as UsersModel[];
     } catch (err) {
       throw new Error(`Could not get all Users. Error: ${err}`);
     }
@@ -62,20 +50,24 @@ export class UsersController {
 
   async getUserById(language: string, ID: number): Promise<UsersModel | null> {
     try {
-      const result = getById(ID, language);
-      if (result === null) {
-        return null;
-      }
-      return {
-        username: result.username,
-        password: result.password,
-        subAccountName: result.cust_SubAccount.subAccountName,
-        displayedName: result.displayedName,
-        role: language === 'en' ? result.sys_Role.enRole : result.sys_Role.arRole,
-        avatar: result.avatar,
-      } as unknown as UsersModel;
+      return await sequelize.transaction(async (t) => {
+        const result = await getById(t, ID, language);
+
+        return result;
+      });
     } catch (err) {
-      throw new Error(`Could not get ContactLogTypes by ID. Error: ${err}`);
+      throw new Error(`Could not get User by ID. Error: ${err}`);
+    }
+  }
+
+  async getPersonalInfoById(ID: number): Promise<UsersModel | null> {
+    try {
+      return await sequelize.transaction(async (t) => {
+        const result = await GetPersonalInfoById(t, ID);
+        return result;
+      });
+    } catch (err) {
+      throw new Error(`Could not get User by ID. Error: ${err}`);
     }
   }
 
@@ -83,55 +75,76 @@ export class UsersController {
     try {
       //@ts-ignore
       const hashedPassword = bcrypt.hashSync(user.password + pepper, parseInt(SALT_ROUNDS));
-      const result = await Users.create(
-        {
-          username: user.username,
-          password: hashedPassword,
-          subAccountID: user.subAccountID,
-          displayedName: user.displayedName,
-          roleID: user.roleID,
-          avatar: user.avatar,
-        },
-        {
-          fields: ['username', 'password', 'subAccountID', 'displayedName', 'roleID', 'avatar'],
-        }
-      );
+      const result = await Users.create({
+        username: user.username,
+        password: hashedPassword,
+        subAccountID: user.subAccountID,
+        displayedName: user.displayedName,
+        roleID: user.roleID,
+        avatar: user.avatar,
+      });
       return result ? result.toJSON() : 'Could not add new Users';
     } catch (err) {
       throw new Error(`Could not add new User. Error: ${err}`);
     }
   }
 
-  async update(user: UsersModel): Promise<UsersModel> {
+  async update(user: UsersModel, language: string): Promise<UsersModel> {
     try {
-      //@ts-ignore
-      const hashedPassword = bcrypt.hashSync(user.password + pepper, parseInt(SALT_ROUNDS));
-      await Users.update(
-        {
-          username: user.username,
-          password: hashedPassword,
-          subAccountID: user.subAccountID,
-          displayedName: user.displayedName,
-          roleID: user.roleID,
-          avatar: user.avatar,
-        },
-        {
-          where: {
-            ID: user.ID,
+      return await sequelize.transaction(async (t) => {
+        //@ts-ignore
+        const hashedPassword = bcrypt.hashSync(user.password + pepper, parseInt(SALT_ROUNDS));
+
+        await Users.update(
+          {
+            username: user.username,
+            password: hashedPassword,
+            subAccountID: user.subAccountID,
+            displayedName: user.displayedName,
+            roleID: user.roleID,
+            avatar: user.avatar,
           },
-        }
-      );
-      const result = getById(Number(user.ID));
-      return {
-        username: result.username,
-        password: result.password,
-        subAccountName: result.cust_SubAccount.subAccountName,
-        displayedName: result.displayedName,
-        enrole: result.sys_Role.enRole,
-        arRole: result.sys_Role.arRole,
-        avatar: result.avatar,
-      } as unknown as UsersModel;
+          {
+            where: {
+              ID: user.ID,
+            },
+          }
+        );
+        const result = await getById(t, Number(user.ID), language);
+        return result;
+      });
     } catch (err) {
+      throw new Error(`Could not update User. Error: ${err}`);
+    }
+  }
+
+  async changePassword(user: UsersModel, password: string): Promise<any> {
+    try {
+      await sequelize.transaction(async (t) => {
+        const oldPassword: any = await Users.findOne({ where: { ID: user.ID }, attributes: ['password'], transaction: t });
+
+        if (bcrypt.compareSync(password + pepper, oldPassword.password)) {
+          //@ts-ignore
+          const hashedPassword = bcrypt.hashSync(user.password + pepper, parseInt(SALT_ROUNDS));
+
+          await Users.update(
+            {
+              password: hashedPassword,
+            },
+            {
+              where: {
+                ID: user.ID,
+              },
+            }
+          );
+          const result = await getById(t, Number(user.ID));
+          return result;
+        }
+        return 'Old Password is incorrect';
+      });
+    } catch (err) {
+      console.log(err);
+
       throw new Error(`Could not update User. Error: ${err}`);
     }
   }

@@ -3,9 +3,9 @@ import { De_Activate } from '../../Services/De_Activate';
 import { sequelize } from '../../Config/database';
 import { Transaction } from 'sequelize';
 
-const getById = (ID: number, t: Transaction) => {
+const getById = (ID: number, t: Transaction, language: string) => {
   return WalletDetails.findOne({
-    attributes: ['ID', 'walletNumber', 'mobileNumber'],
+    attributes: language === 'en' ? [['ID', 'Wallet Details ID'], ['walletNumber', 'Wallet Number'], ['mobileNumber', 'Mobile Number']] : [['ID', 'رقم التسلسل'], ['walletNumber', 'رقم المحفظة'], ['mobileNumber', 'رقم التليفون']],
     where: {
       ID: ID,
       isActive: true,
@@ -15,16 +15,17 @@ const getById = (ID: number, t: Transaction) => {
 };
 
 export class WalletDetailsController {
-  async index(): Promise<WalletDetailsModel[]> {
+  async index(language: string, isActive: number, limit: number): Promise<WalletDetailsModel[]> {
     try {
       return await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
         const result = await WalletDetails.findAll({
-          attributes: ['ID', 'walletNumber', 'mobileNumber'],
+          attributes: language === 'en' ? [['ID', 'Wallet Details ID'], ['walletNumber', 'Wallet Number'], ['mobileNumber', 'Mobile Number']] : [['ID', 'رقم التسلسل'], ['walletNumber', 'رقم المحفظة'], ['mobileNumber', 'رقم التليفون']],
           where: {
-            isActive: true,
+            isActive: isActive,
           },
           transaction: t, // pass transaction object to query
+          limit: limit
         });
 
         return result.map((item: any) => item.toJSON()) as WalletDetailsModel[]; // return the result of the query (if successful) to be committed automatically
@@ -52,11 +53,11 @@ export class WalletDetailsController {
     }
   }
 
-  async getWalletDetailsByID(ID: number): Promise<WalletDetailsModel | string> {
+  async getWalletDetailsByID(ID: number, language: string): Promise<WalletDetailsModel | string> {
     try {
       const result = await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
-        const item = await getById(ID, t); // pass transaction object to getById function
+        const item = await getById(ID, t, language); // pass transaction object to getById function
         return item ? item.toJSON() : 'Could not get WalletDetails by ID';
       });
       return result;
@@ -65,7 +66,7 @@ export class WalletDetailsController {
     }
   }
 
-  async update(walletDetails: WalletDetailsModel): Promise<WalletDetailsModel | string> {
+  async update(walletDetails: WalletDetailsModel, language: string): Promise<WalletDetailsModel | string> {
     try {
       return await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
@@ -82,7 +83,7 @@ export class WalletDetailsController {
           }
         );
 
-        const result = await getById(Number(walletDetails.ID), t);
+        const result = await getById(Number(walletDetails.ID), t, language);
         return result ? result.toJSON() : 'Could not update WalletDetails';
       });
     } catch (err) {

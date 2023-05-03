@@ -3,10 +3,9 @@ import { De_Activate } from '../../Services/De_Activate';
 import { sequelize } from '../../Config/database';
 import { Transaction } from 'sequelize';
 
-const getById = (ID: number, t: Transaction, language?: string) => {
-  const attributes = language === 'en' ? ['ID', 'enSalesChannelType', 'Notes'] : ['ID', 'arSalesChannelType', 'Notes'];
+const getById = (ID: number, t: Transaction, language: string) => {
   return SalesChannelTypes.findOne({
-    attributes: attributes,
+    attributes: language === 'en' ? [['ID', 'Sales Channeel Type ID'], ['enSalesChannelType', 'Sales Channeel Type'], 'Notes'] : [['ID', 'رقم التسلسل'], ['arSalesChannelType', 'نوع قناة المبيعات'], ['Notes', 'ملاحظات']],
     where: {
       ID: ID,
       isActive: true,
@@ -16,15 +15,14 @@ const getById = (ID: number, t: Transaction, language?: string) => {
 };
 
 export class SalesChannelTypesController {
-  async index(language: string): Promise<SalesChannelTypesModel[]> {
+  async index(language: string, isActive: number): Promise<SalesChannelTypesModel[]> {
     try {
-      const attributes = language === 'en' ? ['ID', 'enSalesChannelType', 'Notes'] : ['ID', 'arSalesChannelType', 'Notes'];
       return await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
         const result = await SalesChannelTypes.findAll({
-          attributes: attributes,
+          attributes: language === 'en' ? [['ID', 'Sales Channeel Type ID'], ['enSalesChannelType', 'Sales Channeel Type'], 'Notes'] : [['ID', 'رقم التسلسل'], ['arSalesChannelType', 'نوع قناة المبيعات'], ['Notes', 'ملاحظات']],
           where: {
-            isActive: true,
+            isActive: isActive,
           },
           transaction: t, // pass transaction object to query
         });
@@ -68,7 +66,7 @@ export class SalesChannelTypesController {
     }
   }
 
-  async update(salesChannelTypes: SalesChannelTypesModel): Promise<SalesChannelTypesModel | string> {
+  async update(salesChannelTypes: SalesChannelTypesModel, language: string): Promise<SalesChannelTypesModel | string> {
     try {
       return await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
@@ -86,7 +84,7 @@ export class SalesChannelTypesController {
           }
         );
 
-        const result = await getById(Number(salesChannelTypes.ID), t);
+        const result = await getById(Number(salesChannelTypes.ID), t, language);
         return result ? result.toJSON() : 'Could not update SalesChannelTypes';
       });
     } catch (err) {
