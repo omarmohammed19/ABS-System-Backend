@@ -108,6 +108,7 @@ export class CreateShipmentsController {
             Ref: transactions.Ref,
             mainAccountID: transactions.mainAccountID,
             subAccountID: transactions.subAccountID,
+            serviceID: transactions.serviceID,
             shipmentTypeID: transactions.shipmentTypeID,
             statusID: 1,
             expectedDeliveryDate: transactions.expectedDeliveryDate,

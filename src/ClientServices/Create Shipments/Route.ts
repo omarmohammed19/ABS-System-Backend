@@ -57,6 +57,7 @@ const createSingleShipment = async (req: Request, res: Response) => {
       Ref: req.body.Ref,
       mainAccountID: mainAccountID,
       subAccountID: subAccountID,
+      serviceID: req.body.serviceID,
       shipmentTypeID: req.body.shipmentTypeID,
       expectedDeliveryDate: expectedDeliveryDate,
       productID: req.body.productID,
@@ -82,6 +83,7 @@ const createSingleShipment = async (req: Request, res: Response) => {
     });
 
     const contactPerson = <ContactPersonsModel>(<unknown>{
+      subAccountID: subAccountID,
       firstName: req.body.firstName,
       lastName: req.body.lastName,
     });
@@ -92,6 +94,7 @@ const createSingleShipment = async (req: Request, res: Response) => {
     });
 
     const address = <AddressesModel>(<unknown>{
+      subAccountID: subAccountID,
       streetName: req.body.streetName,
       apartmentNumber: req.body.apartmentNumber,
       floorNumber: req.body.floorNumber,

@@ -8,6 +8,7 @@ export interface TransactionsModel extends Model {
   Ref: string;
   mainAccountID: number;
   subAccountID: number;
+  serviceID: number;
   shipmentTypeID: number;
   statusID: number;
   actualDeliveryDate: Date;
