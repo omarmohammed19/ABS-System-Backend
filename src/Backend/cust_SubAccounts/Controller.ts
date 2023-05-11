@@ -73,6 +73,18 @@ export class SubAccountsController {
     }
   }
 
+  async getSubAccountsByMainAccountId(language: string, isActive: number, mainAccountID: number): Promise<SubAccountsModel[]> {
+    try {
+      const query = 'EXEC [dbo].[p_GET_cust_SubAccounts] @language = :language, @Method = :Method, @isActive = :isActive, @mainAccountID = :mainAccountID';
+      const replacements = { language: language, Method: 'GET_ByMainAccountID', isActive: isActive, mainAccountID: mainAccountID };
+      const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
+      const result = await sequelize.query(query, options);
+      return result as unknown as SubAccountsModel[];
+    } catch (err) {
+      throw new Error(`Could not get SubAccounts by MainAccountID. Error: ${err}`);
+    }
+  }
+
   async getPaymentMethodBySubAccountIDId(subAccountID: number,): Promise<SubAccountsModel | string> {
     try {
       const result = await sequelize.transaction(async (t) => {
