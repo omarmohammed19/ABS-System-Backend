@@ -23,6 +23,9 @@ const transactionsController = new TransactionsController();
 
 const getPrefix = async (subAccountID: number) => {
   const result: any = await SubAccounts.findOne({ where: { ID: subAccountID } });
+  if (result.prefix === null) {
+    return "";
+  }
   return result.prefix;
 };
 
@@ -331,6 +334,7 @@ export class CreateShipmentsController {
             noOfPcs: transactions.noOfPcs,
             contents: transactions.contents,
             weight: transactions.weight,
+            actualWeight: transactions.actualWeight,
             Cash: transactions.Cash,
           },
           { transaction: t, returning: ['ID', 'AWB'] } // pass transaction object to query

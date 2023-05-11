@@ -71,6 +71,7 @@ const createSingleShipment = async (req: Request, res: Response) => {
       noOfPcs: req.body.noOfPcs,
       contents: req.body.contents,
       weight: req.body.weight,
+      actualWeight: req.body.actualWeight,
       Cash: req.body.Cash,
     });
 
