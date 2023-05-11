@@ -66,7 +66,6 @@ const createSingleShipment = async (req: Request, res: Response) => {
       userID: userID,
       expiryDate: expiryDate,
       deliveryBranchID: req.body.deliveryBranchID,
-      toBranchID: req.body.toBranchID,
       specialInstructions: req.body.specialInstructions,
       packageTypeID: req.body.packageTypeID,
       noOfPcs: req.body.noOfPcs,
@@ -79,7 +78,6 @@ const createSingleShipment = async (req: Request, res: Response) => {
       shipmentTypeID: req.body.shipmentTypeID,
       auditDate: currentDate,
       userID: userID,
-      toBranchID: req.body.toBranchID,
     });
 
     const contactPerson = <ContactPersonsModel>(<unknown>{
@@ -165,18 +163,11 @@ const createMultipleShipments = async (req: Request, res: Response) => {
       creationDate: currentDate,
       lastChangeDate: currentDate,
       expiryDate: expiryDate,
-      deliveryBranchID: req.body.deliveryBranchID,
-      toBranchID: req.body.toBranchID,
     });
 
     const transactionHistory = <TransactionHistoryModel>(<unknown>{
       auditDate: currentDate,
       userID: userID,
-      toBranchID: req.body.toBranchID,
-    });
-
-    const contactNumber = <ContactNumbersModel>(<unknown>{
-      numberTypeID: req.body.numberTypeID,
     });
 
     const result = await createShipmentsController.CreateMultipleShipments(
@@ -185,8 +176,7 @@ const createMultipleShipments = async (req: Request, res: Response) => {
       pickup,
       pickupHistory,
       transaction,
-      transactionHistory,
-      contactNumber
+      transactionHistory
     );
 
     res.json(result);

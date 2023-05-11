@@ -186,6 +186,7 @@ BusinessLocationsRouter(app);
 shipmentsRouter(app);
 TeamMembersRouter(app);
 ClientTypesRouter(app);
+servicesRouter(app);
 app.use('/images', imageRouter);
 
 app.listen(process.env.PORT, () => {
