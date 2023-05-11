@@ -24,7 +24,7 @@ const transactionsController = new TransactionsController();
 const getPrefix = async (subAccountID: number) => {
   const result: any = await SubAccounts.findOne({ where: { ID: subAccountID } });
   if (result.prefix === null) {
-    return "";
+    return '';
   }
   return result.prefix;
 };
@@ -274,6 +274,7 @@ export class CreateShipmentsController {
             mainAccountID: transactionHdr.mainAccountID,
             subAccountID: transactionHdr.subAccountID,
             userID: transactionHdr.userID,
+            serviceID: transactionHdr.serviceID,
             creationDate: transactionHdr.creationDate,
             noOfAWBs: transactionHdr.noOfAWBs,
           },

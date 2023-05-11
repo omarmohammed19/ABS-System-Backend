@@ -29,6 +29,7 @@ const createSingleShipment = async (req: Request, res: Response) => {
       mainAccountID: mainAccountID,
       subAccountID: subAccountID,
       userID: userID,
+      serviceID: req.body.serviceID,
       creationDate: currentDate,
       noOfAWBs: req.body.noOfAWBs,
     });
