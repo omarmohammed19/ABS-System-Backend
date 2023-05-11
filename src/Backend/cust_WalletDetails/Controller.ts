@@ -1,7 +1,7 @@
 import { WalletDetailsModel, WalletDetails } from './Model';
 import { De_Activate } from '../../Services/De_Activate';
 import { sequelize } from '../../Config/database';
-import { Transaction } from 'sequelize';
+import Sequelize, { Transaction } from 'sequelize';
 
 const getById = (ID: number, t: Transaction, language: string) => {
   return WalletDetails.findOne({
@@ -65,6 +65,19 @@ export class WalletDetailsController {
       throw new Error(`Could not get WalletDetails by ID. Error: ${err}`);
     }
   }
+
+  async getWalletDetailsBySubAccountID(subAccountID: number): Promise<WalletDetailsModel | string> {
+    try {
+      const query = 'EXEC [dbo].[p_GET_cust_WalletDetails] @Method = :Method, @subAccountID = :subAccountID';
+      const replacements = { Method: 'GET_BySubAccountID', subAccountID: subAccountID };
+      const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
+      const result = await sequelize.query(query, options);
+      return result as unknown as WalletDetailsModel;
+    }
+    catch (err) {
+      throw new Error(`Could not get NearestBranch by SubAccountID. Error: ${err}`);
+    }
+  };
 
   async update(walletDetails: WalletDetailsModel, language: string): Promise<WalletDetailsModel | string> {
     try {

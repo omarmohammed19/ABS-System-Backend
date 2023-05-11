@@ -11,6 +11,17 @@ const getById = async (ID: number, t: Transaction, language?: string) => {
   return result as unknown as SubAccountsModel;
 };
 
+const getPaymentMethod = async (subAccountID: number, t: Transaction) => {
+  return SubAccounts.findOne({
+    attributes: ['paymentMethodID'],
+    where: {
+      ID: subAccountID,
+      isActive: true,
+    },
+    transaction: t, // pass transaction object to query
+  });
+}
+
 export class SubAccountsController {
   async index(language: string, isActive: number, limit: number): Promise<SubAccountsModel[]> {
     try {
@@ -59,6 +70,19 @@ export class SubAccountsController {
     } catch (err) {
       console.log(err);
       throw new Error(`Could not get SubAccounts by ID. Error: ${err}`);
+    }
+  }
+
+  async getPaymentMethodBySubAccountIDId(subAccountID: number,): Promise<SubAccountsModel | string> {
+    try {
+      const result = await sequelize.transaction(async (t) => {
+        // start managed transaction and pass transaction object to the callback function
+        const item = await getPaymentMethod(subAccountID, t); // pass transaction object to getById function
+        return item ? item.toJSON() : 'Could not get PaymentMethods by ID';
+      });
+      return result;
+    } catch (err) {
+      throw new Error(`Could not get PaymentMethods by ID. Error: ${err}`);
     }
   }
 

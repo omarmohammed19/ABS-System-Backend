@@ -58,6 +58,19 @@ export class BankDetailsController {
     }
   }
 
+  async getBankDetailsBySubAccountID(subAccountID: number): Promise<BankDetailsModel | string> {
+    try {
+      const query = 'EXEC [dbo].[p_Get_cust_BankDetails] @Method = :Method, @subAccountID = :subAccountID';
+      const replacements = { Method: 'GET_BySubAccountID', subAccountID: subAccountID };
+      const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
+      const result = await sequelize.query(query, options);
+      return result as unknown as BankDetailsModel;
+    }
+    catch (err) {
+      throw new Error(`Could not get BankDetails by SubAccountID. Error: ${err}`);
+    }
+  };
+
   async update(bankDetails: BankDetailsModel, language: string): Promise<BankDetailsModel | string> {
     try {
       return await sequelize.transaction(async (t) => {

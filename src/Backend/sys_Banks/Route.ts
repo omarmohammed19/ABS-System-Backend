@@ -6,7 +6,8 @@ const banksController = new BanksController();
 
 const getAll = async (req: Request, res: Response) => {
     try {
-        const result = await banksController.index(Number(req.params.isActive));
+        const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
+        const result = await banksController.index(Number(req.params.isActive), language);
         res.json(result);
     } catch (error) {
         res.status(400);
