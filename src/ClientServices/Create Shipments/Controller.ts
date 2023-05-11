@@ -23,6 +23,9 @@ const transactionsController = new TransactionsController();
 
 const getPrefix = async (subAccountID: number) => {
   const result: any = await SubAccounts.findOne({ where: { ID: subAccountID } });
+  if (result.prefix === null) {
+    return '';
+  }
   return result.prefix;
 };
 
@@ -115,6 +118,8 @@ async function insertDataIntoDatabase(
   data: any
 ) {
   // Use a Sequelize transaction to insert the data into the database
+  let newPickup: any;
+
   const ToBranchID = await getBranchIDByPickupLocationID(pickup.pickupLocationID);
 
   await sequelize.transaction(async (t) => {
@@ -124,12 +129,12 @@ async function insertDataIntoDatabase(
         subAccountID: transactionHdr.subAccountID,
         userID: transactionHdr.userID,
         creationDate: transactionHdr.creationDate,
-        noOfAWBs: data.length - 1,
+        noOfAWBs: data.length,
       },
       { transaction: t, returning: ['ID'] }
     );
 
-    const newPickup = await Pickups.create(
+    newPickup = await Pickups.create(
       {
         mainAccountID: pickup.mainAccountID,
         subAccountID: pickup.subAccountID,
@@ -137,8 +142,8 @@ async function insertDataIntoDatabase(
         transHdrID: newTransactionHdr.ID,
         pickupTypeID: pickup.pickupTypeID,
         vehicleTypeID: pickup.vehicleTypeID,
-        noOfAWBs: data.length - 1,
-        actualAWBs: data.length - 1,
+        noOfAWBs: data.length,
+        actualAWBs: data.length,
         timeFrom: pickup.timeFrom,
         toTime: pickup.toTime,
         statusID: 1,
@@ -161,7 +166,7 @@ async function insertDataIntoDatabase(
     );
 
     const transactionData = await Promise.all(
-      data.slice(1).map(async (row: any) => {
+      data.map(async (row: any) => {
         return {
           transHdrID: newTransactionHdr.ID,
           AWB: await generateAWB(transactions.subAccountID),
@@ -184,6 +189,7 @@ async function insertDataIntoDatabase(
           noOfPcs: row.noOfPcs,
           contents: row.contents,
           weight: row.weight,
+          actualWeight: row.weight,
           Cash: row.Cash,
         };
       })
@@ -208,7 +214,7 @@ async function insertDataIntoDatabase(
     await TransactionHistory.bulkCreate(transactionHistoryData, { transaction: t });
 
     const contactPersonData = await Promise.all(
-      data.slice(1).map(async (row: any) => {
+      data.map(async (row: any) => {
         return {
           firstName: row.firstName,
           lastName: row.lastName,
@@ -225,15 +231,15 @@ async function insertDataIntoDatabase(
       AWBs.map(async (AWB, index) => {
         return {
           AWB: AWB,
-          streetName: data[index + 1].streetName,
-          apartmentNumber: data[index + 1].apartmentNumber,
-          floorNumber: data[index + 1].floorNumber,
-          buildingNumber: data[index + 1].buildingNumber,
-          cityID: await getBranchIDByCityName(data[index + 1].City),
-          postalCode: data[index + 1].postalCode,
+          streetName: data[index].streetName,
+          apartmentNumber: data[index].apartmentNumber,
+          floorNumber: data[index].floorNumber,
+          buildingNumber: data[index].buildingNumber,
+          cityID: await getBranchIDByCityName(data[index].City),
+          postalCode: data[index].postalCode,
           cneeContactPersonID: ContactPersonIDs[index],
-          longitude: data[index + 1].longitude,
-          latitude: data[index + 1].latitude,
+          longitude: data[index].longitude,
+          latitude: data[index].latitude,
         };
       })
     );
@@ -242,7 +248,7 @@ async function insertDataIntoDatabase(
 
     const contactNumberData = ContactPersonIDs.map((ContactPersonID, index) => {
       return {
-        contactNumber: data[index + 1].contactNumber,
+        contactNumber: data[index].contactNumber,
         cneeContactPersonID: ContactPersonID,
         numberTypeID: 1,
       };
@@ -250,6 +256,7 @@ async function insertDataIntoDatabase(
 
     await ContactNumbers.bulkCreate(contactNumberData, { transaction: t });
   });
+  return newPickup.ID;
 }
 
 export class CreateShipmentsController {
@@ -421,15 +428,14 @@ export class CreateShipmentsController {
         'latitude',
       ],
     });
-    // No of rows in sheet
-    const numRows = data.length - 1;
-    let newPickup: any;
-    // console.log('data', data);
-    // Create a list and insert inside of it the AWBs
+
     const Delivery: any = [];
     const Return: any = [];
     const Exchange: any = [];
-    let noOfServices = 0;
+    const CashCollection: any = [];
+    const servicesList: any = [];
+    const pickupIDs: any = [];
+
     await Promise.all(
       data.slice(1).map(async (row: any) => {
         let serviceID = await getServiceIDByName(row.Service);
@@ -440,22 +446,30 @@ export class CreateShipmentsController {
         } else if (serviceID === 3) {
           Exchange.push(row);
         }
+        if (!servicesList.includes(row.Service)) {
+          servicesList.push(row.Service);
+        }
       })
     );
 
-    const lists = [Delivery, Return, Exchange];
-
-    console.log('lists', lists[0]);
-
-    for (const list of lists) {
-      if (list.length > 0) {
-        // Perform operations on the non-empty list here
-        console.log('list:', list[0]);
-        // call insertDataIntoDatabase function
-        await insertDataIntoDatabase(transactionHdr, pickup, pickupHistory, transactions, transactionHistory, list);
+    for (const service of servicesList) {
+      if (service === 'Delivery') {
+        const pickupID = await insertDataIntoDatabase(transactionHdr, pickup, pickupHistory, transactions, transactionHistory, Delivery);
+        pickupIDs.push(pickupID);
+      } else if (service === 'Return') {
+        const pickupID = await insertDataIntoDatabase(transactionHdr, pickup, pickupHistory, transactions, transactionHistory, Return);
+        pickupIDs.push(pickupID);
+      } else if (service === 'Exchange') {
+        const pickupID = await insertDataIntoDatabase(transactionHdr, pickup, pickupHistory, transactions, transactionHistory, Exchange);
+        pickupIDs.push(pickupID);
+      } else if (service === 'CashCollection') {
+        const pickupID = await insertDataIntoDatabase(transactionHdr, pickup, pickupHistory, transactions, transactionHistory, CashCollection);
+        pickupIDs.push(pickupID);
       }
     }
 
-    return newPickup.ID;
+    return pickupIDs;
+
+    // return newPickup.ID;
   }
 }
