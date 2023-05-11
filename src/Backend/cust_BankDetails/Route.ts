@@ -28,6 +28,18 @@ const getById = async (req: Request, res: Response) => {
     }
 };
 
+const getBySubAccountID = async (req: Request, res: Response) => {
+    try {
+        //@ts-ignore
+        const subAccountID = req.subAccountID;
+        const result = await bankDetailsController.getBankDetailsBySubAccountID(subAccountID);
+        res.json(result);
+    } catch (error) {
+        res.status(400);
+        res.json(error);
+    }
+};
+
 const create = async (req: Request, res: Response) => {
     try {
         const bankDetails = <BankDetailsModel>{
@@ -90,6 +102,7 @@ const activate = async (req: Request, res: Response) => {
 const bankDetailsRouter = (app: express.Application) => {
     app.get('/bank-details/:isActive/:limit', getAll);
     app.get('/bank-details-by-ID/:ID', getById);
+    app.get('/bank-details-by-sub-account-ID', getBySubAccountID);
     app.post('/bank-details', create);
     app.put('/bank-details/:ID', update);
     app.put('/bank-details/de-activate/:ID', deactivate);

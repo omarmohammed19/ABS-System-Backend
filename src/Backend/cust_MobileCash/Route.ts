@@ -28,6 +28,18 @@ const getById = async (req: Request, res: Response) => {
   }
 };
 
+const getBySubAccountID = async (req: Request, res: Response) => {
+  try {
+    //@ts-ignore
+    const subAccountID = req.subAccountID;
+    const result = await mobileCashController.getMobileCashBySubAccountID(subAccountID);
+    res.json(result);
+  } catch (error) {
+    res.status(400);
+    res.json(error);
+  }
+};
+
 const create = async (req: Request, res: Response) => {
   try {
     const mobileCash = <MobileCashModel>{
@@ -82,6 +94,7 @@ const activate = async (req: Request, res: Response) => {
 const mobileCashRouter = (app: express.Application) => {
   app.get('/mobile-cash/:isActive/:limit', getAll);
   app.get('/mobile-cash-by-ID/:ID', getById);
+  app.get('/mobile-cash-by-sub-account-ID', getBySubAccountID);
   app.post('/mobile-cash', create);
   app.put('/mobile-cash/:ID', update);
   app.put('/mobile-cash/de-activate/:ID', deactivate);

@@ -1,7 +1,7 @@
 import { MobileCashModel, MobileCash } from './Model';
 import { De_Activate } from '../../Services/De_Activate';
 import { sequelize } from '../../Config/database';
-import { Transaction } from 'sequelize';
+import Sequelize, { Transaction } from 'sequelize';
 
 const getById = (ID: number, t: Transaction, language: string) => {
   return MobileCash.findOne({
@@ -64,6 +64,19 @@ export class MobileCashController {
       throw new Error(`Could not get MobileCash by ID. Error: ${err}`);
     }
   }
+
+  async getMobileCashBySubAccountID(subAccountID: number): Promise<MobileCashModel | string> {
+    try {
+      const query = 'EXEC [dbo].[p_cust_MobileCash] @Method = :Method, @subAccountID = :subAccountID';
+      const replacements = { Method: 'GET_BySubAccountID', subAccountID: subAccountID };
+      const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
+      const result = await sequelize.query(query, options);
+      return result as unknown as MobileCashModel;
+    }
+    catch (err) {
+      throw new Error(`Could not get MobileCash by SubAccountID. Error: ${err}`);
+    }
+  };
 
   async update(mobileCash: MobileCashModel, language: string): Promise<MobileCashModel | string> {
     try {
