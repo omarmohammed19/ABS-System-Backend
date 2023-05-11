@@ -8,6 +8,7 @@ export interface TransactionsModel extends Model {
   Ref: string;
   mainAccountID: number;
   subAccountID: number;
+  serviceID: number;
   shipmentTypeID: number;
   statusID: number;
   actualDeliveryDate: Date;
@@ -38,6 +39,7 @@ export interface TransactionsModel extends Model {
   collectedFromRunner: boolean;
   collectedFromBranch: boolean;
   isPaid: boolean;
+  paymentDate: Date;
   isActive: boolean;
 }
 
@@ -62,6 +64,9 @@ export const Transactions = sequelize.define<TransactionsModel>(
       type: DataTypes.INTEGER,
     },
     subAccountID: {
+      type: DataTypes.INTEGER,
+    },
+    serviceID: {
       type: DataTypes.INTEGER,
     },
     shipmentTypeID: {
@@ -153,6 +158,9 @@ export const Transactions = sequelize.define<TransactionsModel>(
     },
     isPaid: {
       type: DataTypes.BOOLEAN,
+    },
+    paymentDate: {
+      type: DataTypes.INTEGER,
     },
     isActive: {
       type: DataTypes.BOOLEAN,

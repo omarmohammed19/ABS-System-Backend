@@ -45,7 +45,7 @@ const getBysubAccountID = async (req: Request, res: Response) => {
     const result = await transactionsController.getTransactionsBysubAccountID(Number(req.params.subAccountID), language, Number(req.params.limit));
     res.json(result);
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(400);
     res.json(error);
   }
@@ -73,6 +73,7 @@ const create = async (req: Request, res: Response) => {
       Ref: req.body.Ref,
       mainAccountID: req.body.mainAccountID,
       subAccountID: req.body.subAccountID,
+      serviceID: req.body.serviceID,
       shipmentTypeID: req.body.shipmentTypeID,
       statusID: req.body.statusID,
       expectedDeliveryDate: expectedDeliveryDate,
@@ -119,6 +120,7 @@ const updateByAWB = async (req: Request, res: Response) => {
       Ref: req.body.Ref,
       mainAccountID: req.body.mainAccountID,
       subAccountID: req.body.subAccountID,
+      serviceID: req.body.serviceID,
       shipmentTypeID: req.body.shipmentTypeID,
       statusID: req.body.statusID,
       productID: req.body.productID,
@@ -146,6 +148,7 @@ const updateByAWB = async (req: Request, res: Response) => {
       collectedFromRunner: req.body.collectedFromRunner,
       collectedFromBranch: req.body.collectedFromBranch,
       isPaid: req.body.isPaid,
+      paymentDate: currentDate,
     });
     const result = await transactionsController.updateByAWB(language, transactions);
     res.json(result);
@@ -165,6 +168,7 @@ const updateByTransHdrID = async (req: Request, res: Response) => {
       Ref: req.body.Ref,
       mainAccountID: req.body.mainAccountID,
       subAccountID: req.body.subAccountID,
+      serviceID: req.body.serviceID,
       shipmentTypeID: req.body.shipmentTypeID,
       statusID: req.body.statusID,
       productID: req.body.productID,
@@ -192,6 +196,7 @@ const updateByTransHdrID = async (req: Request, res: Response) => {
       collectedFromRunner: req.body.collectedFromRunner,
       collectedFromBranch: req.body.collectedFromBranch,
       isPaid: req.body.isPaid,
+      paymentDate: currentDate,
     });
     const result = await transactionsController.updateByTransHdrID(language, transactions);
     res.json(result);

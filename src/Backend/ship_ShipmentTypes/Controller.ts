@@ -15,6 +15,19 @@ const getById = (ID: number, t: Transaction, language?: string) => {
   });
 };
 
+// Get ID by name
+const getIDByName = (name: string, t: Transaction, language?: string) => {
+  const attributes = language === 'en' ? ['ID', 'enShipmentType', 'Notes'] : ['ID', 'arShipmentType', 'Notes'];
+  return ShipmentTypes.findOne({
+    attributes: attributes,
+    where: {
+      enShipmentType: name,
+      isActive: true,
+    },
+    transaction: t, // pass transaction object to query
+  });
+};
+
 export class ShipmentTypesController {
   async index(language: string): Promise<ShipmentTypesModel[]> {
     try {
