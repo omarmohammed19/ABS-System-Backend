@@ -457,21 +457,19 @@ export class CreateShipmentsController {
     for (const service of servicesList) {
       if (service === 'Delivery') {
         const pickupID = await insertDataIntoDatabase(transactionHdr, pickup, pickupHistory, transactions, transactionHistory, Delivery);
-        pickupIDs.push(pickupID);
+        pickupIDs.push('Delivery PickupID: ', pickupID);
       } else if (service === 'Return') {
         const pickupID = await insertDataIntoDatabase(transactionHdr, pickup, pickupHistory, transactions, transactionHistory, Return);
-        pickupIDs.push(pickupID);
+        pickupIDs.push('Return PickupID: ', pickupID);
       } else if (service === 'Exchange') {
         const pickupID = await insertDataIntoDatabase(transactionHdr, pickup, pickupHistory, transactions, transactionHistory, Exchange);
-        pickupIDs.push(pickupID);
+        pickupIDs.push('Exchange PickupID: ', pickupID);
       } else if (service === 'CashCollection') {
         const pickupID = await insertDataIntoDatabase(transactionHdr, pickup, pickupHistory, transactions, transactionHistory, CashCollection);
-        pickupIDs.push(pickupID);
+        pickupIDs.push('CashCollection PickupID: ', pickupID);
       }
     }
 
     return pickupIDs;
-
-    // return newPickup.ID;
   }
 }
