@@ -6,6 +6,7 @@ export interface PickupsModel extends Model {
   mainAccountID: number;
   subAccountID: number;
   pickupLocationID: number;
+  returnLocationID: number;
   transHdrID: number;
   pickupTypeID: number;
   vehicleTypeID: number;

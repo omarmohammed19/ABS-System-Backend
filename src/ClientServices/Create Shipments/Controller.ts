@@ -115,10 +115,18 @@ async function insertDataIntoDatabase(
   pickupHistory: PickupHistoryModel,
   transactions: TransactionsModel,
   transactionHistory: TransactionHistoryModel,
-  data: any
+  data: any,
+  service: string
 ) {
   // Use a Sequelize transaction to insert the data into the database
   let newPickup: any;
+  let location: any;
+
+  if (data[0].Service !== 'Return') {
+    location = pickup.pickupLocationID;
+  } else {
+    location = pickup.returnLocationID;
+  }
 
   const ToBranchID = await getBranchIDByPickupLocationID(pickup.pickupLocationID);
 
@@ -128,6 +136,7 @@ async function insertDataIntoDatabase(
         mainAccountID: transactionHdr.mainAccountID,
         subAccountID: transactionHdr.subAccountID,
         userID: transactionHdr.userID,
+        serviceID: await getServiceIDByName(service),
         creationDate: transactionHdr.creationDate,
         noOfAWBs: data.length,
       },
@@ -138,7 +147,7 @@ async function insertDataIntoDatabase(
       {
         mainAccountID: pickup.mainAccountID,
         subAccountID: pickup.subAccountID,
-        pickupLocationID: pickup.pickupLocationID,
+        pickupLocationID: location,
         transHdrID: newTransactionHdr.ID,
         pickupTypeID: pickup.pickupTypeID,
         vehicleTypeID: pickup.vehicleTypeID,
@@ -456,17 +465,25 @@ export class CreateShipmentsController {
 
     for (const service of servicesList) {
       if (service === 'Delivery') {
-        const pickupID = await insertDataIntoDatabase(transactionHdr, pickup, pickupHistory, transactions, transactionHistory, Delivery);
-        pickupIDs.push('Delivery PickupID: ', pickupID);
+        const pickupID = await insertDataIntoDatabase(transactionHdr, pickup, pickupHistory, transactions, transactionHistory, Delivery, 'Delivery');
+        pickupIDs.push('Delivery PickupID: ' + pickupID);
       } else if (service === 'Return') {
-        const pickupID = await insertDataIntoDatabase(transactionHdr, pickup, pickupHistory, transactions, transactionHistory, Return);
-        pickupIDs.push('Return PickupID: ', pickupID);
+        const pickupID = await insertDataIntoDatabase(transactionHdr, pickup, pickupHistory, transactions, transactionHistory, Return, 'Return');
+        pickupIDs.push('Return PickupID: ' + pickupID);
       } else if (service === 'Exchange') {
-        const pickupID = await insertDataIntoDatabase(transactionHdr, pickup, pickupHistory, transactions, transactionHistory, Exchange);
-        pickupIDs.push('Exchange PickupID: ', pickupID);
+        const pickupID = await insertDataIntoDatabase(transactionHdr, pickup, pickupHistory, transactions, transactionHistory, Exchange, 'Exchange');
+        pickupIDs.push('Exchange PickupID: ' + pickupID);
       } else if (service === 'CashCollection') {
-        const pickupID = await insertDataIntoDatabase(transactionHdr, pickup, pickupHistory, transactions, transactionHistory, CashCollection);
-        pickupIDs.push('CashCollection PickupID: ', pickupID);
+        const pickupID = await insertDataIntoDatabase(
+          transactionHdr,
+          pickup,
+          pickupHistory,
+          transactions,
+          transactionHistory,
+          CashCollection,
+          'Cash Collection'
+        );
+        pickupIDs.push('Cash Collection PickupID: ' + pickupID);
       }
     }
 
