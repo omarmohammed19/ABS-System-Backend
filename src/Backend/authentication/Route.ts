@@ -78,6 +78,8 @@ const handleSignin = async (req: Request, res: Response) => {
         const subAccountID = user.subAccountID;
         //@ts-ignore
         const mainAccountID = user.mainAccountID;
+        //@ts-ignore
+        const roleTypeID = user.roleTypeID;
         const message = "success";
         // create JWTs
         const accessToken = jwt.sign(
@@ -87,7 +89,8 @@ const handleSignin = async (req: Request, res: Response) => {
               "name": name,
               "role": role,
               "subAccountID": subAccountID,
-              "mainAccountID": mainAccountID
+              "mainAccountID": mainAccountID,
+              "roleTypeID": roleTypeID
             }
           },
           //@ts-ignore

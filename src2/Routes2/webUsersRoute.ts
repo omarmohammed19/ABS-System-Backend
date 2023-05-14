@@ -130,7 +130,6 @@ async function changePassword(req: Request, res: Response) {
   try {
     const user = await webUser.getPasswordByID(Number(req.params.id));
     const match = await bcrypt.compareSync(req.body.oldPassword + process.env.pepper, user.webUserPassword ? user.webUserPassword : '');
-    console.log(match);
 
     if (req.body.oldPassword == req.body.newPassword) {
       res.status(203).json('New password cannot be the same as old password');
