@@ -132,6 +132,8 @@ const createMultipleShipments = async (req: Request, res: Response) => {
     const userID = req.userID;
     const fileName = req.body.fileName;
     const excelPath = path.join(__dirname, '../../../uploads/', fileName);
+    const checkBox = req.body.checkBox;
+
     const transactionHdr = <TransactionHdrModel>(<unknown>{
       mainAccountID: mainAccountID,
       subAccountID: subAccountID,
@@ -143,6 +145,7 @@ const createMultipleShipments = async (req: Request, res: Response) => {
       mainAccountID: mainAccountID,
       subAccountID: subAccountID,
       pickupLocationID: req.body.pickupLocationID,
+      returnLocationID: req.body.returnLocationID,
       pickupTypeID: req.body.pickupTypeID,
       vehicleTypeID: req.body.vehicleTypeID,
       timeFrom: req.body.timeFrom,
@@ -183,7 +186,7 @@ const createMultipleShipments = async (req: Request, res: Response) => {
 
     res.json(result);
   } catch (error) {
-    console.log('🚀 ~ file: Route.ts:47 ~ create ~ error:', error);
+    console.log('🚀 ~ file: Route.ts:47 Shipments Controller ~ create ~ error:', error);
     res.status(400);
     res.json(error);
   }
