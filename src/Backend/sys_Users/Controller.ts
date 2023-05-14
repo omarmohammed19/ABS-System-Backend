@@ -10,13 +10,15 @@ dotenv.config();
 const { SALT_ROUNDS, pepper } = process.env;
 
 const getById = async (t: Transaction, ID: Number, language?: string): Promise<UsersModel> => {
+  console.log(ID);
+  
   const query = 'EXEC [dbo].[p_GET_sys_Users] @language = :language, @Method = :Method, @ID = :ID';
   const replacements = { language: language, Method: 'GET_ByID', ID: ID };
   const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
   const result = await sequelize.query(query, options);
   return result as unknown as UsersModel;
 };
-const GetPersonalInfoById = async (t: Transaction, ID: Number): Promise<UsersModel> => {
+const GetPersonalInfoById = async (t: Transaction, ID: Number): Promise<UsersModel> => {  
   const query = 'EXEC [dbo].[p_GET_sys_Users] @Method = :Method, @ID = :ID';
   const replacements = { Method: 'GET_Personal_Info', ID: ID };
   const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };

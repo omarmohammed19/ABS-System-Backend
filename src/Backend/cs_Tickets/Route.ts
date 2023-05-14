@@ -48,7 +48,8 @@ const getBySubAccountID = async (req: Request, res: Response) => {
   try {
     const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
     const isActive = Number(req.params.isActive);
-    const subAccountID = Number(req.params.subAccountID);
+    //@ts-ignore
+    const subAccountID = req.subAccountID;
     const limit = Number(req.params.limit);
     const result = await ticketsController.getTicketsBySubAccountID(language, subAccountID, isActive, limit);
     res.json(result);
@@ -133,7 +134,7 @@ const ticketsRouter = (app: express.Application) => {
   app.put('/tickets/de-activate/:ID', deActivate);
   app.put('/tickets/activate/:ID', activate);
   app.get('/tickets-by-awb/:AWB/:isActive', getByAWB);
-  app.get('/tickets-by-sub-account-id/:subAccountID/:isActive/:limit?', getBySubAccountID);
+  app.get('/tickets-by-sub-account-id/:isActive/:limit?', getBySubAccountID);
 };
 
 export default ticketsRouter;

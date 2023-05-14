@@ -28,6 +28,18 @@ const getById = async (req: Request, res: Response) => {
   }
 };
 
+const getBySubAccountID = async (req: Request, res: Response) => {
+  try {
+    //@ts-ignore
+    const subAccountID = req.subAccountID;
+    const result = await walletDetailsController.getWalletDetailsBySubAccountID(subAccountID);
+    res.json(result);
+  } catch (error) {
+    res.status(400);
+    res.json(error);
+  }
+};
+
 const create = async (req: Request, res: Response) => {
   try {
     const mobileCash = <WalletDetailsModel>{
@@ -84,6 +96,7 @@ const activate = async (req: Request, res: Response) => {
 const walletDetailsRouter = (app: express.Application) => {
   app.get('/wallet-details/:isActive/:limit', getAll);
   app.get('/wallet-details-by-ID/:ID', getById);
+  app.get('/wallet-details-by-sub-account-ID', getBySubAccountID);
   app.post('/wallet-details', create);
   app.put('/wallet-details/:ID', update);
   app.put('/wallet-details/de-activate/:ID', deactivate);

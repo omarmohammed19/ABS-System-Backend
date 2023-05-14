@@ -55,6 +55,19 @@ export class NearestBranchController {
         }
     }
 
+    async getNearestBranchBySubAccountID(subAccountID: number): Promise<NearestBranchModel | string> {
+        try {
+            const query = 'EXEC [dbo].[p_GET_cust_NearestBranch] @Method = :Method, @subAccountID = :subAccountID';
+            const replacements = { Method: 'GET_BySubAccountID', subAccountID: subAccountID };
+            const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
+            const result = await sequelize.query(query, options);
+            return result as unknown as NearestBranchModel;
+        }
+        catch (err) {
+            throw new Error(`Could not get NearestBranch by SubAccountID. Error: ${err}`);
+        }
+    };
+
     async update(services: NearestBranchModel, language: string): Promise<NearestBranchModel | string> {
         try {
             return await sequelize.transaction(async (t) => { // start managed transaction and pass transaction object to the callback function

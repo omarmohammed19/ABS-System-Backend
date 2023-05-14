@@ -29,6 +29,7 @@ const createSingleShipment = async (req: Request, res: Response) => {
       mainAccountID: mainAccountID,
       subAccountID: subAccountID,
       userID: userID,
+      serviceID: req.body.serviceID,
       creationDate: currentDate,
       noOfAWBs: req.body.noOfAWBs,
     });
@@ -57,6 +58,7 @@ const createSingleShipment = async (req: Request, res: Response) => {
       Ref: req.body.Ref,
       mainAccountID: mainAccountID,
       subAccountID: subAccountID,
+      serviceID: req.body.serviceID,
       shipmentTypeID: req.body.shipmentTypeID,
       expectedDeliveryDate: expectedDeliveryDate,
       productID: req.body.productID,
@@ -65,12 +67,12 @@ const createSingleShipment = async (req: Request, res: Response) => {
       userID: userID,
       expiryDate: expiryDate,
       deliveryBranchID: req.body.deliveryBranchID,
-      toBranchID: req.body.toBranchID,
       specialInstructions: req.body.specialInstructions,
       packageTypeID: req.body.packageTypeID,
       noOfPcs: req.body.noOfPcs,
       contents: req.body.contents,
       weight: req.body.weight,
+      actualWeight: req.body.actualWeight,
       Cash: req.body.Cash,
     });
 
@@ -78,10 +80,10 @@ const createSingleShipment = async (req: Request, res: Response) => {
       shipmentTypeID: req.body.shipmentTypeID,
       auditDate: currentDate,
       userID: userID,
-      toBranchID: req.body.toBranchID,
     });
 
     const contactPerson = <ContactPersonsModel>(<unknown>{
+      subAccountID: subAccountID,
       firstName: req.body.firstName,
       lastName: req.body.lastName,
     });
@@ -92,6 +94,7 @@ const createSingleShipment = async (req: Request, res: Response) => {
     });
 
     const address = <AddressesModel>(<unknown>{
+      subAccountID: subAccountID,
       streetName: req.body.streetName,
       apartmentNumber: req.body.apartmentNumber,
       floorNumber: req.body.floorNumber,
@@ -162,18 +165,11 @@ const createMultipleShipments = async (req: Request, res: Response) => {
       creationDate: currentDate,
       lastChangeDate: currentDate,
       expiryDate: expiryDate,
-      deliveryBranchID: req.body.deliveryBranchID,
-      toBranchID: req.body.toBranchID,
     });
 
     const transactionHistory = <TransactionHistoryModel>(<unknown>{
       auditDate: currentDate,
       userID: userID,
-      toBranchID: req.body.toBranchID,
-    });
-
-    const contactNumber = <ContactNumbersModel>(<unknown>{
-      numberTypeID: req.body.numberTypeID,
     });
 
     const result = await createShipmentsController.CreateMultipleShipments(
@@ -182,8 +178,7 @@ const createMultipleShipments = async (req: Request, res: Response) => {
       pickup,
       pickupHistory,
       transaction,
-      transactionHistory,
-      contactNumber
+      transactionHistory
     );
 
     res.json(result);

@@ -43,10 +43,12 @@ const getById = async (req: Request, res: Response) => {
 const GetPersonalInfoById = async (req: Request, res: Response) => {
   try {
     //@ts-ignore
-    const subAccountID = req.subAccountID;
-    const result = await usersController.getPersonalInfoById(Number(subAccountID));
+    const userID = req.userID;
+    
+    const result = await usersController.getPersonalInfoById(Number(userID));
     res.json(result);
   } catch (error) {
+    
     res.status(400);
     res.json(error);
   }

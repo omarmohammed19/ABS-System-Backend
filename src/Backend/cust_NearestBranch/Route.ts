@@ -28,6 +28,18 @@ const getById = async (req: Request, res: Response) => {
   }
 };
 
+const getBySubAccountID = async (req: Request, res: Response) => {
+  try {
+    //@ts-ignore
+    const subAccountID = req.subAccountID;
+    const result = await nearestBranchController.getNearestBranchBySubAccountID(subAccountID);
+    res.json(result);
+  } catch (error) {
+    res.status(400);
+    res.json(error);
+  }
+};
+
 const create = async (req: Request, res: Response) => {
   try {
     const nearestBranch = <NearestBranchModel>{
@@ -82,6 +94,7 @@ const activate = async (req: Request, res: Response) => {
 const nearestBranchRouter = (app: express.Application) => {
   app.get('/nearest-branch/:isActive/:limit', getAll);
   app.get('/nearest-branch-by-ID/:ID', getById);
+  app.get('/nearest-branch-by-sub-account-ID', getBySubAccountID);
   app.post('/nearest-branch', create);
   app.put('/nearest-branch/:ID', update);
   app.put('/nearest-branch/de-activate/:ID', deactivate);

@@ -20,6 +20,8 @@ const getAll = async (req: Request, res: Response) => {
 
 const getById = async (req: Request, res: Response) => {
   try {
+    //@ts-ignore
+    const userID = req.userID;
     const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
     const result = await subAccountsController.getSubAccountsById(Number(req.params.ID), language);
     res.json(result);
@@ -28,6 +30,33 @@ const getById = async (req: Request, res: Response) => {
     res.json(error);
   }
 };
+
+const getByMainAccountID = async (req: Request, res: Response) => {
+  try {
+    //@ts-ignore
+    const mainAccountID = req.mainAccountID;
+    const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
+    const result = await subAccountsController.getSubAccountsByMainAccountId(language, Number(req.params.isActive), mainAccountID,);
+    res.json(result);
+  } catch (error) {
+    res.status(400);
+    res.json(error);
+  }
+};
+
+const getPaymentMethodBySubAccountIDId = async (req: Request, res: Response) => {
+  try {
+    //@ts-ignore
+    const subAccountID = req.subAccountID
+    const result = await subAccountsController.getPaymentMethodBySubAccountIDId(subAccountID);
+    res.json(result);
+  }
+  catch (error) {
+    res.status(400);
+    res.json(error);
+  }
+}
+
 
 const create = async (req: Request, res: Response) => {
   try {
@@ -98,7 +127,9 @@ const activate = async (req: Request, res: Response) => {
 
 const subAccountsRouter = (app: express.Application) => {
   app.get('/sub-accounts/:isActive/:limit', getAll);
-  app.get('/sub-accounts-by-ID/:ID', getById);
+  app.get('/sub-accounts-by-ID', getById);
+  app.get('/sub-accounts-by-main-account-ID/:isActive', getByMainAccountID);
+  app.get('/sub-accounts-payment-method', getPaymentMethodBySubAccountIDId);
   app.post('/sub-accounts', create);
   app.put('/sub-accounts/:ID', update);
   app.put('/sub-accounts/de-activate/:ID', deactivate);

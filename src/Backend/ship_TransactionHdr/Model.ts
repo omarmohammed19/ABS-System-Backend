@@ -6,6 +6,7 @@ export interface TransactionHdrModel extends Model {
   mainAccountID: number;
   subAccountID: number;
   userID: number;
+  serviceID: number;
   creationDate: Date;
   noOfAWBs: number;
   BranchID: number;
@@ -27,6 +28,9 @@ export const TransactionHdr = sequelize.define<TransactionHdrModel>(
       type: DataTypes.INTEGER,
     },
     userID: {
+      type: DataTypes.INTEGER,
+    },
+    serviceID: {
       type: DataTypes.INTEGER,
     },
     creationDate: {

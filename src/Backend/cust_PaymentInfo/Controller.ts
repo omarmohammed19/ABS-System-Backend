@@ -5,7 +5,7 @@ import Sequelize, { Transaction } from 'sequelize';
 
 const getById = async (subAccountID: number, t: Transaction, language?: string) => {
   const query = 'EXEC [dbo].[p_GET_cust_PaymentInfo] @language = :language, @Method = :Method, @subAccountID = :subAccountID';
-  const replacements = { language: language, Method: 'GET_ByID', subAccountID: subAccountID };
+  const replacements = { language: language, Method: 'GET_BySubAccountID', subAccountID: subAccountID };
   const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
   const result = await sequelize.query(query, options)
   return result as unknown as PaymentInfoModel;

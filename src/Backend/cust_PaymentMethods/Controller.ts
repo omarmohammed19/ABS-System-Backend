@@ -14,6 +14,8 @@ const getById = (ID: number, t: Transaction, language?: string) => {
   });
 };
 
+
+
 export class PaymentMethodsController {
   async index(language: string, isActive: number): Promise<PaymentMethodsModel[]> {
     try {
