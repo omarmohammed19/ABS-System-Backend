@@ -20,7 +20,6 @@ async function getAllPaymentMethods(req: Request, res: Response) {
 async function addPaymentMethod(req: Request, res: Response) {
     try {
         const paymentMethod = await pm.addPaymentMethod(req.body);
-        console.log(paymentMethod);
         res.status(200).json(paymentMethod);
     } catch (error) {
         res.status(400).json("Could not add paymentMethods");

@@ -8,7 +8,6 @@ dotenv.config();
 export class subAccountController {
   async getSubAccountByID(id: number): Promise<subAccount> {
     try {
-      console.log('id', id);
       //@ts-ignore
       const pool = await new sql.ConnectionPool(sqlConfig).connect();
       const result = await pool.request().input('ID', sql.BigInt, id).execute('[dbo].[p_GetsubAccountByID]');

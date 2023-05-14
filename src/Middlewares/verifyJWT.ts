@@ -24,6 +24,8 @@ const verifyJWT = (req: Request, res: Response, next: NextFunction) => {
             req.subAccountID = decoded.UserInfo.subAccountID;
             //@ts-ignore
             req.mainAccountID = decoded.UserInfo.mainAccountID;
+            //@ts-ignore
+            req.roleTypeID = decoded.UserInfo.roleTypeID;
             next();
         }
     );
