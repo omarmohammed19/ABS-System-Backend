@@ -57,16 +57,16 @@ const handleLogin = async (req: Request, res: Response) => {
   }
 }
 
-
 const handleSignin = async (req: Request, res: Response) => {
   try {
     const result: any = await usersController.handlesignin(req.body.userCred, req.body.password);
     const user = result[0] as UsersModel;
-    if (!result) {
-      return res.sendStatus(401); //Unauthorized 
+    
+    if (result.length === 0) {
+      return res.json("User not found");
     }
     if (user.isActive === false) {
-      return res.sendStatus(404).json("User not found");
+      return res.json("User is disabled");
     }
     try {
 
