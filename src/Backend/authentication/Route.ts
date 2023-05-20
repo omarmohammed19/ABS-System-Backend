@@ -60,7 +60,7 @@ const handleLogin = async (req: Request, res: Response) => {
 const handleSignin = async (req: Request, res: Response) => {
   try {
     const result: any = await usersController.handlesignin(req.body.userCred, req.body.password);
-    const user = result[0] as UsersModel;
+    const user = result[0] as UsersModel;    
 
     if (result.length === 0) {
       return res.json("User not found");

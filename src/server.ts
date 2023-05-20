@@ -86,6 +86,7 @@ import RegisterRouter from './ClientServices/Register/Route';
 import mail_route from './ClientServices/Mail Sender/Route';
 import imageRouter from './Backend/Upload_Files/Routes';
 import AddMembersRouter from './ClientServices/Settings/AddMembers/Route';
+import ResetPasswordRouter from './ClientServices/Reset Password/Route';
 
 const corsOptions = {
   origin: '*',
@@ -106,6 +107,7 @@ app.use(bodyParser.json());
 AuthenticationRouter(app);
 RegisterRouter(app);
 mail_route(app);
+ResetPasswordRouter(app);
 
 //with authorization
 app.use(verifyJWT);
