@@ -9,6 +9,8 @@ const sendMail = async (req: Request, res: Response) => {
         res.sendStatus(200);
     }
     catch (error) {
+        console.log(error);
+        
         res.status(400).send(error);
     }
 }
