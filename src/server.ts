@@ -87,6 +87,7 @@ import mail_route from './ClientServices/Mail Sender/Route';
 import imageRouter from './Backend/Upload_Files/Routes';
 import downloadTemplateRouter from './ClientServices/Download Template/Route';
 import AddMembersRouter from './ClientServices/Settings/AddMembers/Route';
+import ResetPasswordRouter from './ClientServices/Reset Password/Route';
 
 const corsOptions = {
   origin: '*',
@@ -109,6 +110,7 @@ app.use(express.static('public'));
 AuthenticationRouter(app);
 RegisterRouter(app);
 mail_route(app);
+ResetPasswordRouter(app);
 downloadTemplateRouter(app);
 
 //with authorization

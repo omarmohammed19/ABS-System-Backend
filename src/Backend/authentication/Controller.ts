@@ -19,7 +19,7 @@ export class UsersController {
         const query = 'EXEC [dbo].[p_GET_sys_UsersByCredentials] @userCred = :userCred';
         const replacements = { userCred: userCred };
         const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
-        const result = sequelize.query(query, options)
+        const result = sequelize.query(query, options);
         return result as unknown as UsersModel;
       });
     }
