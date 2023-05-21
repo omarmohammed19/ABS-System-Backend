@@ -70,21 +70,20 @@ export class UsersController {
                 return { error: 'Invalid password' };
             }
 
-            const usernameExists = await Users.findOne({ where: { username: user.username, isActive: 1 } });
+            const usernameExists = await Users.findOne({ where: { username: user.username } });
             if (usernameExists) {
                 return { error: 'Username already exists' };
             }
 
-            const emailExists = await Emails.findOne({ where: { email: email.email, emailTypeID: 4, isActive: 1 } });
+            const emailExists = await Emails.findOne({ where: { email: email.email, emailTypeID: 4 } });
             if (emailExists) {
                 return { error: 'Email already exists' };
             }
 
-            const contactNumberExists = await ContactNumbers.findOne({ where: { contactNumber: contactNumber.contactNumber, contactTypeID: 4, isActive: 1 } });
+            const contactNumberExists = await ContactNumbers.findOne({ where: { contactNumber: contactNumber.contactNumber, contactTypeID: 4 } });
             if (contactNumberExists) {
                 return { error: 'Phone number already exists' };
             }
-
 
             const accountNumber = await generateAccountNumber();
             await sequelize.transaction(async (t) => {
@@ -92,6 +91,7 @@ export class UsersController {
                     {
                         firstName: custInfo.firstName,
                         lastName: custInfo.lastName,
+                        isActive: false
                     },
                     { transaction: t, returning: ['ID', 'firstName', 'lastName'] } // pass transaction object and specify returning column(s)
                 );

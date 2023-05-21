@@ -57,16 +57,16 @@ const handleLogin = async (req: Request, res: Response) => {
   }
 }
 
-
 const handleSignin = async (req: Request, res: Response) => {
   try {
     const result: any = await usersController.handlesignin(req.body.userCred, req.body.password);
     const user = result[0] as UsersModel;
-    if (!result) {
-      return res.sendStatus(401); //Unauthorized 
+
+    if (result.length === 0) {
+      return res.json("User not found");
     }
     if (user.isActive === false) {
-      return res.sendStatus(404).json("User not found");
+      return res.status(201).json(user)
     }
     try {
 
@@ -78,6 +78,8 @@ const handleSignin = async (req: Request, res: Response) => {
         const subAccountID = user.subAccountID;
         //@ts-ignore
         const mainAccountID = user.mainAccountID;
+        //@ts-ignore
+        const roleTypeID = user.roleTypeID;
         const message = "success";
         // create JWTs
         const accessToken = jwt.sign(
@@ -87,7 +89,8 @@ const handleSignin = async (req: Request, res: Response) => {
               "name": name,
               "role": role,
               "subAccountID": subAccountID,
-              "mainAccountID": mainAccountID
+              "mainAccountID": mainAccountID,
+              "roleTypeID": roleTypeID
             }
           },
           //@ts-ignore

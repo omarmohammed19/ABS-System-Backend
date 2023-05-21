@@ -79,7 +79,6 @@ export class TicketsController {
       const query =
         'EXEC [dbo].[p_GET_cs_Tickets] @language = :language, @Method = :Method, @isActive= :isActive, @subAccountID= :subAccountID, @limit= :limit';
       const replacements = { limit: limit, language: language, Method: 'GET_BySubAccountID', isActive: isActive, subAccountID: subAccountID };
-      console.log(replacements);
       const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
       const result = await sequelize.query(query, options);
       return result as unknown as TicketsModel[];
