@@ -88,6 +88,7 @@ import imageRouter from './Backend/Upload_Files/Routes';
 import downloadTemplateRouter from './ClientServices/Download Template/Route';
 import AddMembersRouter from './ClientServices/Settings/AddMembers/Route';
 import ResetPasswordRouter from './ClientServices/Reset Password/Route';
+import AddPaymentMethodsRouter from './ClientServices/Settings/PaymentMethods/Route';
 
 const corsOptions = {
   origin: '*',
@@ -195,6 +196,7 @@ TeamMembersRouter(app);
 ClientTypesRouter(app);
 servicesRouter(app);
 AddMembersRouter(app);
+AddPaymentMethodsRouter(app);
 app.use('/images', imageRouter);
 
 app.listen(process.env.PORT, () => {
