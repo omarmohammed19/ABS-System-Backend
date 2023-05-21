@@ -85,6 +85,7 @@ import ClientTypesRouter from './Backend/cust_ClientTypes/Route';
 import RegisterRouter from './ClientServices/Register/Route';
 import mail_route from './ClientServices/Mail Sender/Route';
 import imageRouter from './Backend/Upload_Files/Routes';
+import downloadTemplateRouter from './ClientServices/Download Template/Route';
 import AddMembersRouter from './ClientServices/Settings/AddMembers/Route';
 
 const corsOptions = {
@@ -102,10 +103,13 @@ app.use(cors(corsOptions));
 
 app.use(bodyParser.json());
 
+app.use(express.static('public'));
+
 //without authorization
 AuthenticationRouter(app);
 RegisterRouter(app);
 mail_route(app);
+downloadTemplateRouter(app);
 
 //with authorization
 app.use(verifyJWT);
