@@ -114,6 +114,7 @@ RegisterRouter(app);
 mail_route(app);
 ResetPasswordRouter(app);
 downloadTemplateRouter(app);
+app.use('/images', imageRouter);
 
 //with authorization
 app.use(verifyJWT);
@@ -199,7 +200,7 @@ servicesRouter(app);
 AddMembersRouter(app);
 UserRolesRouter(app);
 AddPaymentMethodsRouter(app);
-app.use('/images', imageRouter);
+
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port http://${address}:${process.env.PORT}`);
