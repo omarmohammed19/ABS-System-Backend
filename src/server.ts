@@ -85,8 +85,11 @@ import ClientTypesRouter from './Backend/cust_ClientTypes/Route';
 import RegisterRouter from './ClientServices/Register/Route';
 import mail_route from './ClientServices/Mail Sender/Route';
 import imageRouter from './Backend/Upload_Files/Routes';
+import downloadTemplateRouter from './ClientServices/Download Template/Route';
 import AddMembersRouter from './ClientServices/Settings/AddMembers/Route';
 import UserRolesRouter from './Backend/sys_UserRoles/Routes';
+import ResetPasswordRouter from './ClientServices/Reset Password/Route';
+import AddPaymentMethodsRouter from './ClientServices/Settings/PaymentMethods/Route';
 
 const corsOptions = {
   origin: '*',
@@ -103,10 +106,14 @@ app.use(cors(corsOptions));
 
 app.use(bodyParser.json());
 
+app.use(express.static('public'));
+
 //without authorization
 AuthenticationRouter(app);
 RegisterRouter(app);
 mail_route(app);
+ResetPasswordRouter(app);
+downloadTemplateRouter(app);
 
 //with authorization
 app.use(verifyJWT);
@@ -191,6 +198,7 @@ ClientTypesRouter(app);
 servicesRouter(app);
 AddMembersRouter(app);
 UserRolesRouter(app);
+AddPaymentMethodsRouter(app);
 app.use('/images', imageRouter);
 
 app.listen(process.env.PORT, () => {

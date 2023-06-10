@@ -1,7 +1,8 @@
+import { rgb } from 'pdf-lib';
 import { sequelize } from '../../Config/database';
 import { PackageTypes } from '../../Backend/ship_PackageTypes/Model';
 import { Products } from '../../Backend/ship_Products/Model';
-import { Cities } from '../../Backend/cmp_Cities/Model';
+import { Cities, CitiesModel } from '../../Backend/cmp_Cities/Model';
 import { Services } from '../../Backend/cmp_Services/Model';
 import { TransactionHdrModel, TransactionHdr } from '../../Backend/ship_TransactionHdr/Model';
 import { PickupsModel, Pickups } from '../../Backend/ship_Pickups/Model';
@@ -106,7 +107,17 @@ const getBranchIDByPickupLocationID = async (PickupLocationID: number): Promise<
   const replacements = { PickupLocationID: PickupLocationID };
   const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
   const result = await sequelize.query(query, options);
-  return result as unknown as any;
+  const branchID = result[0] as unknown as any;
+  return branchID.branchID;
+};
+
+const getBranchIDByReturnLocationID = async (ReturnLocationID: number): Promise<any> => {
+  const query = 'EXEC [dbo].[p_GET_BranchID_By_ReturnLocationID] @ReturnLocationID = :ReturnLocationID';
+  const replacements = { ReturnLocationID: ReturnLocationID };
+  const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
+  const result = await sequelize.query(query, options);
+  const branchID = result[0] as unknown as any;
+  return branchID.branchID;
 };
 
 async function insertDataIntoDatabase(
@@ -121,14 +132,16 @@ async function insertDataIntoDatabase(
   // Use a Sequelize transaction to insert the data into the database
   let newPickup: any;
   let location: any;
+  let ToBranchID: any;
+  let DeliveryBranchID: any;
 
   if (data[0].Service !== 'Return') {
     location = pickup.pickupLocationID;
+    ToBranchID = await getBranchIDByPickupLocationID(pickup.pickupLocationID);
   } else {
     location = pickup.returnLocationID;
+    DeliveryBranchID = await getBranchIDByReturnLocationID(pickup.returnLocationID);
   }
-
-  const ToBranchID = await getBranchIDByPickupLocationID(pickup.pickupLocationID);
 
   await sequelize.transaction(async (t) => {
     const newTransactionHdr = await TransactionHdr.create(
@@ -176,6 +189,11 @@ async function insertDataIntoDatabase(
 
     const transactionData = await Promise.all(
       data.map(async (row: any) => {
+        if (data[0].Service !== 'Return') {
+          DeliveryBranchID = await getBranchIDByCityName(row.City);
+        } else {
+          ToBranchID = await getBranchIDByCityName(row.City);
+        }
         return {
           transHdrID: newTransactionHdr.ID,
           AWB: await generateAWB(transactions.subAccountID),
@@ -188,8 +206,8 @@ async function insertDataIntoDatabase(
           lastChangeDate: transactions.lastChangeDate,
           userID: transactions.userID,
           expiryDate: transactions.expiryDate,
-          deliveryBranchID: await getBranchIDByCityName(row.City),
-          toBranchID: ToBranchID[0].branchID,
+          deliveryBranchID: DeliveryBranchID,
+          toBranchID: ToBranchID,
           shipmentTypeID: 1,
           Ref: row.Ref,
           specialInstructions: row.specialInstructions,
@@ -215,7 +233,7 @@ async function insertDataIntoDatabase(
           statusID: 1,
           auditDate: transactionHistory.auditDate,
           userID: transactionHistory.userID,
-          toBranchID: ToBranchID[0].branchID,
+          toBranchID: ToBranchID,
         };
       })
     );
