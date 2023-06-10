@@ -22,7 +22,7 @@ export class UsersController {
         const result = await sequelize.query(query, options);
 
         const roles = await UserRoles.findOne({
-          attributes: ['ID', 'userID', 'roleID'],
+          attributes: ['ID', 'userID', 'roleID', 'isActive'],
           where: {
             //@ts-ignore
             userID: result[0].ID,
