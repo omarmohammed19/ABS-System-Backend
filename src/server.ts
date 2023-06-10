@@ -86,6 +86,7 @@ import RegisterRouter from './ClientServices/Register/Route';
 import mail_route from './ClientServices/Mail Sender/Route';
 import imageRouter from './Backend/Upload_Files/Routes';
 import AddMembersRouter from './ClientServices/Settings/AddMembers/Route';
+import UserRolesRouter from './Backend/sys_UserRoles/Routes';
 
 const corsOptions = {
   origin: '*',
@@ -189,6 +190,7 @@ TeamMembersRouter(app);
 ClientTypesRouter(app);
 servicesRouter(app);
 AddMembersRouter(app);
+UserRolesRouter(app);
 app.use('/images', imageRouter);
 
 app.listen(process.env.PORT, () => {

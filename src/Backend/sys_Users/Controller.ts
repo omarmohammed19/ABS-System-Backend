@@ -10,7 +10,6 @@ dotenv.config();
 const { SALT_ROUNDS, pepper } = process.env;
 
 const getById = async (t: Transaction, ID: Number, language?: string): Promise<UsersModel> => {
-
   const query = 'EXEC [dbo].[p_GET_sys_Users] @language = :language, @Method = :Method, @ID = :ID';
   const replacements = { language: language, Method: 'GET_ByID', ID: ID };
   const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
@@ -80,14 +79,17 @@ export class UsersController {
       }
       //@ts-ignore
       const hashedPassword = bcrypt.hashSync(user.password + pepper, parseInt(SALT_ROUNDS));
-      const result = await Users.create({
-        username: user.username,
-        password: hashedPassword,
-        subAccountID: user.subAccountID,
-        displayedName: user.displayedName,
-        roleID: user.roleID,
-        avatar: user.avatar,
-      });
+      const result = await Users.create(
+        {
+          username: user.username,
+          password: hashedPassword,
+          subAccountID: user.subAccountID,
+          displayedName: user.displayedName,
+          roleID: user.roleID,
+          avatar: user.avatar,
+        },
+        { returning: ['ID'] }
+      );
       return result ? result.toJSON() : 'Could not add new Users';
     } catch (err) {
       throw new Error(`Could not add new User. Error: ${err}`);
