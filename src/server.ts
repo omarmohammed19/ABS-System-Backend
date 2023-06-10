@@ -87,6 +87,7 @@ import mail_route from './ClientServices/Mail Sender/Route';
 import imageRouter from './Backend/Upload_Files/Routes';
 import downloadTemplateRouter from './ClientServices/Download Template/Route';
 import AddMembersRouter from './ClientServices/Settings/AddMembers/Route';
+import UserRolesRouter from './Backend/sys_UserRoles/Routes';
 import ResetPasswordRouter from './ClientServices/Reset Password/Route';
 import AddPaymentMethodsRouter from './ClientServices/Settings/PaymentMethods/Route';
 
@@ -196,6 +197,7 @@ TeamMembersRouter(app);
 ClientTypesRouter(app);
 servicesRouter(app);
 AddMembersRouter(app);
+UserRolesRouter(app);
 AddPaymentMethodsRouter(app);
 app.use('/images', imageRouter);
 
