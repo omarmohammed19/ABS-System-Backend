@@ -21,8 +21,10 @@ export class UsersController {
         const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
         const result = await sequelize.query(query, options);
 
-        const roles = await UserRoles.findOne({
-          attributes: ['ID', 'userID', 'roleID', 'isActive'],
+        console.log(result);
+
+        const roles = await UserRoles.findAll({
+          attributes: ['roleID'],
           where: {
             //@ts-ignore
             userID: result[0].ID,
