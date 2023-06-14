@@ -20,7 +20,7 @@ const expiryDate = Sequelize.literal('GETDATE()+3');
 const createSingleShipment = async (req: Request, res: Response) => {
   try {
     //@ts-ignore
-    const subAccountID = req.subAccountID;
+    const subAccountID = req.body.subAccountID;
     //@ts-ignore
     const mainAccountID = req.mainAccountID;
     //@ts-ignore
