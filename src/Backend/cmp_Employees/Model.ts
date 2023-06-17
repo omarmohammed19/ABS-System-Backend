@@ -5,7 +5,7 @@ export interface EmployeesModel extends Model {
     ID: number;
     enEmployeeName: string;
     arEmployeeName: string;
-    code: number;
+    Code: number;
     fingerPrintCode: number;
     HRCode: number;
     titleID: number;
@@ -14,15 +14,15 @@ export interface EmployeesModel extends Model {
     hiringDate: Date;
     IDNO: string;
     contactNumberID: number;
-    emailID: number;
-    addressID: number;
+    Email: string;
+    Address: string;
     salaryID: number;
     dateOfBirth: Date;
     genderID: number;
     isActive: boolean;
 }
 
-export const Employee = sequelize.define<EmployeesModel>(
+export const Employees = sequelize.define<EmployeesModel>(
     'cmp_Employees',
     {
         ID: {
@@ -36,7 +36,7 @@ export const Employee = sequelize.define<EmployeesModel>(
         arEmployeeName: {
             type: DataTypes.STRING,
         },
-        code: {
+        Code: {
             type: DataTypes.INTEGER,
         },
         fingerPrintCode: {
@@ -63,11 +63,11 @@ export const Employee = sequelize.define<EmployeesModel>(
         contactNumberID: {
             type: DataTypes.INTEGER,
         },
-        emailID: {
-            type: DataTypes.INTEGER,
+        Email: {
+            type: DataTypes.STRING,
         },
-        addressID: {
-            type: DataTypes.INTEGER,
+        Address: {
+            type: DataTypes.STRING,
         },
         salaryID: {
             type: DataTypes.INTEGER,

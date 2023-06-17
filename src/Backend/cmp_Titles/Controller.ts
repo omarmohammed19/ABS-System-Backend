@@ -5,7 +5,7 @@ import { Transaction } from 'sequelize';
 
 const getById = (ID: number, t: Transaction, language?: string) => {
   return Titles.findOne({
-    attributes: language === 'en' ? [['ID', 'Title ID'], ['enTitleName', 'Title']] : [['ID', 'رقم اللقب'], ['arTitleName', 'اسم اللقب']],
+    attributes: language === 'en' ? [['ID', 'Title ID'], ['enTitleName', 'Title']] : [['ID', 'رقم اللقب'], ['arTitleName', ' اللقب']],
     where: {
       ID: ID,
       isActive: true,

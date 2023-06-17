@@ -1,7 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../../Config/database';
 
-export interface RoleTypeModel extends Model {
+export interface RoleTypesModel extends Model {
     ID: number;
     enRoleType: string;
     arRoleType: string;
@@ -9,8 +9,8 @@ export interface RoleTypeModel extends Model {
     isActive: boolean;
 }
 
-export const RoleType = sequelize.define<RoleTypeModel>(
-    'sys_RoleType',
+export const RoleTypes = sequelize.define<RoleTypesModel>(
+    'sys_RoleTypes',
     {
         ID: {
             type: DataTypes.INTEGER,
