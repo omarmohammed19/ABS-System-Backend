@@ -16,9 +16,17 @@ const getById = async (t: Transaction, ID: Number, language?: string): Promise<U
   const result = await sequelize.query(query, options);
   return result as unknown as UsersModel;
 };
-const GetPersonalInfoById = async (t: Transaction, ID: Number): Promise<UsersModel> => {
+const GetClientPersonalInfoById = async (t: Transaction, ID: Number): Promise<UsersModel> => {
   const query = 'EXEC [dbo].[p_GET_sys_Users] @Method = :Method, @ID = :ID';
-  const replacements = { Method: 'GET_Personal_Info', ID: ID };
+  const replacements = { Method: 'GET_Client_Personal_Info', ID: ID };
+  const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
+  const result = await sequelize.query(query, options);
+  return result as unknown as UsersModel;
+};
+
+const GetEmployeePersonalInfoById = async (t: Transaction, ID: Number): Promise<UsersModel> => {
+  const query = 'EXEC [dbo].[p_GET_sys_Users] @Method = :Method, @ID = :ID';
+  const replacements = { Method: 'GET_Employee_Personal_Info', ID: ID };
   const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
   const result = await sequelize.query(query, options);
   return result as unknown as UsersModel;
@@ -60,10 +68,21 @@ export class UsersController {
     }
   }
 
-  async getPersonalInfoById(ID: number): Promise<UsersModel | null> {
+  async getClientPersonalInfoById(ID: number): Promise<UsersModel | null> {
     try {
       return await sequelize.transaction(async (t) => {
-        const result = await GetPersonalInfoById(t, ID);
+        const result = await GetClientPersonalInfoById(t, ID);
+        return result;
+      });
+    } catch (err) {
+      throw new Error(`Could not get User by ID. Error: ${err}`);
+    }
+  }
+
+  async getEmployeePersonalInfoById(ID: number): Promise<UsersModel | null> {
+    try {
+      return await sequelize.transaction(async (t) => {
+        const result = await GetEmployeePersonalInfoById(t, ID);
         return result;
       });
     } catch (err) {
