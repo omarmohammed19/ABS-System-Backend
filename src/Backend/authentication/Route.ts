@@ -130,8 +130,6 @@ const handlesignin_employee = async (req: Request, res: Response) => {
     try {
       const match = await bcrypt.compareSync(req.body.password + process.env.pepper, user.password);
       if (match) {
-        console.log(userRoles);
-
         const id = user.ID;
         const name = user.displayedName;
         const role = userRoles;

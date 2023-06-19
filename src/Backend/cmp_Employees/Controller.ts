@@ -11,6 +11,14 @@ const getById = (ID: number, t: Transaction, language?: string) => {
     return result as unknown as EmployeesModel;
 }
 
+const getByDepartmentID = (departmentID: number, t: Transaction, language?: string) => {
+    const query = 'EXEC [dbo].[p_GET_cmp_Employees] @language = :language, @Method = :Method, @departmentID = :departmentID';
+    const replacements = { language: language, Method: 'GET_ByDepartmentID', departmentID: departmentID };
+    const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
+    const result = sequelize.query(query, options);
+    return result as unknown as EmployeesModel[];
+}
+
 export class EmployeesController {
 
     async index(language: string, isActive: number): Promise<EmployeesModel[]> {
@@ -21,7 +29,7 @@ export class EmployeesController {
             const result = await sequelize.query(query, options);
             return result as unknown as EmployeesModel[];
         }
-    }
+    }    
 
     async create(employee: EmployeesModel): Promise<EmployeesModel | string> {
         try {
@@ -65,6 +73,18 @@ export class EmployeesController {
         }
         catch (err) {
             throw new Error(`Could not get UserSession by ID. Error: ${err}`);
+        }
+    }
+
+    async getByDepartmentID(departmentID: number, language: string): Promise<EmployeesModel[]> {
+        try {
+            return await sequelize.transaction(async (t) => {
+                const result = getByDepartmentID(departmentID, t, language);
+                return result;
+            });
+        }
+        catch (err) {
+            throw new Error(`Could not get Employees by ID. Error: ${err}`);
         }
     }
 
