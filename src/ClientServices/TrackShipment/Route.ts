@@ -19,6 +19,20 @@ const getStatusByAWB = async (req: Request, res: Response) => {
   }
 };
 
+const getAllStatusesByAWB = async (req: Request, res: Response) => {
+  try {
+    //@ts-ignore
+    const subAccountID = req.subAccountID;
+    const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
+    const AWB = req.params.AWB;
+    const result = await trackShipmentController.getAllStatusesByAWB(language, subAccountID, AWB);
+    res.json(result);
+  } catch (error) {
+    res.status(400);
+    res.json(error);
+  }
+};
+
 const checkAWBExistence = async (req: Request, res: Response) => {
   try {
     //@ts-ignore
@@ -35,5 +49,6 @@ const checkAWBExistence = async (req: Request, res: Response) => {
 const trackShipmentRouter = (app: express.Application) => {
   app.get('/track-shipment/:AWB', getStatusByAWB);
   app.get('/check-awb/:AWB', checkAWBExistence);
+  app.get('/track-shipment/all/:AWB', getAllStatusesByAWB);
 };
 export default trackShipmentRouter;

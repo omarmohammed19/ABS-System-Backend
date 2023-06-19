@@ -8,7 +8,19 @@ export class TrackShipmentController {
   async getStatusByAWB(language: string, subAccountID: string, AWB: string): Promise<TrackShipmentModel[]> {
     try {
       const query = 'EXEC [dbo].[p_TrackShipment] @language = :language, @Method = :Method, @subAccountID = :subAccountID, @AWB= :AWB';
-      const replacements = { language: language, Method: 'GET_ByAWB', subAccountID: subAccountID, AWB: AWB };
+      const replacements = { language: language, Method: 'GET_LastStatusByAWB', subAccountID: subAccountID, AWB: AWB };
+      const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
+      const result = await sequelize.query(query, options);
+      return result as unknown as TrackShipmentModel[];
+    } catch (err) {
+      throw new Error(`Could not get Status History by AWB. Error: ${err}`);
+    }
+  }
+
+  async getAllStatusesByAWB(language: string, subAccountID: string, AWB: string): Promise<TrackShipmentModel[]> {
+    try {
+      const query = 'EXEC [dbo].[p_TrackShipment] @language = :language, @Method = :Method, @subAccountID = :subAccountID, @AWB= :AWB';
+      const replacements = { language: language, Method: 'GET_AllStatusesByAWB', subAccountID: subAccountID, AWB: AWB };
       const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
       const result = await sequelize.query(query, options);
       return result as unknown as TrackShipmentModel[];
