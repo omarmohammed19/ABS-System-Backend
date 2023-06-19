@@ -40,12 +40,26 @@ const getById = async (req: Request, res: Response) => {
   }
 };
 
-const GetPersonalInfoById = async (req: Request, res: Response) => {
+const GetClientPersonalInfoById = async (req: Request, res: Response) => {
   try {
     //@ts-ignore
     const userID = req.userID;
     
-    const result = await usersController.getPersonalInfoById(Number(userID));
+    const result = await usersController.getClientPersonalInfoById(Number(userID));
+    res.json(result);
+  } catch (error) {
+    
+    res.status(400);
+    res.json(error);
+  }
+};
+
+const GetEmployeePersonalInfoById = async (req: Request, res: Response) => {
+  try {
+    //@ts-ignore
+    const userID = req.userID;
+    
+    const result = await usersController.getEmployeePersonalInfoById(Number(userID));
     res.json(result);
   } catch (error) {
     
@@ -134,7 +148,8 @@ const activate = async (req: Request, res: Response) => {
 const usersRouter = (app: express.Application) => {
   app.get('/cust-users/:isActive/:limit', getAllClients);
   app.get('/emp-users/:isActive/:limit', getAllEmployees);
-  app.get('/users-with-info', GetPersonalInfoById);
+  app.get('/users-with-info-client', GetClientPersonalInfoById);
+  app.get('/users-with-info-employee', GetEmployeePersonalInfoById);
   app.get('/users', getById);
   app.post('/users', create);
   app.put('/users', update);
