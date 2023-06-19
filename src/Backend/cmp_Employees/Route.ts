@@ -16,8 +16,6 @@ const getAll = async (req: Request, res: Response) => {
     }
 };
 
-
-
 const getById = async (req: Request, res: Response) => {
     try {
         const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
@@ -29,6 +27,24 @@ const getById = async (req: Request, res: Response) => {
         res.json(error);
     }
 };
+
+const getByDepartmentID = async (req: Request, res: Response) => {
+    try {
+        const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
+        //@ts-ignore
+        const departmentID = req.departmentID
+        console.log(departmentID);
+        
+        const result = await employeesController.getByDepartmentID(departmentID, language);
+        res.json(result);
+    }
+    catch (error) {
+        console.log(error);
+        res.status(400);
+        res.json(error);
+    }
+};
+
 
 
 const getEmployeeByHRCode = async (req: Request, res: Response) => {
@@ -142,6 +158,7 @@ const activate = async (req: Request, res: Response) => {
 const employeesRouter = (app: express.Application) => {
     app.get('/employees/:isActive', getAll);
     app.get('/employees-by-id/:ID', getById);
+    app.get('/employees-by-department-id', getByDepartmentID);
     app.get('/employees-by-hr-code/:HRCode', getEmployeeByHRCode);
     app.get('/employees-by-finger-print/:fingerPrintCode', getEmployeeByFingerPrint);
     app.post('/employees', create);
