@@ -93,6 +93,7 @@ import AddMembersRouter from './ClientServices/Settings/AddMembers/Route';
 import UserRolesRouter from './Backend/sys_UserRoles/Routes';
 import ResetPasswordRouter from './ClientServices/Reset Password/Route';
 import AddPaymentMethodsRouter from './ClientServices/Settings/PaymentMethods/Route';
+import custStatusRouter from './Backend/cust_DisplayedStatus/Route';
 
 const corsOptions = {
   origin: '*',
@@ -206,6 +207,7 @@ servicesRouter(app);
 AddMembersRouter(app);
 UserRolesRouter(app);
 AddPaymentMethodsRouter(app);
+custStatusRouter(app);
 
 
 app.listen(process.env.PORT, () => {
