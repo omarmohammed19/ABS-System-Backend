@@ -44,11 +44,10 @@ const GetClientPersonalInfoById = async (req: Request, res: Response) => {
   try {
     //@ts-ignore
     const userID = req.userID;
-    
+
     const result = await usersController.getClientPersonalInfoById(Number(userID));
     res.json(result);
   } catch (error) {
-    
     res.status(400);
     res.json(error);
   }
@@ -58,11 +57,10 @@ const GetEmployeePersonalInfoById = async (req: Request, res: Response) => {
   try {
     //@ts-ignore
     const userID = req.userID;
-    
+
     const result = await usersController.getEmployeePersonalInfoById(Number(userID));
     res.json(result);
   } catch (error) {
-    
     res.status(400);
     res.json(error);
   }
@@ -120,6 +118,34 @@ const changePassword = async (req: Request, res: Response) => {
     const result = await usersController.changePassword(user, oldPassword);
     res.json(result);
   } catch (error) {
+    console.log(error);
+
+    res.status(400);
+    res.json(error);
+  }
+};
+
+const getEmployeeUsernames = async (req: Request, res: Response) => {
+  try {
+    const result = await usersController.getEmployeeUsernames();
+    res.json(result);
+  } catch (error) {
+    res.status(400);
+    res.json(error);
+  }
+};
+
+const adminChangePassword = async (req: Request, res: Response) => {
+  try {
+    const user = <UsersModel>{
+      ID: Number(req.params.ID),
+      password: req.body.password,
+    };
+    const result = await usersController.adminChangePassword(user);
+    res.json(result);
+  } catch (error) {
+    console.log(error);
+
     res.status(400);
     res.json(error);
   }
@@ -156,6 +182,8 @@ const usersRouter = (app: express.Application) => {
   app.put('/change/password', changePassword);
   app.put('/users/de-activate/:ID', deactivate);
   app.put('/users/activate/:ID', activate);
+  app.get('/users/employee-usernames', getEmployeeUsernames);
+  app.put('/users/admin-change-password/:ID', adminChangePassword);
 };
 
 export default usersRouter;
