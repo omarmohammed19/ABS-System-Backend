@@ -18,7 +18,7 @@ const getAll = async (req: Request, res: Response) => {
 const getById = async (req: Request, res: Response) => {
   try {
     const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-    const result = await recipientTypesController.getRecipientTypeById(language, Number(req.params.ID));
+    const result = await recipientTypesController.getRecipientTypeByID(Number(req.params.ID), language);
     res.json(result);
   } catch (error) {
     res.status(400);
@@ -43,13 +43,14 @@ const create = async (req: Request, res: Response) => {
 
 const update = async (req: Request, res: Response) => {
   try {
+    const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
     const recipientType = <RecipientTypesModel>{
       ID: Number(req.params.ID),
       enRecipientType: req.body.enRecipientType,
       arRecipientType: req.body.arRecipientType,
       Notes: req.body.Notes,
     };
-    const result = await recipientTypesController.update(recipientType);
+    const result = await recipientTypesController.update(language, recipientType);
     res.json(result);
   } catch (error) {
     res.status(400);

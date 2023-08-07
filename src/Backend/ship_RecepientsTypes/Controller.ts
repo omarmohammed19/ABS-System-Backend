@@ -1,95 +1,84 @@
 import { RecipientTypesModel, RecipientTypes } from './Model';
 import { De_Activate } from '../../Services/De_Activate';
 import { sequelize } from '../../Config/database';
-import { Transaction } from 'sequelize';
+import Sequelize, { Transaction } from 'sequelize';
 
-const getById = (ID: number, t: Transaction, language?: string) => {
-  const attributes = language === 'en' ? ['ID', 'enRecipientType', 'Notes'] : ['ID', 'arRecipientType', 'Notes'];
-  return RecipientTypes.findOne({
-    attributes: attributes,
-    where: {
-      ID: ID,
-      isActive: true,
-    },
-    transaction: t, // pass transaction object to query
-  });
+
+const getByID = async (ID: number, language: string, t: Transaction) => {
+  const query = 'EXEC [dbo].[p_GET_ship_RecipientTypes] @language = :language , @Method = :Method, @ID = :ID';
+  const replacements = { language: language, Method: 'GET_ByID', ID: ID };
+  const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
+  const result = await sequelize.query(query, options);
+  return result as unknown as RecipientTypesModel;
 };
 
 export class RecipientTypesController {
   async index(language: string): Promise<RecipientTypesModel[]> {
     try {
-      return await sequelize.transaction(async (t) => {
-        // start managed transaction and pass transaction object to the callback function
-        const attributes = language === 'en' ? ['ID', 'enRecipientType', 'Notes'] : ['ID', 'arRecipientType', 'Notes'];
-        const result = await RecipientTypes.findAll({
-          attributes: attributes,
-          where: {
-            isActive: true,
-          },
-          transaction: t, // pass transaction object to query
-        });
-
-        return result.map((item: any) => item.toJSON()) as RecipientTypesModel[]; // return the result of the query (if successful) to be committed automatically
-      });
+      const query = 'EXEC [dbo].[p_GET_ship_RecipientTypes] @language = :language , @Method = :Method';
+      const replacements = { language: language, Method: 'GET' };
+      const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
+      const result = await sequelize.query(query, options);
+      return result as unknown as RecipientTypesModel[];
     } catch (err) {
-      throw new Error(`Could not get all RecipientTypes. Error: ${err}`);
+      throw new Error(`Could not get all Recipient types. Error: ${err}`);
     }
   }
 
-  async create(recipientTypes: RecipientTypesModel): Promise<RecipientTypesModel | string> {
+  async create(recipientType: RecipientTypesModel): Promise<RecipientTypesModel | string> {
     try {
       return await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
         const result = await RecipientTypes.create(
           {
-            enRecipientType: recipientTypes.enRecipientType,
-            arRecipientType: recipientTypes.arRecipientType,
-            Notes: recipientTypes.Notes,
+            enRecipientType: recipientType.enRecipientType,
+            arRecipientType: recipientType.arRecipientType,
+            Notes: recipientType.Notes,
           },
           { transaction: t } // pass transaction object to query
         );
-        return result ? result.toJSON() : 'Could not add new RecipientTypes';
+        return result ? result.toJSON() : 'Could not add new Recipient type';
       });
     } catch (err) {
-      throw new Error(`Could not add new RecipientType. Error: ${err}`);
+      throw new Error(`Could not add new Recipient type. Error: ${err}`);
     }
   }
 
-  async getRecipientTypeById(language: string, ID: number): Promise<RecipientTypesModel | string> {
+  async getRecipientTypeByID(ID: number, language: string): Promise<RecipientTypesModel | string> {
     try {
       const result = await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
-        const item = await getById(ID, t, language); // pass transaction object to getById function
-        return item ? item.toJSON() : 'Could not get RecipientTypes by ID';
+        const item = await getByID(ID, language, t); // pass transaction object to getById function
+        return item;
       });
       return result;
     } catch (err) {
-      throw new Error(`Could not get RecipientType by ID. Error: ${err}`);
+      throw new Error(`Could not get Recipient type by ID. Error: ${err}`);
     }
   }
 
-  async update(recipientTypes: RecipientTypesModel): Promise<RecipientTypesModel | string> {
+  async update(language: string, recipientType: RecipientTypesModel): Promise<RecipientTypesModel | string> {
     try {
       return await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
         await RecipientTypes.update(
           {
-            enRecipientType: recipientTypes.enRecipientType,
-            arRecipientType: recipientTypes.arRecipientType,
-            Notes: recipientTypes.Notes,
+            enRecipientType: recipientType.enRecipientType,
+            arRecipientType: recipientType.arRecipientType,
+            Notes: recipientType.Notes,
           },
           {
             where: {
-              ID: recipientTypes.ID,
+              ID: recipientType.ID,
             },
             transaction: t, // pass transaction object to query
           }
         );
-        const result = await getById(Number(recipientTypes.ID), t);
-        return result ? result.toJSON() : 'Could not update RecipientTypes';
+        const result = await getByID(recipientType.ID, language, t);
+        return result;
       });
     } catch (err) {
-      throw new Error(`Could not update RecipientType. Error: ${err}`);
+      throw new Error(`Could not update Recipient type. Error: ${err}`);
     }
   }
 
@@ -98,7 +87,7 @@ export class RecipientTypesController {
       const result = await De_Activate<RecipientTypesModel>(RecipientTypes, 'ID', ID, 'deactivate');
       return result;
     } catch (err) {
-      throw new Error(`Could not deactivate RecipientType. Error: ${err}`);
+      throw new Error(`Could not deactivate Recipient type. Error: ${err}`);
     }
   }
 
@@ -107,7 +96,7 @@ export class RecipientTypesController {
       const result = await De_Activate<RecipientTypesModel>(RecipientTypes, 'ID', ID, 'activate');
       return result;
     } catch (err) {
-      throw new Error(`Could not activate RecipientType. Error: ${err}`);
+      throw new Error(`Could not activate Recipient type. Error: ${err}`);
     }
   }
 }
