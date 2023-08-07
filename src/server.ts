@@ -94,6 +94,9 @@ import UserRolesRouter from './Backend/sys_UserRoles/Routes';
 import ResetPasswordRouter from './ClientServices/Reset Password/Route';
 import AddPaymentMethodsRouter from './ClientServices/Settings/PaymentMethods/Route';
 import custStatusRouter from './Backend/cust_DisplayedStatus/Route';
+import callPlansRouter from './Backend/cc_CallPlans/Route';
+import callHistoryRouter from './Backend/cc_CallHistory/Route';
+import callCenterRouter from './EmployeeServices/CallCenter/Route';
 
 const corsOptions = {
   origin: '*',
@@ -208,6 +211,9 @@ AddMembersRouter(app);
 UserRolesRouter(app);
 AddPaymentMethodsRouter(app);
 custStatusRouter(app);
+callPlansRouter(app);
+callHistoryRouter(app);
+callCenterRouter(app);
 
 
 app.listen(process.env.PORT, () => {
