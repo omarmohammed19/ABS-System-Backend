@@ -1,14 +1,14 @@
 import express, { Request, Response } from 'express';
-import { CallPlansController } from './Controller';
-import { CallPlansModel } from './Model';
+import { CallHistoryController } from './Controller';
+import { CallHistoryModel } from './Model';
 
-const callPlansController = new CallPlansController();
+const callHistoryController = new CallHistoryController();
 
 const getAll = async (req: Request, res: Response) => {
     try {
         const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
         const limit = Number(req.params.limit);
-        const result = await callPlansController.index(language, limit);
+        const result = await callHistoryController.index(language, limit);
         res.json(result);
     } catch (error) {
         console.log(error);
@@ -20,7 +20,7 @@ const getAll = async (req: Request, res: Response) => {
 const getById = async (req: Request, res: Response) => {
     try {
         const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-        const result = await callPlansController.getCallPlanByID(Number(req.params.ID), language);
+        const result = await callHistoryController.getByID(Number(req.params.ID), language);
         res.json(result);
     } catch (error) {
         res.status(400);
@@ -28,33 +28,32 @@ const getById = async (req: Request, res: Response) => {
     }
 };
 
-const getByUserID = async (req: Request, res: Response) => {
+const getByAWB = async (req: Request, res: Response) => {
     try {
         const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-        //@ts-ignore
-        const userID = req.userID
-        const result = await callPlansController.getByUserID(userID, language);
+        const result = await callHistoryController.getByAWB(String(req.params.AWB), language);
         res.json(result);
     } catch (error) {
-        res.status(400);
-        res.json(error);
+        console.log(error);
     }
 };
-
 
 const create = async (req: Request, res: Response) => {
     try {
         //@ts-ignore
         const userID = req.userID
-        const callPlan = <CallPlansModel>(<unknown>{
+        const callHistory = <CallHistoryModel>(<unknown>{
             AWB: req.body.AWB,
             callTypeID: req.body.callTypeID,
-            callStatusID: 1,
-            assignedBy: userID,
-            assignedTo: req.body.assignedTo,
+            callStatusID: req.body.callTypeID,
+            callResultID: req.body.callResultID,
+            assignedBy: req.body.assignedBy,
+            assignedTo: userID,
+            assignedAt: req.body.assignedAt,
+            callDate: req.body.callDate,
             Notes: req.body.Notes
         });
-        const result = await callPlansController.create(callPlan);
+        const result = await callHistoryController.create(callHistory);
         res.json(result);
     } catch (error) {
         console.log(error);
@@ -69,47 +68,30 @@ const update = async (req: Request, res: Response) => {
         //@ts-ignore
         const userID = req.userID
         const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-        const callPlan = <CallPlansModel>(<unknown>{
+        const callHistory = <CallHistoryModel>(<unknown>{
             ID: Number(req.params.ID),
             AWB: req.body.AWB,
             callTypeID: req.body.callTypeID,
             callStatusID: req.body.callStatusID,
             callResultID: req.body.callResultID,
-            assignedBy: userID,
-            assignedTo: req.body.assignedTo,
+            assignedBy: req.body.assignedBy,
+            assignedTo: userID,
             assignedAt: req.body.assignedAt,
             callDate: req.body.callDate,
             Notes: req.body.Notes
         });
-        const result = await callPlansController.update(callPlan, language);
+        const result = await callHistoryController.update(callHistory, language);
         res.json(result);
     } catch (error) {
-        console.log(error);
-
         res.status(400);
         res.json(error);
     }
 };
 
-const updateResult = async (req: Request, res: Response) => {
-    try {
-        const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-        const callPlan = <CallPlansModel>(<unknown>{
-            ID: Number(req.params.ID),
-            callResultID: req.body.callResultID,
-        });
-        const result = await callPlansController.updateResult(callPlan, language);
-        res.json(result);
-    } catch (error) {
-        res.status(400);
-        res.json(error);
-    }
-}
-
 
 const deActivate = async (req: Request, res: Response) => {
     try {
-        const result = await callPlansController.deActivate(Number(req.params.ID));
+        const result = await callHistoryController.deActivate(Number(req.params.ID));
         res.json(result);
     } catch (error) {
         res.status(400);
@@ -119,7 +101,7 @@ const deActivate = async (req: Request, res: Response) => {
 
 const activate = async (req: Request, res: Response) => {
     try {
-        const result = await callPlansController.activate(Number(req.params.ID));
+        const result = await callHistoryController.activate(Number(req.params.ID));
         res.json(result);
     } catch (error) {
         res.status(400);
@@ -127,15 +109,14 @@ const activate = async (req: Request, res: Response) => {
     }
 };
 
-const callPlansRouter = (app: express.Application) => {
-    app.get('/call-plans/:limit?', getAll);
-    app.get('/call-plans-by-id/:ID', getById);
-    app.get('/call-plans-by-user-id', getByUserID);
-    app.post('/call-plans', create);
-    app.put('/call-plans/:ID', update);
-    app.put('/call-plans-result/:ID', updateResult);
-    app.delete('/call-plans/de-activate/:ID', deActivate);
-    app.put('/call-plans/activate/:ID', activate);
+const callHistoryRouter = (app: express.Application) => {
+    app.get('/call-history/:limit?', getAll);
+    app.get('/call-history-by-id/:ID', getById);
+    app.get('/call-history-by-AWB/:AWB', getByAWB);
+    app.post('/call-history', create);
+    app.put('/call-history/:ID', update);
+    app.delete('/call-history/de-activate/:ID', deActivate);
+    app.put('/call-history/activate/:ID', activate);
 };
 
-export default callPlansRouter;
+export default callHistoryRouter;
