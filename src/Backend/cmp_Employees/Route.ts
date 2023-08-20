@@ -1,13 +1,14 @@
 import express, { Request, Response } from 'express';
 import { EmployeesController } from './Controller';
 import { EmployeesModel } from './Model';
+import { STRING } from 'sequelize';
 
 const employeesController = new EmployeesController();
 
 const getAll = async (req: Request, res: Response) => {
     try {
         const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-        const result = await employeesController.index(language, Number(req.params.isActive));
+        const result = await employeesController.index(language);
         res.json(result);
     }
     catch (error) {
@@ -34,7 +35,7 @@ const getByDepartmentID = async (req: Request, res: Response) => {
         //@ts-ignore
         const departmentID = req.departmentID
         console.log(departmentID);
-        
+
         const result = await employeesController.getByDepartmentID(departmentID, language);
         res.json(result);
     }
@@ -71,6 +72,28 @@ const getEmployeeByFingerPrint = async (req: Request, res: Response) => {
     }
 };
 
+
+const getEmployeeByRoleID = async (req: Request, res: Response) => {
+    try {
+        const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
+        const result = await employeesController.getByRoleID(String(req.params.roleIDs), language);
+        res.json(result);
+    } catch (error) {
+        res.status(400);
+        res.json(error);
+    }
+};
+
+const getByTitleId = async (req: Request, res: Response) => {
+    try {
+        const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
+        const result = await employeesController.getEmployeeByTitleID(Number(req.params.titleID), language);
+        res.json(result);
+    } catch (error) {
+        res.status(400);
+        res.json(error);
+    }
+};
 
 const create = async (req: Request, res: Response) => {
     try {
@@ -156,13 +179,15 @@ const activate = async (req: Request, res: Response) => {
 
 
 const employeesRouter = (app: express.Application) => {
-    app.get('/employees/:isActive', getAll);
+    app.get('/employees', getAll);
     app.get('/employees-by-id/:ID', getById);
     app.get('/employees-by-department-id', getByDepartmentID);
     app.get('/employees-by-hr-code/:HRCode', getEmployeeByHRCode);
     app.get('/employees-by-finger-print/:fingerPrintCode', getEmployeeByFingerPrint);
+    app.get('/employees-by-role-ids/:roleIDs', getEmployeeByRoleID);
     app.post('/employees', create);
     app.put('/employees/:ID', update);
+    app.get('/employees-by-title-id/:titleID', getByTitleId);
     app.put('/employees/de-activate/:ID', deactivate);
     app.put('/employees/activate/:ID', activate);
 }

@@ -89,11 +89,11 @@ import RegisterRouter from './ClientServices/Register/Route';
 import mail_route from './ClientServices/Mail Sender/Route';
 import imageRouter from './Backend/Upload_Files/Routes';
 import downloadTemplateRouter from './ClientServices/Download Template/Route';
-import AddMembersRouter from './ClientServices/Settings/AddMembers/Route';
 import UserRolesRouter from './Backend/sys_UserRoles/Routes';
 import ResetPasswordRouter from './ClientServices/Reset Password/Route';
 import AddPaymentMethodsRouter from './ClientServices/Settings/PaymentMethods/Route';
 import callPlansRouter from './Backend/cc_CallPlans/Route';
+import rolesRouter from './Backend/sys_Roles/Route';
 
 const corsOptions = {
   origin: '*',
@@ -204,10 +204,11 @@ shipmentsRouter(app);
 TeamMembersRouter(app);
 ClientTypesRouter(app);
 servicesRouter(app);
-AddMembersRouter(app);
+// AddMembersRouter(app);
 UserRolesRouter(app);
 AddPaymentMethodsRouter(app);
 callPlansRouter(app);
+rolesRouter(app);
 
 
 app.listen(process.env.PORT, () => {

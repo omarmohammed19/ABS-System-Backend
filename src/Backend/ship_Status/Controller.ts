@@ -2,6 +2,10 @@ import { StatusModel, Status } from './Model';
 import { De_Activate } from '../../Services/De_Activate';
 import { sequelize } from '../../Config/database';
 import Sequelize, { Transaction } from 'sequelize';
+import { AWBController } from '../AWBGenerator/Controller';
+import { Transactions } from '../ship_Transactions/Model';
+import { ca } from 'date-fns/locale';
+import { TransactionHistory } from '../ship_TransactionHistory/Model';
 
 const getByID = async (ID: number, language: string, t: Transaction) => {
   const query = 'EXEC [dbo].[p_GET_ship_Status] @language = :language , @Method = :Method, @ID = :ID';
@@ -80,6 +84,64 @@ export class StatusController {
         const result = await getByID(status.ID, language, t);
         return result;
       });
+    } catch (err) {
+      throw new Error(`Could not update Status. Error: ${err}`);
+    }
+  }
+
+  async updateStatus(AWBs: String, statusID: Number, userID: Number, shipmentTypeID: Number, runnerID?: Number, toBranchID?: Number, fromBranchID?: Number, currentBranchID?: Number, recipientID?: Number, recipientName?: String): Promise<any> {
+    try {
+      const query = 'EXEC [dbo].[p_Update_AWBStatus] @AWBs = :AWBs , @statusID = :statusID , @userID = :userID , @shipmentTypeID = :shipmentTypeID , @runnerID = :runnerID , @toBranchID = :toBranchID , @fromBranchID = :fromBranchID , @currentBranchID = :currentBranchID , @recipientID = :recipientID , @recipientName = :recipientName';
+      const replacements = { AWBs: AWBs, statusID: statusID, userID: userID, shipmentTypeID: shipmentTypeID, runnerID: runnerID, toBranchID: toBranchID, fromBranchID: fromBranchID, currentBranchID: currentBranchID, recipientID: recipientID, recipientName: recipientName };
+      const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
+      const result = await sequelize.query(query, options);
+      return result;
+    } catch (err) {
+      console.log(err);
+      throw new Error(`Could not update Status. Error: ${err}`);
+
+    }
+  }
+
+
+  async updateAWbStatus(AWB: String, statusID: Number, transID: Number, userID: Number, shipmentTypeID: Number, runnerID?: Number, toBranchID?: Number, fromBranchID?: Number, currentBranchID?: Number, recipientID?: Number, recipientName?: String): Promise<any> {
+    try {
+      const result = await sequelize.transaction(async (t) => {
+        await Transactions.update(
+          {
+            statusID: statusID,
+            userID: userID,
+            lastChangedDate: sequelize.literal('CURRENT_TIMESTAMP'),
+            runnerID: runnerID,
+            fromBranchID: fromBranchID,
+            currentBranchID: currentBranchID,
+            recipientID: recipientID,
+            recipientName: recipientName,
+          },
+          {
+            where: {
+              AWB: AWB,
+            },
+            transaction: t, // pass transaction object to query
+          }
+        );
+
+        await TransactionHistory.create(
+          {
+            transID: transID,
+            shipmentTypeID: shipmentTypeID,
+            statusID: statusID,
+            auditDate: sequelize.literal('CURRENT_TIMESTAMP'),
+            runnerID: runnerID,
+            userID: userID,
+            fromBranchID: fromBranchID,
+            toBranchID: toBranchID,
+            currentBranchID: currentBranchID,
+          }
+        );
+
+      });
+      return result;
     } catch (err) {
       throw new Error(`Could not update Status. Error: ${err}`);
     }
