@@ -32,5 +32,6 @@ export const Reasons = sequelize.define<ReasonsModel>(
   },
   {
     timestamps: false,
+    tableName: 'ship_Reasons',
   }
 );

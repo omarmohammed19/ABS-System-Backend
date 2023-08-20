@@ -28,6 +28,19 @@ export class StatusController {
     }
   }
 
+  async getAll(language: string): Promise<StatusModel[]> {
+    try {
+      const query = 'EXEC [dbo].[p_GET_ship_Status] @language = :language , @Method = :Method ';
+      const replacements = { language: language, Method: 'GET_All' };
+      const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
+      const result = await sequelize.query(query, options);
+      return result as unknown as StatusModel[];
+    } catch (err) {
+      throw new Error(`Could not get all Status. Error: ${err}`);
+    }
+  }
+
+
   async create(status: StatusModel): Promise<StatusModel | string> {
     try {
       return await sequelize.transaction(async (t) => {
