@@ -89,12 +89,12 @@ import RegisterRouter from './ClientServices/Register/Route';
 import mail_route from './ClientServices/Mail Sender/Route';
 import imageRouter from './Backend/Upload_Files/Routes';
 import downloadTemplateRouter from './ClientServices/Download Template/Route';
-import AddMembersRouter from './ClientServices/Settings/AddMembers/Route';
 import UserRolesRouter from './Backend/sys_UserRoles/Routes';
 import ResetPasswordRouter from './ClientServices/Reset Password/Route';
 import AddPaymentMethodsRouter from './ClientServices/Settings/PaymentMethods/Route';
 import custStatusRouter from './Backend/cust_DisplayedStatus/Route';
 import callPlansRouter from './Backend/cc_CallPlans/Route';
+import rolesRouter from './Backend/sys_Roles/Route';
 import callHistoryRouter from './Backend/cc_CallHistory/Route';
 import callCenterRouter from './EmployeeServices/CallCenter/Route';
 
@@ -207,11 +207,12 @@ shipmentsRouter(app);
 TeamMembersRouter(app);
 ClientTypesRouter(app);
 servicesRouter(app);
-AddMembersRouter(app);
+// AddMembersRouter(app);
 UserRolesRouter(app);
 AddPaymentMethodsRouter(app);
 custStatusRouter(app);
 callPlansRouter(app);
+rolesRouter(app);
 callHistoryRouter(app);
 callCenterRouter(app);
 

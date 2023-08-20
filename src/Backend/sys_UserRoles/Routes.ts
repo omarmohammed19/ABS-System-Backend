@@ -16,8 +16,33 @@ const postRoles = async (req: Request, res: Response) => {
     res.json(error);
   }
 };
+
+const getRolesByUserID = async (req: Request, res: Response) => {
+  try {
+    const result = await userRolesController.getRolesByUserID(Number(req.params.ID));
+    res.json(result);
+  } catch (error) {
+    res.status(400);
+    res.json(error);
+    console.log(error);
+  }
+};
+
+const deActivateRoles = async (req: Request, res: Response) => {
+  try {
+    const result = await userRolesController.deActivateRoles(Number(req.params.ID), req.body.ROLES);
+    res.json(result);
+  } catch (error) {
+    res.status(400);
+    res.json(error);
+    console.log(error);
+  }
+};
+
 const UserRolesRouter = (app: express.Application) => {
   app.post('/user-roles/:ID', postRoles);
+  app.get('/user-roles/:ID', getRolesByUserID);
+  app.put('/user-roles/deactivate/:ID', deActivateRoles);
 };
 
 export default UserRolesRouter;
