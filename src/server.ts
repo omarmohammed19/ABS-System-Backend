@@ -93,6 +93,7 @@ import AddMembersRouter from './ClientServices/Settings/AddMembers/Route';
 import UserRolesRouter from './Backend/sys_UserRoles/Routes';
 import ResetPasswordRouter from './ClientServices/Reset Password/Route';
 import AddPaymentMethodsRouter from './ClientServices/Settings/PaymentMethods/Route';
+import cmpservicesRouter from './Backend/cmp_Services/Route';
 
 const corsOptions = {
   origin: '*',
@@ -202,11 +203,10 @@ BusinessLocationsRouter(app);
 shipmentsRouter(app);
 TeamMembersRouter(app);
 ClientTypesRouter(app);
-servicesRouter(app);
+cmpservicesRouter(app);
 AddMembersRouter(app);
 UserRolesRouter(app);
 AddPaymentMethodsRouter(app);
-
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port http://${address}:${process.env.PORT}`);

@@ -7,7 +7,7 @@ const getById = async (ID: number, t: Transaction, language?: string) => {
   const query = 'EXEC [dbo].[p_GET_cust_SubAccounts] @language = :language, @Method = :Method, @ID = :ID';
   const replacements = { language: language, Method: 'GET_ByID', ID: ID };
   const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
-  const result = await sequelize.query(query, options)
+  const result = await sequelize.query(query, options);
   return result as unknown as SubAccountsModel;
 };
 
@@ -20,7 +20,17 @@ const getPaymentMethod = async (subAccountID: number, t: Transaction) => {
     },
     transaction: t, // pass transaction object to query
   });
-}
+};
+
+const getAllSubAccounts = async (t: Transaction) => {
+  return SubAccounts.findAll({
+    attributes: ['ID', 'subAccountName'],
+    where: {
+      isActive: true,
+    },
+    transaction: t, // pass transaction object to query
+  });
+};
 
 export class SubAccountsController {
   async index(language: string, isActive: number, limit: number): Promise<SubAccountsModel[]> {
@@ -62,8 +72,22 @@ export class SubAccountsController {
 
   async getSubAccountsById(ID: number, language: string): Promise<SubAccountsModel | string> {
     try {
-      const result = await sequelize.transaction(async (t) => { // start managed transaction and pass transaction object to the callback function
+      const result = await sequelize.transaction(async (t) => {
+        // start managed transaction and pass transaction object to the callback function
         const item = await getById(ID, t, language); // pass transaction object to getById function
+        return item;
+      });
+      return result;
+    } catch (err) {
+      console.log(err);
+      throw new Error(`Could not get SubAccounts by ID. Error: ${err}`);
+    }
+  }
+
+  async getAllSubAccounts(language: string): Promise<SubAccountsModel[] | string> {
+    try {
+      const result = await sequelize.transaction(async (t) => {
+        const item = await getAllSubAccounts(t); // pass transaction object to getById function
         return item;
       });
       return result;
@@ -75,7 +99,8 @@ export class SubAccountsController {
 
   async getSubAccountsByMainAccountId(language: string, isActive: number, mainAccountID: number): Promise<SubAccountsModel[]> {
     try {
-      const query = 'EXEC [dbo].[p_GET_cust_SubAccounts] @language = :language, @Method = :Method, @isActive = :isActive, @mainAccountID = :mainAccountID';
+      const query =
+        'EXEC [dbo].[p_GET_cust_SubAccounts] @language = :language, @Method = :Method, @isActive = :isActive, @mainAccountID = :mainAccountID';
       const replacements = { language: language, Method: 'GET_ByMainAccountID', isActive: isActive, mainAccountID: mainAccountID };
       const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
       const result = await sequelize.query(query, options);
@@ -85,7 +110,7 @@ export class SubAccountsController {
     }
   }
 
-  async getPaymentMethodBySubAccountIDId(subAccountID: number,): Promise<SubAccountsModel | string> {
+  async getPaymentMethodBySubAccountIDId(subAccountID: number): Promise<SubAccountsModel | string> {
     try {
       const result = await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
@@ -118,8 +143,9 @@ export class SubAccountsController {
             where: {
               ID: subAccounts.ID,
             },
-            transaction: t // pass transaction object to query
-          });
+            transaction: t, // pass transaction object to query
+          }
+        );
 
         const item = await getById(subAccounts.ID, t, language); // pass transaction object to getById function
         return item;
