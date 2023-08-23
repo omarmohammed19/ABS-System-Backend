@@ -77,7 +77,7 @@ const activate = async (req: Request, res: Response) => {
   }
 };
 
-const servicesRouter = (app: express.Application) => {
+const cmpservicesRouter = (app: express.Application) => {
   app.get('/services/:isActive', getAll);
   app.get('/services/:ID', getById);
   app.post('/services', create);
@@ -86,4 +86,4 @@ const servicesRouter = (app: express.Application) => {
   app.put('/services/activate/:ID', activate);
 };
 
-export default servicesRouter;
+export default cmpservicesRouter;
