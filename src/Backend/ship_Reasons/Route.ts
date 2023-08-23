@@ -18,7 +18,7 @@ const getAll = async (req: Request, res: Response) => {
 const getById = async (req: Request, res: Response) => {
   try {
     const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-    const result = await reasonsController.getReasonById(language, Number(req.params.ID));
+    const result = await reasonsController.getReasonByID(Number(req.params.ID), language);
     res.json(result);
   } catch (error) {
     res.status(400);
@@ -43,13 +43,14 @@ const create = async (req: Request, res: Response) => {
 
 const update = async (req: Request, res: Response) => {
   try {
+    const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
     const reason = <ReasonsModel>{
       ID: Number(req.params.ID),
       enReason: req.body.enReason,
       arReason: req.body.arReason,
       Notes: req.body.Notes,
     };
-    const result = await reasonsController.update(reason);
+    const result = await reasonsController.update(language, reason);
     res.json(result);
   } catch (error) {
     res.status(400);

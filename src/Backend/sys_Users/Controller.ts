@@ -175,6 +175,41 @@ export class UsersController {
     }
   }
 
+  async getEmployeeUsernames(): Promise<UsersModel[]> {
+    try {
+      const query = 'EXEC [dbo].[p_GET_EMPLOYEE_USERNAMES]';
+      const options = { type: Sequelize.QueryTypes.SELECT };
+      const result = await sequelize.query(query, options);
+      return result as unknown as UsersModel[];
+    } catch (err) {
+      throw new Error(`Could not get all Users. Error: ${err}`);
+    }
+  }
+
+  async adminChangePassword(user: UsersModel): Promise<any> {
+    try {
+      await sequelize.transaction(async (t) => {
+        //@ts-ignore
+        const hashedPassword = bcrypt.hashSync(user.password + pepper, parseInt(SALT_ROUNDS));
+
+        await Users.update(
+          {
+            password: hashedPassword,
+          },
+          {
+            where: {
+              ID: user.ID,
+            },
+          }
+        );
+        return 'Password updated successfully! ';
+      });
+    } catch (err) {
+      console.log(err);
+      throw new Error(`Could not change password. Error: ${err}`);
+    }
+  }
+
   async deactivate(ID: number): Promise<string> {
     try {
       const result = await De_Activate<UsersModel>(Users, 'ID', ID, 'deactivate');
