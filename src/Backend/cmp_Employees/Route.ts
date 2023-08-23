@@ -17,6 +17,7 @@ const getAll = async (req: Request, res: Response) => {
   }
 };
 
+
 const getByTitleId = async (req: Request, res: Response) => {
   try {
     const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
@@ -26,18 +27,6 @@ const getByTitleId = async (req: Request, res: Response) => {
     res.status(400);
     res.json(error);
   }
-};
-
-
-    try {
-        const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-        const result = await employeesController.index(language);
-        res.json(result);
-    }
-    catch (error) {
-        res.status(400);
-        res.json(error);
-    }
 };
 
 
@@ -108,16 +97,7 @@ const getEmployeeByRoleID = async (req: Request, res: Response) => {
     }
 };
 
-const getByTitleId = async (req: Request, res: Response) => {
-    try {
-        const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-        const result = await employeesController.getEmployeeByTitleID(Number(req.params.titleID), language);
-        res.json(result);
-    } catch (error) {
-        res.status(400);
-        res.json(error);
-    }
-};
+
 
 
 const create = async (req: Request, res: Response) => {
