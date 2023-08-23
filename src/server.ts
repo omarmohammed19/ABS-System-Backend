@@ -99,7 +99,6 @@ import rolesRouter from './Backend/sys_Roles/Route';
 import callHistoryRouter from './Backend/cc_CallHistory/Route';
 import callCenterRouter from './EmployeeServices/CallCenter/Route';
 
-
 const corsOptions = {
   origin: '*',
   credentials: true,
@@ -210,7 +209,7 @@ TeamMembersRouter(app);
 ClientTypesRouter(app);
 
 cmpservicesRouter(app);
-AddMembersRouter(app);
+// AddMembersRouter(app);
 
 servicesRouter(app);
 // AddMembersRouter(app);
