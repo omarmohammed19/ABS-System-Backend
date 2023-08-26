@@ -10,6 +10,42 @@ import { ContactPersonsModel } from '../../Backend/cust_ContactPersons/Model';
 
 const usersController = new UsersController();
 
+const validateEmail = async (req: Request, res: Response) => {
+    try{
+        const email = req.body.email;
+        const result = await usersController.validateEmail(email);
+        res.json(result);
+    }
+    catch(err){
+        res.status(400);
+        res.json(err);
+    }
+}
+
+const validateUsername = async (req: Request, res: Response) => {
+    try{
+        const username = req.body.username;
+        const result = await usersController.validateUsername(username);
+        res.json(result);
+    }
+    catch(err){
+        res.status(400);
+        res.json(err);
+    }
+}
+
+const validateMobile = async (req: Request, res: Response) => {
+    try{
+        const mobile = req.body.mobile;
+        const result = await usersController.validateMobile(mobile);
+        res.json(result);
+    }
+    catch(err){
+        res.status(400);
+        res.json(err);
+    }
+}
+
 const CreateGuestUser = async (req: Request, res: Response) => {
     try {
         const custInfo = <InfoModel>(<unknown>{
@@ -46,5 +82,8 @@ const CreateGuestUser = async (req: Request, res: Response) => {
 
 const RegisterRouter = (app: express.Application) => {
     app.post('/register/guest', CreateGuestUser);
+    app.post('/validate/email', validateEmail);
+    app.post('/validate/username', validateUsername);
+    app.post('/validate/mobile', validateMobile);
 };
 export default RegisterRouter;

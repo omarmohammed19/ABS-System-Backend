@@ -38,6 +38,53 @@ const generateAccountNumber = async () => {
 const currentDate = Sequelize.literal('GETDATE()');
 
 export class UsersController {
+
+
+    async validateEmail(email : string) :Promise<any>{
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+        const isValidEmail = emailRegex.test(email);
+
+        const EmailSpace = email.includes(' ');
+        if (!isValidEmail || EmailSpace) {
+            return { error: 'Invalid email' };
+        }
+
+        const emailExists = await Emails.findOne({ where: { email: email, emailTypeID: 4 } });
+        if (emailExists) {
+            return { message: 'Email already exists' };
+        }
+        else {
+            return { message:"Email validated"};
+        }
+    }
+
+    async validateUsername(username : string) :Promise<any>{
+        const usernameRegex = /^[a-zA-Z0-9\s]{8,}$/;
+        const isValidUsername = usernameRegex.test(username);
+        const UsernameSpace = username.includes(' ');
+        if (!isValidUsername || UsernameSpace) {
+                        return { error: 'Invalid username' };
+                    }
+                    const usernameExists = await Users.findOne({ where: { username: username } });
+                    if (usernameExists) {
+                        return { message: 'Username already exists' };
+                    }
+        else {
+            return { message:"Username validated"};
+        }
+    }
+
+    async validateMobile(contactNumber : string) :Promise<any>{
+        const contactNumberExists = await ContactNumbers.findOne({ where: { contactNumber: contactNumber, contactTypeID: 4 } });
+        if (contactNumberExists) {
+            return { message: 'Phone number already exists' };
+        }
+        else {
+            return {message :"Phone number validated"};
+        }
+    }
+
     async CreateGuestUser(custInfo: InfoModel, email: EmailsModel, contactPerson: ContactPersonsModel, contactNumber: ContactNumbersModel, user: UsersModel): Promise<any> {
         try {
 
