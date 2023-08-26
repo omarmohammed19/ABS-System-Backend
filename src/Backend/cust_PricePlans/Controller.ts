@@ -75,6 +75,18 @@ export class PricePlansController {
     }
   }
 
+  async getPricePlanMatrixByID(pricePlanID: number): Promise<PricePlansModel[] | string> {
+    try {
+      const query = 'EXEC [dbo].[p_GET_cust_PricePlans]  @Method = :Method, @pricePlanID = :pricePlanID';
+      const replacements = { Method: 'GET_PricePlanMatrixByID', pricePlanID: pricePlanID };
+      const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
+      const result = sequelize.query(query, options);
+      return result as unknown as PricePlansModel[];
+    } catch (err) {
+      throw new Error(`Could not get PricePlans matrix by pricePlanID. Error: ${err}`);
+    }
+  }
+
   async update(pricePlans: PricePlansModel, language: string): Promise<PricePlansModel | string> {
     try {
       return await sequelize.transaction(async (t) => {

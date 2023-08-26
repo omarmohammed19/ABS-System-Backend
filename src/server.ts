@@ -123,9 +123,12 @@ mail_route(app);
 ResetPasswordRouter(app);
 downloadTemplateRouter(app);
 app.use('/images', imageRouter);
+pricePlansRouter(app);
+pricePlanNamesRouter(app);
 
 //with authorization
 app.use(verifyJWT);
+
 UsersRouter(app);
 contactLogTypesRouter(app);
 callResultsRouter(app);
@@ -154,7 +157,7 @@ shipmentTypesRouter(app);
 productsRouter(app);
 servicesRouter(app);
 nearestBranchRouter(app);
-pricePlanNamesRouter(app);
+
 salesChannelsRouter(app);
 AddressTypesRouter(app);
 ContactNumberTypesRouter(app);
@@ -172,7 +175,7 @@ emailRouter(app);
 legalPaperRouter(app);
 contactPersonRouter(app);
 custAddressesRouter(app);
-pricePlansRouter(app);
+
 contactLogsRouter(app);
 languagesRouter(app);
 TicketStatus(app);
