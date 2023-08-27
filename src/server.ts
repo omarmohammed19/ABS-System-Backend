@@ -98,6 +98,8 @@ import callPlansRouter from './Backend/cc_CallPlans/Route';
 import rolesRouter from './Backend/sys_Roles/Route';
 import callHistoryRouter from './Backend/cc_CallHistory/Route';
 import callCenterRouter from './EmployeeServices/CallCenter/Route';
+import BusinessInfoRouter from './ClientServices/Settings/BusinessInfo/Route';
+import verificationTypesRouter from './Backend/cust_VerificationTypes/Route';
 
 const corsOptions = {
   origin: '*',
@@ -125,6 +127,8 @@ downloadTemplateRouter(app);
 app.use('/images', imageRouter);
 pricePlansRouter(app);
 pricePlanNamesRouter(app);
+zonesRouter(app);
+citiesRouter(app);
 
 //with authorization
 app.use(verifyJWT);
@@ -166,7 +170,7 @@ EmailTypesRouter(app);
 NumberTypesRouter(app);
 LegalPaperTypesRouter(app);
 InfoRouter(app);
-zonesRouter(app);
+
 zonesTypesRouter(app);
 extraInfoRouter(app);
 addressesRouter(app);
@@ -187,7 +191,7 @@ userSessionsRouter(app);
 employeesRouter(app);
 governoratesRouter(app);
 templateRouter(app);
-citiesRouter(app);
+
 ticketsRouter(app);
 prevStatusRouter(app);
 statusRouter(app);
@@ -224,6 +228,8 @@ callPlansRouter(app);
 rolesRouter(app);
 callHistoryRouter(app);
 callCenterRouter(app);
+BusinessInfoRouter(app);
+verificationTypesRouter(app);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port http://${address}:${process.env.PORT}`);

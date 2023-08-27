@@ -36,7 +36,7 @@ const validateUsername = async (req: Request, res: Response) => {
 
 const validateMobile = async (req: Request, res: Response) => {
     try{
-        const mobile = req.body.mobile;
+        const mobile = req.body.mobile;        
         const result = await usersController.validateMobile(mobile);
         res.json(result);
     }
@@ -46,7 +46,7 @@ const validateMobile = async (req: Request, res: Response) => {
     }
 }
 
-const CreateGuestUser = async (req: Request, res: Response) => {
+const CreateUser = async (req: Request, res: Response) => {
     try {
         const custInfo = <InfoModel>(<unknown>{
             firstName: req.body.firstName,
@@ -71,7 +71,11 @@ const CreateGuestUser = async (req: Request, res: Response) => {
             password: req.body.password
         });
 
-        const result = await usersController.CreateGuestUser(custInfo, Email, ContactPerson, ContactNumber, User);
+        const pricePlanID = req.body.pricePlanID;
+        const clientTypeID = req.body.clientTypeID;
+
+        const result = await usersController.CreateUser(custInfo, Email, ContactPerson, ContactNumber, User , pricePlanID, clientTypeID);
+        
         res.json(result);
     } catch (error) {
         res.status(400);
@@ -81,7 +85,7 @@ const CreateGuestUser = async (req: Request, res: Response) => {
 
 
 const RegisterRouter = (app: express.Application) => {
-    app.post('/register/guest', CreateGuestUser);
+    app.post('/register', CreateUser);
     app.post('/validate/email', validateEmail);
     app.post('/validate/username', validateUsername);
     app.post('/validate/mobile', validateMobile);

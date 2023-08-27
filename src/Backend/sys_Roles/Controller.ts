@@ -15,7 +15,7 @@ export class RolesController {
     async index(language: string): Promise<RolesModel[]> {
         try {
             const query = 'EXEC [dbo].[p_GET_sys_Roles] @language = :language, @Method = :Method';
-            const replacements = { language: language, Method: 'GET' };
+            const replacements = { language: language, Method: 'GET_Client' };
             const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
             const result = await sequelize.query(query, options);
             return result as unknown as RolesModel[];

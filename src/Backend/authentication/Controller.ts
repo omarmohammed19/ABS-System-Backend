@@ -13,7 +13,7 @@ export class UsersController {
     }
   }
 
-  async handlesignin_client(userCred: string, password: string): Promise<UsersModel> {
+  async handlesignin_client(userCred: string, password: string): Promise<any> {
     try {
       return await sequelize.transaction(async (t) => {
         const query = 'EXEC [dbo].[p_GET_sys_UsersByCredentials] @userCred = :userCred, @Method=:Method';
@@ -21,7 +21,11 @@ export class UsersController {
         const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
         const result = await sequelize.query(query, options);
 
-        console.log(result);
+        //@ts-ignore
+        if (result.length === 0) {
+          // Handle the case where result is an empty array
+          return { result: [], Roles: [] };
+        }
 
         const roles = await UserRoles.findAll({
           attributes: ['roleID'],
