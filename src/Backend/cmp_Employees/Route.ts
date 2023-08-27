@@ -48,8 +48,6 @@ const getByDepartmentID = async (req: Request, res: Response) => {
         const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
         //@ts-ignore
         const departmentID = req.departmentID
-        console.log(departmentID);
-
         const result = await employeesController.getByDepartmentID(departmentID, language);
         res.json(result);
     }

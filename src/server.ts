@@ -100,6 +100,8 @@ import callHistoryRouter from './Backend/cc_CallHistory/Route';
 import callCenterRouter from './EmployeeServices/CallCenter/Route';
 import BusinessInfoRouter from './ClientServices/Settings/BusinessInfo/Route';
 import verificationTypesRouter from './Backend/cust_VerificationTypes/Route';
+import subAccountVerificationRouter from './Backend/cust_SubAccountsVerification/Route';
+import verifyEmailRouter from './ClientServices/verifyEmail/Route';
 
 const corsOptions = {
   origin: '*',
@@ -129,6 +131,7 @@ pricePlansRouter(app);
 pricePlanNamesRouter(app);
 zonesRouter(app);
 citiesRouter(app);
+verifyEmailRouter(app);
 
 //with authorization
 app.use(verifyJWT);
@@ -230,6 +233,7 @@ callHistoryRouter(app);
 callCenterRouter(app);
 BusinessInfoRouter(app);
 verificationTypesRouter(app);
+subAccountVerificationRouter(app);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port http://${address}:${process.env.PORT}`);
