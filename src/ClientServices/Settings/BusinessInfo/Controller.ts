@@ -32,6 +32,17 @@ export class BusinessInfoController {
           }
         );
 
+        const prefixExist = await SubAccounts.findOne({
+          where: {
+            prefix: prefix,
+          },
+          transaction: t,
+        });
+
+        if (prefixExist) {
+          return "Prefix Already Exists";
+        }
+
         await SubAccounts.update(
           {
             productTypeID: productTypeID,

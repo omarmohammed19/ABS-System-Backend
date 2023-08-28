@@ -89,6 +89,30 @@ const getBranchIDByCityName = async (name: string) => {
   return city ? city.branchID : null;
 };
 
+const getCityIDByCityName = async (name: string) => {
+  const city = await Cities.findOne({
+    attributes: ['ID'],
+    where: {
+      enCityName: name,
+      isActive: true,
+    },
+  });
+
+  return city ? city.ID : null;
+};
+
+const getBranchIDByCityID = async (cityID: number) => {
+  const city = await Cities.findOne({
+    attributes: ['branchID'],
+    where: {
+      ID: cityID,
+      isActive: true,
+    },
+  });
+
+  return city ? city.branchID : null;
+};
+
 // get serviceID by name
 const getServiceIDByName = async (name: string) => {
   const service = await Services.findOne({
@@ -101,6 +125,14 @@ const getServiceIDByName = async (name: string) => {
 
   return service ? service.ID : null;
 };
+
+const checkRefExists = async (Ref: string) => {
+  const result: any = await Transactions.findOne({ where: { Ref: Ref } });
+  if (result) {
+    return true;
+  }
+  return false;
+}
 
 const getBranchIDByPickupLocationID = async (PickupLocationID: number): Promise<any> => {
   const query = 'EXEC [dbo].[p_GET_BranchID_By_PickupLocationID] @PickupLocationID = :PickupLocationID';
@@ -262,7 +294,7 @@ async function insertDataIntoDatabase(
           apartmentNumber: data[index].apartmentNumber,
           floorNumber: data[index].floorNumber,
           buildingNumber: data[index].buildingNumber,
-          cityID: await getBranchIDByCityName(data[index].City),
+          cityID: await getCityIDByCityName(data[index].City),
           postalCode: data[index].postalCode,
           cneeContactPersonID: ContactPersonIDs[index],
           longitude: data[index].longitude,
@@ -300,6 +332,19 @@ export class CreateShipmentsController {
     try {
       const result = await sequelize.transaction(async (t) => {
         const AWB = await generateAWB(transactionHdr.subAccountID);
+        const RefExists = await checkRefExists(transactions.Ref);
+
+        const productTypeID = await SubAccounts.findOne({
+          attributes: ['productTypeID'],
+          where: { ID: transactionHdr.subAccountID },
+        });
+
+        console.log(productTypeID?.productTypeID);
+
+
+        if (RefExists) {
+          return 'Ref already exists';
+        }
         const newTransactionHdr = await TransactionHdr.create(
           {
             mainAccountID: transactionHdr.mainAccountID,
@@ -354,13 +399,13 @@ export class CreateShipmentsController {
             shipmentTypeID: 1,
             statusID: 1,
             expectedDeliveryDate: transactions.expectedDeliveryDate,
-            productID: transactions.productID,
+            productID: productTypeID?.productTypeID,
             creationDate: transactions.creationDate,
             lastChangeDate: transactions.lastChangeDate,
             userID: transactions.userID,
             expiryDate: transactions.expiryDate,
-            deliveryBranchID: transactions.deliveryBranchID,
-            toBranchID: transactions.toBranchID,
+            deliveryBranchID: await getBranchIDByCityID(addresses.cityID),
+            toBranchID: await getBranchIDByPickupLocationID(pickup.pickupLocationID),
             specialInstructions: transactions.specialInstructions,
             packageTypeID: transactions.packageTypeID,
             noOfPcs: transactions.noOfPcs,
@@ -379,7 +424,7 @@ export class CreateShipmentsController {
             statusID: 1,
             auditDate: transactionHistory.auditDate,
             userID: transactionHistory.userID,
-            toBranchID: transactionHistory.toBranchID,
+            toBranchID: await getBranchIDByPickupLocationID(pickup.pickupLocationID),
           },
           { transaction: t } // pass transaction object to query
         );

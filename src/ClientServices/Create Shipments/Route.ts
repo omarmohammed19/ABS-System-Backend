@@ -59,14 +59,11 @@ const createSingleShipment = async (req: Request, res: Response) => {
       mainAccountID: mainAccountID,
       subAccountID: subAccountID,
       serviceID: req.body.serviceID,
-      shipmentTypeID: req.body.shipmentTypeID,
       expectedDeliveryDate: expectedDeliveryDate,
-      productID: req.body.productID,
       creationDate: currentDate,
       lastChangeDate: currentDate,
       userID: userID,
       expiryDate: expiryDate,
-      deliveryBranchID: req.body.deliveryBranchID,
       specialInstructions: req.body.specialInstructions,
       packageTypeID: req.body.packageTypeID,
       noOfPcs: req.body.noOfPcs,
@@ -77,7 +74,6 @@ const createSingleShipment = async (req: Request, res: Response) => {
     });
 
     const transactionHistory = <TransactionHistoryModel>(<unknown>{
-      shipmentTypeID: req.body.shipmentTypeID,
       auditDate: currentDate,
       userID: userID,
     });
