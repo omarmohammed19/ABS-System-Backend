@@ -38,6 +38,7 @@ const createSingleShipment = async (req: Request, res: Response) => {
       mainAccountID: mainAccountID,
       subAccountID: subAccountID,
       pickupLocationID: req.body.pickupLocationID,
+      returnLocationID: req.body.returnLocationID,
       pickupTypeID: req.body.pickupTypeID,
       vehicleTypeID: req.body.vehicleTypeID,
       noOfAWBs: req.body.noOfAWBs,
@@ -101,6 +102,8 @@ const createSingleShipment = async (req: Request, res: Response) => {
       latitude: req.body.latitude,
     });
 
+    const serviceTypeIDs = req.body.serviceTypeIDs;
+    
     const result = await createShipmentsController.createSingleShipment(
       transactionHdr,
       pickup,
@@ -109,10 +112,12 @@ const createSingleShipment = async (req: Request, res: Response) => {
       transactionHistory,
       contactPerson,
       contactNumber,
-      address
+      address,
+      serviceTypeIDs
     );
     res.json(result);
   } catch (error) {
+    
     res.status(400);
     res.json(error);
   }

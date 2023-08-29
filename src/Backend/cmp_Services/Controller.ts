@@ -1,11 +1,11 @@
-import { ServicesModel, Services } from './Model';
+import { CompanyServicesModel, CompanyServices } from './Model';
 import { De_Activate } from '../../Services/De_Activate';
 import { sequelize } from '../../Config/database';
 import { Transaction } from 'sequelize';
 
 const getById = (ID: number, t: Transaction, language?: string) => {
   const attributes = language === 'en' ? ['ID', 'enService', 'Notes'] : ['ID', 'arService', 'Notes'];
-  return Services.findOne({
+  return CompanyServices.findOne({
     attributes: attributes,
     where: {
       ID: ID,
@@ -15,13 +15,13 @@ const getById = (ID: number, t: Transaction, language?: string) => {
   });
 };
 
-export class ServicesController {
-  async index(language: string, isActive: number): Promise<ServicesModel[]> {
+export class CompanyServicesController {
+  async index(language: string, isActive: number): Promise<CompanyServicesModel[]> {
     try {
       return await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
         const attributes = language === 'en' ? ['ID', 'enService', 'Notes'] : ['ID', 'arService', 'Notes'];
-        const result = await Services.findAll({
+        const result = await CompanyServices.findAll({
           attributes: attributes,
           where: {
             isActive: isActive,
@@ -29,18 +29,18 @@ export class ServicesController {
           transaction: t, // pass transaction object to query
         });
 
-        return result.map((item: any) => item.toJSON()) as ServicesModel[]; // return the result of the query (if successful) to be committed automatically
+        return result.map((item: any) => item.toJSON()) as CompanyServicesModel[]; // return the result of the query (if successful) to be committed automatically
       });
     } catch (err) {
       throw new Error(`Could not get all PackageType. Error: ${err}`);
     }
   }
 
-  async create(services: ServicesModel): Promise<ServicesModel | string> {
+  async create(services: CompanyServicesModel): Promise<CompanyServicesModel | string> {
     try {
       return await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
-        const result = await Services.create(
+        const result = await CompanyServices.create(
           {
             enService: services.enService,
             arService: services.arService,
@@ -55,7 +55,7 @@ export class ServicesController {
     }
   }
 
-  async getPackageTypeById(language: string, ID: number): Promise<ServicesModel | string> {
+  async getPackageTypeById(language: string, ID: number): Promise<CompanyServicesModel | string> {
     try {
       const result = await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
@@ -68,11 +68,11 @@ export class ServicesController {
     }
   }
 
-  async update(services: ServicesModel): Promise<ServicesModel | string> {
+  async update(services: CompanyServicesModel): Promise<CompanyServicesModel | string> {
     try {
       return await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
-        await Services.update(
+        await CompanyServices.update(
           {
             enService: services.enService,
             arService: services.arService,
@@ -95,7 +95,7 @@ export class ServicesController {
 
   async deactivate(ID: number): Promise<string> {
     try {
-      const result = await De_Activate<ServicesModel>(Services, 'ID', ID, 'deactivate');
+      const result = await De_Activate<CompanyServicesModel>(CompanyServices, 'ID', ID, 'deactivate');
       return result;
     } catch (err) {
       throw new Error(`Could not deactivate Services. Error: ${err}`);
@@ -104,7 +104,7 @@ export class ServicesController {
 
   async activate(ID: number): Promise<string> {
     try {
-      const result = await De_Activate<ServicesModel>(Services, 'ID', ID, 'activate');
+      const result = await De_Activate<CompanyServicesModel>(CompanyServices, 'ID', ID, 'activate');
       return result;
     } catch (err) {
       throw new Error(`Could not activate PackageType. Error: ${err}`);

@@ -7,7 +7,6 @@ const updateShipmentDetails = async (req: Request, res: Response) => {
     //@ts-ignore
     const userID = req.userID;
     const { AWB, callPlanID, callResultID, streetName, aptNumber, floorNumber, buildNumber, cityID, postalCode, contactNumber, appointment } = req.body;
-    console.log(req.body);
     
     try {
         const result = await callCenterController.updateShipmentDetails(AWB, callPlanID, callResultID, userID, streetName, aptNumber, floorNumber, buildNumber, cityID, postalCode, contactNumber, appointment);

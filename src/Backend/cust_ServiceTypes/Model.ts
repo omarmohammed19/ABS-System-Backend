@@ -5,6 +5,7 @@ export interface ServiceTypesModel extends Model {
     ID: number;
     enServiceType: string;
     arServiceType: string;
+    price: number;
     Notes: string;
     isActive: boolean;
 }
@@ -22,6 +23,9 @@ export const ServiceTypes = sequelize.define<ServiceTypesModel>(
         },
         arServiceType: {
             type: DataTypes.STRING,
+        },
+        price: {
+            type: DataTypes.FLOAT,
         },
         Notes: {
             type: DataTypes.STRING,
