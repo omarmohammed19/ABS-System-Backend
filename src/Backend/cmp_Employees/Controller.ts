@@ -39,10 +39,10 @@ const getByRoleID = (roleIDs: string, t: Transaction, language?: string) => {
 };
 
 export class EmployeesController {
-  async index(language: string, isActive: number): Promise<EmployeesModel[]> {
+  async index(language: string): Promise<EmployeesModel[]> {
     {
-      const query = 'EXEC [dbo].[p_GET_cmp_Employees] @language = :language, @Method = :Method, @isActive = :isActive';
-      const replacements = { language: language, Method: 'GET', isActive: isActive };
+      const query = 'EXEC [dbo].[p_GET_cmp_Employees] @language = :language, @Method = :Method';
+      const replacements = { language: language, Method: 'GET' };
       const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
       const result = await sequelize.query(query, options);
       return result as unknown as EmployeesModel[];

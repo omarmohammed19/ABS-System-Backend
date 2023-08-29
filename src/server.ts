@@ -98,6 +98,8 @@ import callPlansRouter from './Backend/cc_CallPlans/Route';
 import rolesRouter from './Backend/sys_Roles/Route';
 import callHistoryRouter from './Backend/cc_CallHistory/Route';
 import callCenterRouter from './EmployeeServices/CallCenter/Route';
+import transactionsForDetailInquiryRouter from './EmployeeServices/DetailInquiry/Route';
+import companyDataRouter from './Backend/cmp_CompanyData/Route';
 
 const corsOptions = {
   origin: '*',
@@ -207,6 +209,7 @@ BusinessLocationsRouter(app);
 shipmentsRouter(app);
 TeamMembersRouter(app);
 ClientTypesRouter(app);
+companyDataRouter(app);
 
 cmpservicesRouter(app);
 // AddMembersRouter(app);
@@ -221,6 +224,7 @@ callPlansRouter(app);
 rolesRouter(app);
 callHistoryRouter(app);
 callCenterRouter(app);
+transactionsForDetailInquiryRouter(app);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port http://${address}:${process.env.PORT}`);
