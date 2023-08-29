@@ -1,13 +1,13 @@
 import express, { Request, Response } from 'express';
-import { ServicesController } from './Controller';
-import { ServicesModel } from './Model';
+import { CompanyServicesController } from './Controller';
+import { CompanyServicesModel } from './Model';
 
-const servicesController = new ServicesController();
+const companyServicesController = new CompanyServicesController();
 
 const getAll = async (req: Request, res: Response) => {
   try {
     const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-    const result = await servicesController.index(language, Number(req.params.isActive));
+    const result = await companyServicesController.index(language, Number(req.params.isActive));
     res.json(result);
   } catch (error) {
     res.status(400);
@@ -18,7 +18,7 @@ const getAll = async (req: Request, res: Response) => {
 const getById = async (req: Request, res: Response) => {
   try {
     const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-    const result = await servicesController.getPackageTypeById(language, Number(req.params.ID));
+    const result = await companyServicesController.getPackageTypeById(language, Number(req.params.ID));
     res.json(result);
   } catch (error) {
     res.status(400);
@@ -28,12 +28,12 @@ const getById = async (req: Request, res: Response) => {
 
 const create = async (req: Request, res: Response) => {
   try {
-    const packageType = <ServicesModel>{
+    const packageType = <CompanyServicesModel>{
       enService: req.body.enService,
       arService: req.body.arService,
       Notes: req.body.Notes,
     };
-    const result = await servicesController.create(packageType);
+    const result = await companyServicesController.create(packageType);
     res.json(result);
   } catch (error) {
     res.status(400);
@@ -43,13 +43,13 @@ const create = async (req: Request, res: Response) => {
 
 const update = async (req: Request, res: Response) => {
   try {
-    const packageType = <ServicesModel>{
+    const packageType = <CompanyServicesModel>{
       ID: Number(req.params.ID),
       enService: req.body.enService,
       arService: req.body.arService,
       Notes: req.body.Notes,
     };
-    const result = await servicesController.update(packageType);
+    const result = await companyServicesController.update(packageType);
     res.json(result);
   } catch (error) {
     res.status(400);
@@ -59,7 +59,7 @@ const update = async (req: Request, res: Response) => {
 
 const deactivate = async (req: Request, res: Response) => {
   try {
-    const result = await servicesController.deactivate(Number(req.params.ID));
+    const result = await companyServicesController.deactivate(Number(req.params.ID));
     res.json(result);
   } catch (error) {
     res.status(400);
@@ -69,7 +69,7 @@ const deactivate = async (req: Request, res: Response) => {
 
 const activate = async (req: Request, res: Response) => {
   try {
-    const result = await servicesController.activate(Number(req.params.ID));
+    const result = await companyServicesController.activate(Number(req.params.ID));
     res.json(result);
   } catch (error) {
     res.status(400);

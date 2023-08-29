@@ -51,6 +51,16 @@ const getPricePlanMatrixBySubAccountID = async (req: Request, res: Response) => 
     }
 };
 
+const getPricePlanMatrixByID = async (req: Request, res: Response) => {
+    try {
+        const result = await pricePlansController.getPricePlanMatrixByID(Number(req.params.pricePlanID));
+        res.json(result);
+    } catch (error) {
+        res.status(400);
+        res.json(error);
+    }
+};
+
 
 const create = async (req: Request, res: Response) => {
     try {
@@ -116,6 +126,7 @@ const pricePlansRouter = (app: express.Application) => {
     app.get('/price-plans-by-price-plan-ID/:pricePlanID', getByPricePlanID);
     app.get('/price-plans-by-sub-account-ID/:subAccountID', getBySubAccountID);
     app.get('/price-plans-matrix-by-sub-account-ID/:subAccountID', getPricePlanMatrixBySubAccountID);
+    app.get('/price-plans-matrix-by-ID/:pricePlanID', getPricePlanMatrixByID);
     app.post('/price-plans', create);
     app.put('/price-plans/:ID', update);
     app.put('/price-plans/deactivate/:pricePlanID', deactivate);

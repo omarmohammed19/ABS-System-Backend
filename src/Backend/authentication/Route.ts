@@ -63,6 +63,10 @@ const handlesignin_client = async (req: Request, res: Response) => {
     const user = result.result[0] as UsersModel;
     const userRoles = result.Roles.map((role: any) => role.roleID).join(',');
 
+    if(!user){
+      return res.json('User not found');
+    }
+
     if (result.length === 0) {
       return res.json('User not found');
     }
@@ -71,9 +75,8 @@ const handlesignin_client = async (req: Request, res: Response) => {
     }
     try {
       const match = await bcrypt.compareSync(req.body.password + process.env.pepper, user.password);
+      
       if (match) {
-        console.log(userRoles);
-
         const id = user.ID;
         const name = user.displayedName;
         const role = userRoles;

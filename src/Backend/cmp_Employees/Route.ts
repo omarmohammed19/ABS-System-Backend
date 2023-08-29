@@ -53,6 +53,18 @@ const getByDepartmentID = async (req: Request, res: Response) => {
     res.status(400);
     res.json(error);
   }
+    try {
+        const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
+        //@ts-ignore
+        const departmentID = req.departmentID
+        const result = await employeesController.getByDepartmentID(departmentID, language);
+        res.json(result);
+    }
+    catch (error) {
+        console.log(error);
+        res.status(400);
+        res.json(error);
+    }
 };
 
 const getEmployeeByHRCode = async (req: Request, res: Response) => {

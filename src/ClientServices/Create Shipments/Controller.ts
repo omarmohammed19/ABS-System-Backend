@@ -3,7 +3,7 @@ import { sequelize } from '../../Config/database';
 import { PackageTypes } from '../../Backend/ship_PackageTypes/Model';
 import { Products } from '../../Backend/ship_Products/Model';
 import { Cities, CitiesModel } from '../../Backend/cmp_Cities/Model';
-import { Services } from '../../Backend/cmp_Services/Model';
+import { CompanyServices } from '../../Backend/cmp_Services/Model';
 import { TransactionHdrModel, TransactionHdr } from '../../Backend/ship_TransactionHdr/Model';
 import { PickupsModel, Pickups } from '../../Backend/ship_Pickups/Model';
 import { PickupHistoryModel, PickupHistory } from '../../Backend/ship_PickupHistory/Model';
@@ -17,6 +17,8 @@ import { BranchesController } from '../../Backend/cmp_Branches/Controller';
 import xlsx from 'xlsx';
 import { TransactionsController } from '../../Backend/ship_Transactions/Controller';
 import Sequelize from 'sequelize';
+import { ShipmentServices } from '../../Backend/ship_Services/Model';
+import { Services } from '../../Backend/cust_Services/Model';
 
 const branchesController = new BranchesController();
 
@@ -53,17 +55,17 @@ const generateAWB = async (subAccountID: number) => {
   return AWB;
 };
 
-const getProductIDByName = async (name: string) => {
-  const product = await Products.findOne({
-    attributes: ['ID'],
-    where: {
-      enProduct: name,
-      isActive: true,
-    },
-  });
+// const getProductIDByName = async (name: string) => {
+//   const product = await Products.findOne({
+//     attributes: ['ID'],
+//     where: {
+//       enProduct: name,
+//       isActive: true,
+//     },
+//   });
 
-  return product ? product.ID : null;
-};
+//   return product ? product.ID : null;
+// };
 
 const getPackageTypeIDByName = async (name: string) => {
   const packageType = await PackageTypes.findOne({
@@ -89,9 +91,33 @@ const getBranchIDByCityName = async (name: string) => {
   return city ? city.branchID : null;
 };
 
+const getCityIDByCityName = async (name: string) => {
+  const city = await Cities.findOne({
+    attributes: ['ID'],
+    where: {
+      enCityName: name,
+      isActive: true,
+    },
+  });
+
+  return city ? city.ID : null;
+};
+
+const getBranchIDByCityID = async (cityID: number) => {
+  const city = await Cities.findOne({
+    attributes: ['branchID'],
+    where: {
+      ID: cityID,
+      isActive: true,
+    },
+  });
+
+  return city ? city.branchID : null;
+};
+
 // get serviceID by name
 const getServiceIDByName = async (name: string) => {
-  const service = await Services.findOne({
+  const service = await CompanyServices.findOne({
     attributes: ['ID'],
     where: {
       enService: name,
@@ -101,6 +127,30 @@ const getServiceIDByName = async (name: string) => {
 
   return service ? service.ID : null;
 };
+
+const checkRefExists = async (Ref: string) => {
+  const result: any = await Transactions.findOne({ where: { Ref: Ref } });
+  if (result) {
+    return true;
+  }
+  return false;
+}
+
+const getServicesBySubAccountId = async (subAccountID: number) => {
+  const results = await Services.findAll({
+    attributes: ['serviceTypeID'],
+    where: {
+      subAccountID: subAccountID,
+      isActive: true,
+    }
+  });
+
+  const serviceTypeIDs = results.map(result => result.serviceTypeID);
+
+  return {
+    serviceTypeIDs: serviceTypeIDs
+  };
+}
 
 const getBranchIDByPickupLocationID = async (PickupLocationID: number): Promise<any> => {
   const query = 'EXEC [dbo].[p_GET_BranchID_By_PickupLocationID] @PickupLocationID = :PickupLocationID';
@@ -131,17 +181,11 @@ async function insertDataIntoDatabase(
 ) {
   // Use a Sequelize transaction to insert the data into the database
   let newPickup: any;
-  let location: any;
   let ToBranchID: any;
   let DeliveryBranchID: any;
+  let subAccountServicesIDs: any;
 
-  if (data[0].Service !== 'Return') {
-    location = pickup.pickupLocationID;
-    ToBranchID = await getBranchIDByPickupLocationID(pickup.pickupLocationID);
-  } else {
-    location = pickup.returnLocationID;
-    DeliveryBranchID = await getBranchIDByReturnLocationID(pickup.returnLocationID);
-  }
+  subAccountServicesIDs = await getServicesBySubAccountId(transactionHdr.subAccountID);
 
   await sequelize.transaction(async (t) => {
     const newTransactionHdr = await TransactionHdr.create(
@@ -160,7 +204,8 @@ async function insertDataIntoDatabase(
       {
         mainAccountID: pickup.mainAccountID,
         subAccountID: pickup.subAccountID,
-        pickupLocationID: location,
+        pickupLocationID: data[0].Service !== 'Return' ? pickup.pickupLocationID : null,
+        returnLocationID: data[0].Service !== 'Return' ? null : pickup.returnLocationID,
         transHdrID: newTransactionHdr.ID,
         pickupTypeID: pickup.pickupTypeID,
         vehicleTypeID: pickup.vehicleTypeID,
@@ -174,7 +219,7 @@ async function insertDataIntoDatabase(
         createdAWBs: 0,
         Notes: pickup.Notes,
       },
-      { transaction: t, returning: ['ID', 'pickupLocationID'] }
+      { transaction: t, returning: data[0].Service !== 'Return' ? ['ID', 'pickupLocationID'] : ['ID', 'returnLocationID'] }
     );
 
     await PickupHistory.create(
@@ -187,16 +232,93 @@ async function insertDataIntoDatabase(
       { transaction: t }
     );
 
+    const productTypeID = await SubAccounts.findOne({
+      attributes: ['productTypeID'],
+      where: { ID: transactionHdr.subAccountID }, transaction: t
+    });
+
     const transactionData = await Promise.all(
       data.map(async (row: any) => {
-        if (data[0].Service !== 'Return') {
+        if (row.Service !== 'Return') {
+          ToBranchID = await getBranchIDByPickupLocationID(pickup.pickupLocationID);
           DeliveryBranchID = await getBranchIDByCityName(row.City);
         } else {
           ToBranchID = await getBranchIDByCityName(row.City);
+          DeliveryBranchID = await getBranchIDByReturnLocationID(pickup.returnLocationID);
         }
+
+        let AWB: any = await generateAWB(transactionHdr.subAccountID);
+
+        if (row.Service !== 'Return') {
+          if (row.allowOpenPackages === 'Yes') {
+            await ShipmentServices.create(
+              {
+                AWB: AWB,
+                serviceID: 1,
+              },
+              { transaction: t }
+            );
+          }
+          else if (row.allowOpenPackages !== 'No') {
+            if (subAccountServicesIDs.serviceTypeIDs.includes(1)) {
+              await ShipmentServices.create(
+                {
+                  AWB: AWB,
+                  serviceID: 1,
+                },
+                { transaction: t }
+              );
+            }
+          }
+
+          if (row.feesOnConsignee === 'Yes') {
+            await ShipmentServices.create(
+              {
+                AWB: AWB,
+                serviceID: 2,
+              },
+              { transaction: t }
+            );
+          }
+          else if (row.feesOnConsignee !== 'No') {
+            if (subAccountServicesIDs.serviceTypeIDs.includes(2)) {
+              await ShipmentServices.create(
+                {
+                  AWB: AWB,
+                  serviceID: 2,
+                },
+                { transaction: t }
+              );
+            }
+          }
+          
+          if (row.sameDayDelivery === 'Yes') {
+            await ShipmentServices.create(
+              {
+                AWB: AWB,
+                serviceID: 3,
+              },
+              { transaction: t }
+            );
+          }
+          else if (row.sameDayDelivery !== 'No') {
+            if (subAccountServicesIDs.serviceTypeIDs.includes(3)) {
+              await ShipmentServices.create(
+                {
+                  AWB: AWB,
+                  serviceID: 3,
+                },
+                { transaction: t }
+              );
+            }
+          }
+        }
+
+
+
         return {
           transHdrID: newTransactionHdr.ID,
-          AWB: await generateAWB(transactions.subAccountID),
+          AWB: AWB,
           mainAccountID: transactions.mainAccountID,
           subAccountID: transactions.subAccountID,
           serviceID: await getServiceIDByName(row.Service),
@@ -211,18 +333,21 @@ async function insertDataIntoDatabase(
           shipmentTypeID: 1,
           Ref: row.Ref,
           specialInstructions: row.specialInstructions,
-          productID: await getProductIDByName(row.Product),
+          productID: productTypeID?.productTypeID,
           packageTypeID: await getPackageTypeIDByName(row.PackageType),
           noOfPcs: row.noOfPcs,
           contents: row.contents,
           weight: row.weight,
           actualWeight: row.weight,
-          Cash: row.Cash,
+          Cash: row.Service !== 'Return' ? row.Cash : -row.Cash,
         };
       })
     );
 
     const createdTransactions = await Transactions.bulkCreate(transactionData, { transaction: t, returning: ['ID', 'AWB'] });
+
+
+
     const transIDs = createdTransactions.map((transaction) => transaction.ID);
 
     const transactionHistoryData = await Promise.all(
@@ -262,7 +387,7 @@ async function insertDataIntoDatabase(
           apartmentNumber: data[index].apartmentNumber,
           floorNumber: data[index].floorNumber,
           buildingNumber: data[index].buildingNumber,
-          cityID: await getBranchIDByCityName(data[index].City),
+          cityID: await getCityIDByCityName(data[index].City),
           postalCode: data[index].postalCode,
           cneeContactPersonID: ContactPersonIDs[index],
           longitude: data[index].longitude,
@@ -295,11 +420,39 @@ export class CreateShipmentsController {
     transactionHistory: TransactionHistoryModel,
     contactPersons: ContactPersonsModel,
     contactNumbers: ContactNumbersModel,
-    addresses: AddressesModel
+    addresses: AddressesModel,
+    serviceTypeIDs: number[]
   ): Promise<any> {
     try {
+      let ToBranchID: any;
+      let DeliveryBranchID: any;
+
+
+
+      if (transactions.serviceID !== 2) {
+        ToBranchID = await getBranchIDByPickupLocationID(pickup.pickupLocationID);
+        DeliveryBranchID = await getBranchIDByCityID(addresses.cityID);
+      } else {
+        console.log(pickup.returnLocationID);
+
+        DeliveryBranchID = await getBranchIDByReturnLocationID(pickup.returnLocationID);
+        ToBranchID = await getBranchIDByCityID(addresses.cityID);
+      }
+
+
       const result = await sequelize.transaction(async (t) => {
         const AWB = await generateAWB(transactionHdr.subAccountID);
+        const RefExists = await checkRefExists(transactions.Ref);
+
+        const productTypeID = await SubAccounts.findOne({
+          attributes: ['productTypeID'],
+          where: { ID: transactionHdr.subAccountID }, transaction: t
+        });
+
+
+        if (RefExists) {
+          return 'Ref already exists';
+        }
         const newTransactionHdr = await TransactionHdr.create(
           {
             mainAccountID: transactionHdr.mainAccountID,
@@ -317,6 +470,7 @@ export class CreateShipmentsController {
             mainAccountID: pickup.mainAccountID,
             subAccountID: pickup.subAccountID,
             pickupLocationID: pickup.pickupLocationID,
+            returnLocationID: pickup.returnLocationID,
             transHdrID: newTransactionHdr.ID,
             pickupTypeID: pickup.pickupTypeID,
             vehicleTypeID: pickup.vehicleTypeID,
@@ -354,20 +508,20 @@ export class CreateShipmentsController {
             shipmentTypeID: 1,
             statusID: 1,
             expectedDeliveryDate: transactions.expectedDeliveryDate,
-            productID: transactions.productID,
+            productID: productTypeID?.productTypeID,
             creationDate: transactions.creationDate,
             lastChangeDate: transactions.lastChangeDate,
             userID: transactions.userID,
             expiryDate: transactions.expiryDate,
-            deliveryBranchID: transactions.deliveryBranchID,
-            toBranchID: transactions.toBranchID,
+            deliveryBranchID: DeliveryBranchID,
+            toBranchID: ToBranchID,
             specialInstructions: transactions.specialInstructions,
             packageTypeID: transactions.packageTypeID,
             noOfPcs: transactions.noOfPcs,
             contents: transactions.contents,
             weight: transactions.weight,
             actualWeight: transactions.actualWeight,
-            Cash: transactions.Cash,
+            Cash: transactions.serviceID !== 2 ? transactions.Cash : -transactions.Cash,
           },
           { transaction: t, returning: ['ID', 'AWB'] } // pass transaction object to query
         );
@@ -379,7 +533,7 @@ export class CreateShipmentsController {
             statusID: 1,
             auditDate: transactionHistory.auditDate,
             userID: transactionHistory.userID,
-            toBranchID: transactionHistory.toBranchID,
+            toBranchID: ToBranchID,
           },
           { transaction: t } // pass transaction object to query
         );
@@ -414,11 +568,26 @@ export class CreateShipmentsController {
           { transaction: t } // pass transaction object to query
         );
 
+
+        if (serviceTypeIDs.length > 0) {
+          for (let i = 0; i < serviceTypeIDs.length; i++) {
+            await ShipmentServices.create(
+              {
+                AWB: newTransaction.AWB,
+                serviceID: serviceTypeIDs[i],
+              },
+              { transaction: t }
+            );
+          }
+        }
+
         return [newTransaction.AWB];
       });
 
       return result;
     } catch (err) {
+      console.log(err);
+
       throw new Error(`Could not add new TransactionHdr. Error: ${err}`);
     }
   }
@@ -437,7 +606,6 @@ export class CreateShipmentsController {
       header: [
         'Ref',
         'Service',
-        'Product',
         'specialInstructions',
         'PackageType',
         'noOfPcs',
@@ -455,6 +623,9 @@ export class CreateShipmentsController {
         'postalCode',
         'longitude',
         'latitude',
+        'allowOpenPackages',
+        'feesOnConsignee',
+        'sameDayDelivery'
       ],
     });
 

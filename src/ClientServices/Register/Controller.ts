@@ -10,6 +10,8 @@ import { SubAccounts } from '../../Backend/cust_SubAccounts/Model';
 import { ContactNumbersModel, ContactNumbers } from '../../Backend/cust_ContactNumbers/Model';
 import { UsersModel, Users } from '../../Backend/sys_Users/Model';
 import { ContactPersonsModel, ContactPersons } from '../../Backend/cust_ContactPersons/Model';
+import { SubAccountsVerification } from '../../Backend/cust_SubAccountsVerification/Model';
+import { VerificationTypes } from '../../Backend/cust_VerificationTypes/Model';
 
 dotenv.config();
 const { SALT_ROUNDS, pepper } = process.env;
@@ -38,12 +40,59 @@ const generateAccountNumber = async () => {
 const currentDate = Sequelize.literal('GETDATE()');
 
 export class UsersController {
-    async CreateGuestUser(custInfo: InfoModel, email: EmailsModel, contactPerson: ContactPersonsModel, contactNumber: ContactNumbersModel, user: UsersModel): Promise<any> {
+
+
+    async validateEmail(email: string): Promise<any> {
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+        const isValidEmail = emailRegex.test(email);
+
+        const EmailSpace = email.includes(' ');
+        if (!isValidEmail || EmailSpace) {
+            return { error: 'Invalid email' };
+        }
+
+        const emailExists = await Emails.findOne({ where: { email: email, emailTypeID: 4, isActive: true } });
+        if (emailExists) {
+            return { message: 'Email already exists' };
+        }
+        else {
+            return { message: "Email validated" };
+        }
+    }
+
+    async validateUsername(username: string): Promise<any> {
+        const usernameRegex = /^[a-zA-Z0-9\s]{8,}$/;
+        const isValidUsername = usernameRegex.test(username);
+
+        if (!isValidUsername) {
+            return { error: 'Invalid username' };
+        }
+        const usernameExists = await Users.findOne({ where: { username: username, isActive: true } });
+        if (usernameExists) {
+            return { message: 'Username already exists' };
+        }
+        else {
+            return { message: "Username validated" };
+        }
+    }
+
+    async validateMobile(contactNumber: string): Promise<any> {
+        const contactNumberExists = await ContactNumbers.findOne({ where: { contactNumber: contactNumber, contactTypeID: 4, isActive: true } });
+        if (contactNumberExists) {
+            return { message: 'Phone number already exists' };
+        }
+        else {
+            return { message: "Phone number validated" };
+        }
+    }
+
+    async CreateUser(custInfo: InfoModel, email: EmailsModel, contactPerson: ContactPersonsModel, contactNumber: ContactNumbersModel, user: UsersModel, pricePlanID: number, clientTypeID: number): Promise<any> {
         try {
 
             const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
             const mobileRegex = /^0[0-9]{10}$/;
-            const usernameRegex = /^[a-zA-Z0-9]{8,}$/;
+            const usernameRegex = /^[a-zA-Z0-9\s]{8,}$/;
             const passwordRegex = /^(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9]{8,}$/;
 
             const isValidEmail = emailRegex.test(email.email);
@@ -52,10 +101,7 @@ export class UsersController {
             const isValidPassword = passwordRegex.test(user.password);
             const EmailSpace = email.email.includes(' ');
             const MobileSpace = contactNumber.contactNumber.includes(' ');
-            const UsernameSpace = user.username.includes(' ');
             const PasswordSpace = user.password.includes(' ');
-
-
 
             if (!isValidEmail || EmailSpace) {
                 return { error: 'Invalid email' };
@@ -63,24 +109,24 @@ export class UsersController {
             if (!isValidMobile || MobileSpace) {
                 return { error: 'Invalid mobile number' };
             }
-            if (!isValidUsername || UsernameSpace) {
+            if (!isValidUsername) {
                 return { error: 'Invalid username' };
             }
             if (!isValidPassword || PasswordSpace) {
                 return { error: 'Invalid password' };
             }
 
-            const usernameExists = await Users.findOne({ where: { username: user.username } });
+            const usernameExists = await Users.findOne({ where: { username: user.username, isActive: true } });
             if (usernameExists) {
                 return { error: 'Username already exists' };
             }
 
-            const emailExists = await Emails.findOne({ where: { email: email.email, emailTypeID: 4 } });
+            const emailExists = await Emails.findOne({ where: { email: email.email, emailTypeID: 4, isActive: true } });
             if (emailExists) {
                 return { error: 'Email already exists' };
             }
 
-            const contactNumberExists = await ContactNumbers.findOne({ where: { contactNumber: contactNumber.contactNumber, contactTypeID: 4 } });
+            const contactNumberExists = await ContactNumbers.findOne({ where: { contactNumber: contactNumber.contactNumber, contactTypeID: 4, isActive: true } });
             if (contactNumberExists) {
                 return { error: 'Phone number already exists' };
             }
@@ -91,19 +137,19 @@ export class UsersController {
                     {
                         firstName: custInfo.firstName,
                         lastName: custInfo.lastName,
-                        isActive: false
+                        isActive: true
                     },
                     { transaction: t, returning: ['ID', 'firstName', 'lastName'] } // pass transaction object and specify returning column(s)
                 );
 
                 const newMainAccount = await MainAccounts.create(
                     {
-                        mainAccountName: newCustInfo.firstName + ' ' + newCustInfo.lastName,
+                        mainAccountName: user.username,
                         accountNumber: accountNumber,
                         custInfoID: newCustInfo.ID,
-                        clientTypeID: 2,
+                        clientTypeID: clientTypeID,
                         creationDate: currentDate,
-                        isActive: false
+                        isActive: true
                     },
                     { transaction: t, returning: ['ID'] }
                 );
@@ -111,12 +157,11 @@ export class UsersController {
                 const newSubAccount = await SubAccounts.create(
                     {
                         mainAccountID: newMainAccount.ID,
-                        subAccountName: newCustInfo.firstName + ' ' + newCustInfo.lastName,
+                        subAccountName: user.username,
                         accountNumber: accountNumber,
-                        pricePlanID: 1,
-                        productTypeID: 1,
+                        pricePlanID: pricePlanID,
                         creationDate: currentDate,
-                        isActive: false
+                        isActive: true
                     },
                     { transaction: t, returning: ['ID'] }
                 );
@@ -127,7 +172,7 @@ export class UsersController {
                         firstName: contactPerson.firstName,
                         lastName: contactPerson.lastName,
                         contactPersonTypeID: 4,
-                        isActive: false
+                        isActive: true
                     },
                     { transaction: t, returning: ['ID'] }
                 );
@@ -139,7 +184,7 @@ export class UsersController {
                         email: email.email,
                         emailTypeID: 4,
                         contactPersonID: newContactPerson.ID,
-                        isActive: false
+                        isActive: true
                     },
                     { transaction: t }
                 );
@@ -151,24 +196,45 @@ export class UsersController {
                         contactTypeID: 4,
                         numberTypeID: 1,
                         contactPersonID: newContactPerson.ID,
-                        isActive: false
+                        isActive: true
                     },
                     { transaction: t }
                 );
 
                 //@ts-ignore
                 const hashedPassword = bcrypt.hashSync(user.password + pepper, parseInt(SALT_ROUNDS));
-                await Users.create(
+                const newUser = await Users.create(
                     {
                         username: user.username,
                         password: hashedPassword,
                         subAccountID: newSubAccount.ID,
                         displayedName: newCustInfo.firstName + ' ' + newCustInfo.lastName,
-                        roleID: 3,
-                        isActive: false
+                        roleID: clientTypeID === 3 ? 3 : clientTypeID === 2 ? 2 : 1,
+                        isActive: true
                     },
-                    { transaction: t }
+                    { transaction: t, returning: ['ID'] }
                 );
+
+                const query = 'EXEC [dbo].[p_POST_sys_UserRoles]  @userID = :ID , @RoleIDs = :ROLES ';
+                const replacements = { ID: newUser.ID, ROLES: clientTypeID === 3 ? 3 : clientTypeID === 2 ? 2 : 1 };
+                const options = { replacements: replacements, type: Sequelize.QueryTypes.INSERT, transaction: t };
+                await sequelize.query(query, options);
+
+                await VerificationTypes.findAll({ where: { isActive: true }, transaction: t }).then(async (verificationTypes: any) => {
+                    for (let i = 0; i < verificationTypes.length; i++) {
+                        await SubAccountsVerification.create(
+                            {
+                                subAccountID: newSubAccount.ID,
+                                verificationTypeID: verificationTypes[i].ID,
+                                isVerified: false,
+                                isActive: true
+                            },
+                            { transaction: t }
+                        );
+                    }
+                });
+
+                return true;
             });
             return true;
         } catch (err) {

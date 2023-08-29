@@ -44,7 +44,6 @@ const GetClientPersonalInfoById = async (req: Request, res: Response) => {
   try {
     //@ts-ignore
     const userID = req.userID;
-
     const result = await usersController.getClientPersonalInfoById(Number(userID));
     res.json(result);
   } catch (error) {

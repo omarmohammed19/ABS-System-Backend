@@ -42,6 +42,9 @@ export const Pickups = sequelize.define<PickupsModel>(
     pickupLocationID: {
       type: DataTypes.INTEGER,
     },
+    returnLocationID: {
+      type: DataTypes.INTEGER,
+    },
     transHdrID: {
       type: DataTypes.INTEGER,
     },

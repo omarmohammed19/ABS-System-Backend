@@ -11,6 +11,23 @@ const getById = async (ID: number, t: Transaction, language?: string) => {
     return result as unknown as ServicesModel;
 }
 
+const getBySubAccountId = async (subAccountID: number, t: Transaction) => {
+    const results = await Services.findAll({
+        attributes: ['serviceTypeID'],
+        where: {
+            subAccountID: subAccountID,
+            isActive: true,
+        },
+        transaction: t,
+    });
+
+    const serviceTypeIDs = results.map(result => result.serviceTypeID);
+
+    return {
+        serviceTypeIDs: serviceTypeIDs
+    };
+}
+
 export class ServicesController {
     async index(language: string, isActive: number, limit: number): Promise<ServicesModel[]> {
         try {
@@ -48,6 +65,18 @@ export class ServicesController {
         try {
             const result = await sequelize.transaction(async (t) => { // start managed transaction and pass transaction object to the callback function
                 const item = await getById(ID, t, language); // pass transaction object to getById function
+                return item;
+            });
+            return result;
+        } catch (err) {
+            throw new Error(`Could not get Services by ID. Error: ${err}`);
+        }
+    }
+
+    async getServicesBySubAccountIDId(subAccountID: number): Promise<ServicesModel | string> {
+        try {
+            const result: any = await sequelize.transaction(async (t) => { // start managed transaction and pass transaction object to the callback function
+                const item = await getBySubAccountId(subAccountID, t); // pass transaction object to getById function
                 return item;
             });
             return result;
