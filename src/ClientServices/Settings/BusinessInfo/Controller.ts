@@ -6,9 +6,11 @@ import { Info, InfoModel } from '../../../Backend/cmp_Info/Model';
 import { MainAccounts } from '../../../Backend/cust_MainAccounts/Model';
 import { ca } from 'date-fns/locale';
 import { SubAccounts } from '../../../Backend/cust_SubAccounts/Model';
+import { Services } from '../../../Backend/cust_Services/Model';
+import { LegalPapers } from '../../../Backend/cust_LegalPapers/Model';
 
 export class BusinessInfoController {
-  async addBusinessInfo(companyInfo: InfoModel, mainAccountID: number, salesChannel: SalesChannelsModel, address: AddressesModel, productTypeID: number, prefix: string): Promise<any> {
+  async addBusinessInfo(companyInfo: InfoModel, mainAccountID: number, salesChannel: SalesChannelsModel, address: AddressesModel, productTypeID: number, prefix: string, serviceTypesIDs: number[], nationalID: string, commercialRegister: string): Promise<any> {
     try {
       return await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
@@ -81,6 +83,40 @@ export class BusinessInfoController {
           },
           { transaction: t }
         );
+
+        if (serviceTypesIDs.length > 0) {
+          for (let i = 0; i < serviceTypesIDs.length; i++) {
+            await Services.create(
+              {
+                subAccountID: address.subAccountID,
+                serviceTypeID: serviceTypesIDs[i],
+              },
+              { transaction: t }
+            );
+          }
+        }
+
+        if (nationalID !== '') {
+          await LegalPapers.create(
+            {
+              mainAccountID: mainAccountID,
+              legalPaperTypeID: 1,
+              legalPaperImage: nationalID,
+            },
+            { transaction: t }
+          );
+        }
+
+        if (commercialRegister !== '') {
+          await LegalPapers.create(
+            {
+              mainAccountID: mainAccountID,
+              legalPaperTypeID: 2,
+              legalPaperImage: commercialRegister,
+            },
+            { transaction: t }
+          );
+        }
 
         return "Business Info Added Successfully";
 

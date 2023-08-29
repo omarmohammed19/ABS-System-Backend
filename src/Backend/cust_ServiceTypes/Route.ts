@@ -33,6 +33,7 @@ const create = async (req: Request, res: Response) => {
     const salesChannelTypes = <ServiceTypesModel>{
       enServiceType: req.body.enServiceType,
       arServiceType: req.body.arServiceType,
+      price: req.body.price,
       Notes: req.body.Notes
     };
     const result = await serviceTypesController.create(salesChannelTypes);
@@ -51,6 +52,7 @@ const update = async (req: Request, res: Response) => {
       ID: Number(req.params.ID),
       enServiceType: req.body.enServiceType,
       arServiceType: req.body.arServiceType,
+      price: req.body.price,
       Notes: req.body.Notes
     };
     const result = await serviceTypesController.update(salesChannelTypes, language);

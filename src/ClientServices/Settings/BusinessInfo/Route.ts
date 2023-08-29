@@ -38,9 +38,11 @@ const addBusinessInfo = async (req: Request, res: Response) => {
 
     const productTypeID = req.body.productTypeID;
     const prefix = req.body.prefix;
+    const serviceTypesIDs = req.body.serviceTypesIDs;
+    const nationalID = req.body.nationalID;
+    const commercialRegister = req.body.commercialRegister;
 
-
-    const response = await businessInfoController.addBusinessInfo(cmpInfo, mainAccountID, salesChannel, address, productTypeID, prefix);
+    const response = await businessInfoController.addBusinessInfo(cmpInfo, mainAccountID, salesChannel, address, productTypeID, prefix, serviceTypesIDs, nationalID, commercialRegister);
     res.status(200).json(response);
   } catch (error) {
     console.log(error);
@@ -52,7 +54,7 @@ const getCompanyInfo = async (req: Request, res: Response) => {
   try {
     //@ts-ignore
     const subAccountID = req.subAccountID;
-    
+
     const response = await businessInfoController.getCompanyInfo(subAccountID);
     res.status(200).json(response);
   } catch (error) {

@@ -1,7 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../../Config/database';
 
-export interface ServicesModel extends Model {
+export interface CompanyServicesModel extends Model {
   ID: number;
   enService: string;
   arService: string;
@@ -9,7 +9,7 @@ export interface ServicesModel extends Model {
   isActive: boolean;
 }
 
-export const Services = sequelize.define<ServicesModel>(
+export const CompanyServices = sequelize.define<CompanyServicesModel>(
   'cmp_Services',
   {
     ID: {
