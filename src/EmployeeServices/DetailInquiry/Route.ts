@@ -12,6 +12,7 @@ const getTransactionsForDetailInquiry = async (req: Request, res: Response) => {
       req.body.Refs ? req.body.Refs : '',
       req.body.Consignees ? req.body.Consignees : '',
       req.body.TransIDs ? req.body.TransIDs : '',
+      req.body.ContactNumbers ? req.body.ContactNumbers : '',
       req.body.startPickupDate ? req.body.startPickupDate : '',
       req.body.endPickupDate ? req.body.endPickupDate : '',
       req.body.startCreationDate ? req.body.startCreationDate : '',
