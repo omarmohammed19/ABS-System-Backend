@@ -31,7 +31,6 @@ const createSingleShipment = async (req: Request, res: Response) => {
       userID: userID,
       serviceID: req.body.serviceID,
       creationDate: currentDate,
-      noOfAWBs: req.body.noOfAWBs,
     });
 
     const pickup = <PickupsModel>(<unknown>{
@@ -41,8 +40,6 @@ const createSingleShipment = async (req: Request, res: Response) => {
       returnLocationID: req.body.returnLocationID,
       pickupTypeID: req.body.pickupTypeID,
       vehicleTypeID: req.body.vehicleTypeID,
-      noOfAWBs: req.body.noOfAWBs,
-      actualAWBs: req.body.actualAWBs,
       timeFrom: req.body.timeFrom,
       toTime: req.body.toTime,
       userID: userID,
@@ -103,7 +100,16 @@ const createSingleShipment = async (req: Request, res: Response) => {
     });
 
     const serviceTypeIDs = req.body.serviceTypeIDs;
-    
+
+    const collectionTypeID = req.body.collectionTypeID;
+    const returnRef = req.body.returnRef;
+    const returnPackageTypeID = req.body.returnPackageTypeID;
+    const returnNoOfPcs = req.body.returnNoOfPcs;
+    const returnContents = req.body.returnContents;
+    const returnWeight = req.body.returnWeight;
+    const returnActualWeight = req.body.returnWeight;
+    const returnSpecialInstructions = req.body.returnSpecialInstructions;
+
     const result = await createShipmentsController.createSingleShipment(
       transactionHdr,
       pickup,
@@ -113,10 +119,19 @@ const createSingleShipment = async (req: Request, res: Response) => {
       contactPerson,
       contactNumber,
       address,
-      serviceTypeIDs
+      serviceTypeIDs,
+      collectionTypeID,
+      returnRef,
+      returnPackageTypeID,
+      returnNoOfPcs,
+      returnContents,
+      returnWeight,
+      returnActualWeight,
+      returnSpecialInstructions
     );
     res.json(result);
   } catch (error) {
+    console.log(error);
     
     res.status(400);
     res.json(error);
