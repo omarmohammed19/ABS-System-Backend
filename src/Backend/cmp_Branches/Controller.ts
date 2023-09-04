@@ -86,7 +86,7 @@ export class BranchesController {
     }
   }
 
-  async update(branch: BranchesModel): Promise<BranchesModel | string> {
+  async update(branch: BranchesModel, language: string): Promise<BranchesModel | string> {
     try {
       return await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
@@ -103,7 +103,7 @@ export class BranchesController {
             transaction: t, // pass transaction object to query
           }
         );
-        const updatedBranch = getById(branch.ID, t, 'en');
+        const updatedBranch = getById(branch.ID, t, language);
         return updatedBranch;
       });
     } catch (err) {

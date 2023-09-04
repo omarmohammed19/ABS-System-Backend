@@ -18,6 +18,17 @@ const getAll = async (req: Request, res: Response) => {
   }
 };
 
+const getAllSubAccounts = async (req: Request, res: Response) => {
+  try {
+    const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
+    const result = await subAccountsController.getAllSubAccounts(language);
+    res.json(result);
+  } catch (error) {
+    res.status(400);
+    res.json(error);
+  }
+};
+
 const getById = async (req: Request, res: Response) => {
   try {
     //@ts-ignore
@@ -36,7 +47,7 @@ const getByMainAccountID = async (req: Request, res: Response) => {
     //@ts-ignore
     const mainAccountID = req.mainAccountID;
     const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-    const result = await subAccountsController.getSubAccountsByMainAccountId(language, Number(req.params.isActive), mainAccountID,);
+    const result = await subAccountsController.getSubAccountsByMainAccountId(language, Number(req.params.isActive), mainAccountID);
     res.json(result);
   } catch (error) {
     res.status(400);
@@ -47,16 +58,14 @@ const getByMainAccountID = async (req: Request, res: Response) => {
 const getPaymentMethodBySubAccountIDId = async (req: Request, res: Response) => {
   try {
     //@ts-ignore
-    const subAccountID = req.subAccountID
+    const subAccountID = req.subAccountID;
     const result = await subAccountsController.getPaymentMethodBySubAccountIDId(subAccountID);
     res.json(result);
-  }
-  catch (error) {
+  } catch (error) {
     res.status(400);
     res.json(error);
   }
-}
-
+};
 
 const create = async (req: Request, res: Response) => {
   try {
@@ -127,6 +136,7 @@ const activate = async (req: Request, res: Response) => {
 
 const subAccountsRouter = (app: express.Application) => {
   app.get('/sub-accounts/:isActive/:limit', getAll);
+  app.get('/sub-accounts', getAllSubAccounts);
   app.get('/sub-accounts-by-ID', getById);
   app.get('/sub-accounts-by-main-account-ID/:isActive', getByMainAccountID);
   app.get('/sub-accounts-payment-method', getPaymentMethodBySubAccountIDId);

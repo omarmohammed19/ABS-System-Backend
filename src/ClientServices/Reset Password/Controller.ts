@@ -13,8 +13,8 @@ export class ResetPasswordController {
   async getUserDetails(userCred: string): Promise<any> {
     try {
       return await sequelize.transaction(async (t) => {
-        const query = 'EXEC [dbo].[p_GET_sys_UsersByCredentials] @userCred = :userCred';
-        const replacements = { userCred: userCred };
+        const query = 'EXEC [dbo].[p_GET_sys_UsersByCredentials] @userCred = :userCred, @Method = :Method';
+        const replacements = { userCred: userCred, Method: 'client_login' };
         const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
         const result = await sequelize.query(query, options);
 

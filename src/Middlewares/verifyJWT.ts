@@ -21,6 +21,10 @@ const verifyJWT = (req: Request, res: Response, next: NextFunction) => {
             //@ts-ignore
             req.name = decoded.UserInfo.name;
             //@ts-ignore
+            req.subAccountID = decoded.UserInfo.subAccountID;
+            //@ts-ignore
+            req.mainAccountID = decoded.UserInfo.mainAccountID;
+            //@ts-ignore
             req.departmentID = decoded.UserInfo.departmentID;
             //@ts-ignore
             req.branchID = decoded.UserInfo.branchID;

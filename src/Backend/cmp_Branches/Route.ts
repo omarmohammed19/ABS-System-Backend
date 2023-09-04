@@ -67,15 +67,17 @@ const create = async (req: Request, res: Response) => {
 
 const update = async (req: Request, res: Response) => {
   try {
+    const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
     const branch = <BranchesModel>{
       ID: Number(req.params.ID),
       enBranchName: req.body.enBranchName,
       arBranchName: req.body.arBranchName,
       cityID: req.body.cityID,
     };
-    const result = await branchesController.update(branch);
+    const result = await branchesController.update(branch, language);
     res.json(result);
   } catch (error) {
+    console.log('🚀 ~ file: Route.ts:43 ~ create ~ error:', error);
     res.status(400);
     res.json(error);
   }

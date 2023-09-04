@@ -2,13 +2,27 @@ import express, { Request, Response } from 'express';
 import { StatusController } from './Controller';
 import { StatusModel } from './Model';
 import Sequalize from 'sequelize';
+import { TransactionsModel } from '../ship_Transactions/Model';
+import { sequelize } from '../../Config/database';
 
 const statusController = new StatusController();
+
+const getAllActive = async (req: Request, res: Response) => {
+  try {
+    const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
+    const result = await statusController.index(language, Number(req.params.isActive));
+    res.json(result);
+  } catch (error) {
+    console.log(error);
+    res.status(400);
+    res.json(error);
+  }
+};
 
 const getAll = async (req: Request, res: Response) => {
   try {
     const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-    const result = await statusController.index(language, Number(req.params.isActive));
+    const result = await statusController.getAll(language);
     res.json(result);
   } catch (error) {
     console.log(error);
@@ -65,6 +79,60 @@ const update = async (req: Request, res: Response) => {
   }
 };
 
+
+const updateAwbStatus = async (req: Request, res: Response) => {
+  try {
+    const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
+
+    const {
+      AWB,
+      transID,
+      userID,
+      statusID,
+      runnerID,
+      fromBranchID,
+      toBranchID,
+      currentBranchID,
+      recipientID,
+      recipientName,
+      shipmentTypeID,
+
+    } = req.body
+
+    const result = await statusController.updateAWbStatus(AWB, statusID, userID, transID, shipmentTypeID, runnerID, toBranchID, fromBranchID, currentBranchID, recipientID, recipientName);
+    res.json(result);
+
+
+  } catch (error) {
+    res.status(400);
+    res.json(error);
+  }
+};
+
+const updateStatus = async (req: Request, res: Response) => {
+  try {
+    const {
+      AWBs,
+      statusID,
+      userID,
+      shipmentTypeID,
+      runnerID,
+      toBranchID,
+      fromBranchID,
+      currentBranchID,
+      recipientID,
+      recipientName,
+    } = req.body;
+    const result = await statusController.updateStatus(AWBs, statusID, userID, shipmentTypeID, runnerID, toBranchID, fromBranchID, currentBranchID, recipientID, recipientName)
+    res.json(result);
+  } catch (error) {
+    res.status(400);
+    res.json(error);
+  }
+};
+
+
+
 const deactivate = async (req: Request, res: Response) => {
   try {
     const result = await statusController.deactivate(Number(req.params.ID));
@@ -87,11 +155,14 @@ const activate = async (req: Request, res: Response) => {
 };
 
 const statusRouter = (app: express.Application) => {
-  app.get('/status/:isActive', getAll);
+  app.get('/status', getAll);
+  app.get('/status/:isActive', getAllActive);
   app.get('/status-by-ID/:ID', getById);
   app.post('/status', create);
   app.put('/status/:ID', update);
-  app.put('/status/deactivate/:ID', deactivate);
+  app.put('/status-awb', updateAwbStatus);
+  app.put('/status-update', updateStatus);
+  app.put('/status/de-activate/:ID', deactivate);
   app.put('/status/activate/:ID', activate);
 };
 

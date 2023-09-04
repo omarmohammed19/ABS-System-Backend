@@ -1,9 +1,7 @@
-import { rgb } from 'pdf-lib';
 import { sequelize } from '../../Config/database';
 import { PackageTypes } from '../../Backend/ship_PackageTypes/Model';
-import { Products } from '../../Backend/ship_Products/Model';
-import { Cities, CitiesModel } from '../../Backend/cmp_Cities/Model';
-import { Services } from '../../Backend/cmp_Services/Model';
+import { Cities } from '../../Backend/cmp_Cities/Model';
+import { CompanyServices } from '../../Backend/cmp_Services/Model';
 import { TransactionHdrModel, TransactionHdr } from '../../Backend/ship_TransactionHdr/Model';
 import { PickupsModel, Pickups } from '../../Backend/ship_Pickups/Model';
 import { PickupHistoryModel, PickupHistory } from '../../Backend/ship_PickupHistory/Model';
@@ -13,14 +11,13 @@ import { ContactPersonsModel, ContactPersons } from '../../Backend/cnee_ContactP
 import { ContactNumbersModel, ContactNumbers } from '../../Backend/cnee_ContactNumbers/Model';
 import { AddressesModel, Addresses } from '../../Backend/cnee_Addresses/Model';
 import { SubAccounts } from '../../Backend/cust_SubAccounts/Model';
-import { BranchesController } from '../../Backend/cmp_Branches/Controller';
 import xlsx from 'xlsx';
-import { TransactionsController } from '../../Backend/ship_Transactions/Controller';
 import Sequelize from 'sequelize';
+import { ShipmentServices } from '../../Backend/ship_Services/Model';
+import { Services } from '../../Backend/cust_Services/Model';
 
-const branchesController = new BranchesController();
+let createdAWBs: any;
 
-const transactionsController = new TransactionsController();
 
 const getPrefix = async (subAccountID: number) => {
   const result: any = await SubAccounts.findOne({ where: { ID: subAccountID } });
@@ -53,17 +50,17 @@ const generateAWB = async (subAccountID: number) => {
   return AWB;
 };
 
-const getProductIDByName = async (name: string) => {
-  const product = await Products.findOne({
-    attributes: ['ID'],
-    where: {
-      enProduct: name,
-      isActive: true,
-    },
-  });
+// const getProductIDByName = async (name: string) => {
+//   const product = await Products.findOne({
+//     attributes: ['ID'],
+//     where: {
+//       enProduct: name,
+//       isActive: true,
+//     },
+//   });
 
-  return product ? product.ID : null;
-};
+//   return product ? product.ID : null;
+// };
 
 const getPackageTypeIDByName = async (name: string) => {
   const packageType = await PackageTypes.findOne({
@@ -89,9 +86,33 @@ const getBranchIDByCityName = async (name: string) => {
   return city ? city.branchID : null;
 };
 
+const getCityIDByCityName = async (name: string) => {
+  const city = await Cities.findOne({
+    attributes: ['ID'],
+    where: {
+      enCityName: name,
+      isActive: true,
+    },
+  });
+
+  return city ? city.ID : null;
+};
+
+const getBranchIDByCityID = async (cityID: number) => {
+  const city = await Cities.findOne({
+    attributes: ['branchID'],
+    where: {
+      ID: cityID,
+      isActive: true,
+    },
+  });
+
+  return city ? city.branchID : null;
+};
+
 // get serviceID by name
 const getServiceIDByName = async (name: string) => {
-  const service = await Services.findOne({
+  const service = await CompanyServices.findOne({
     attributes: ['ID'],
     where: {
       enService: name,
@@ -101,6 +122,30 @@ const getServiceIDByName = async (name: string) => {
 
   return service ? service.ID : null;
 };
+
+const checkRefExists = async (Ref: string) => {
+  const result: any = await Transactions.findOne({ where: { Ref: Ref } });
+  if (result) {
+    return true;
+  }
+  return false;
+}
+
+const getServicesBySubAccountId = async (subAccountID: number) => {
+  const results = await Services.findAll({
+    attributes: ['serviceTypeID'],
+    where: {
+      subAccountID: subAccountID,
+      isActive: true,
+    }
+  });
+
+  const serviceTypeIDs = results.map(result => result.serviceTypeID);
+
+  return {
+    serviceTypeIDs: serviceTypeIDs
+  };
+}
 
 const getBranchIDByPickupLocationID = async (PickupLocationID: number): Promise<any> => {
   const query = 'EXEC [dbo].[p_GET_BranchID_By_PickupLocationID] @PickupLocationID = :PickupLocationID';
@@ -131,17 +176,11 @@ async function insertDataIntoDatabase(
 ) {
   // Use a Sequelize transaction to insert the data into the database
   let newPickup: any;
-  let location: any;
   let ToBranchID: any;
   let DeliveryBranchID: any;
+  let subAccountServicesIDs: any;
 
-  if (data[0].Service !== 'Return') {
-    location = pickup.pickupLocationID;
-    ToBranchID = await getBranchIDByPickupLocationID(pickup.pickupLocationID);
-  } else {
-    location = pickup.returnLocationID;
-    DeliveryBranchID = await getBranchIDByReturnLocationID(pickup.returnLocationID);
-  }
+  subAccountServicesIDs = await getServicesBySubAccountId(transactionHdr.subAccountID);
 
   await sequelize.transaction(async (t) => {
     const newTransactionHdr = await TransactionHdr.create(
@@ -160,7 +199,8 @@ async function insertDataIntoDatabase(
       {
         mainAccountID: pickup.mainAccountID,
         subAccountID: pickup.subAccountID,
-        pickupLocationID: location,
+        pickupLocationID: data[0].Service !== 'Return' ? pickup.pickupLocationID : null,
+        returnLocationID: data[0].Service !== 'Return' ? null : pickup.returnLocationID,
         transHdrID: newTransactionHdr.ID,
         pickupTypeID: pickup.pickupTypeID,
         vehicleTypeID: pickup.vehicleTypeID,
@@ -174,7 +214,7 @@ async function insertDataIntoDatabase(
         createdAWBs: 0,
         Notes: pickup.Notes,
       },
-      { transaction: t, returning: ['ID', 'pickupLocationID'] }
+      { transaction: t, returning: data[0].Service !== 'Return' ? ['ID', 'pickupLocationID'] : ['ID', 'returnLocationID'] }
     );
 
     await PickupHistory.create(
@@ -187,16 +227,93 @@ async function insertDataIntoDatabase(
       { transaction: t }
     );
 
+    const productTypeID = await SubAccounts.findOne({
+      attributes: ['productTypeID'],
+      where: { ID: transactionHdr.subAccountID }, transaction: t
+    });
+
     const transactionData = await Promise.all(
       data.map(async (row: any) => {
-        if (data[0].Service !== 'Return') {
+        if (row.Service !== 'Return') {
+          ToBranchID = await getBranchIDByPickupLocationID(pickup.pickupLocationID);
           DeliveryBranchID = await getBranchIDByCityName(row.City);
         } else {
           ToBranchID = await getBranchIDByCityName(row.City);
+          DeliveryBranchID = await getBranchIDByReturnLocationID(pickup.returnLocationID);
         }
+
+        let AWB: any = await generateAWB(transactionHdr.subAccountID);
+
+        if (row.Service !== 'Return') {
+          if (row["Allow Opening Packages?"] === 'Yes') {
+            await ShipmentServices.create(
+              {
+                AWB: AWB,
+                serviceID: 1,
+              },
+              { transaction: t }
+            );
+          }
+          else if (row["Allow Opening Packages?"] !== 'No') {
+            if (subAccountServicesIDs.serviceTypeIDs.includes(1)) {
+              await ShipmentServices.create(
+                {
+                  AWB: AWB,
+                  serviceID: 1,
+                },
+                { transaction: t }
+              );
+            }
+          }
+
+          if (row["Fees On Consignee?"] === 'Yes') {
+            await ShipmentServices.create(
+              {
+                AWB: AWB,
+                serviceID: 2,
+              },
+              { transaction: t }
+            );
+          }
+          else if (row["Fees On Consignee?"] !== 'No') {
+            if (subAccountServicesIDs.serviceTypeIDs.includes(2)) {
+              await ShipmentServices.create(
+                {
+                  AWB: AWB,
+                  serviceID: 2,
+                },
+                { transaction: t }
+              );
+            }
+          }
+
+          if (row["Same Day Delivery?"] === 'Yes') {
+            await ShipmentServices.create(
+              {
+                AWB: AWB,
+                serviceID: 3,
+              },
+              { transaction: t }
+            );
+          }
+          else if (row["Same Day Delivery?"] !== 'No') {
+            if (subAccountServicesIDs.serviceTypeIDs.includes(3)) {
+              await ShipmentServices.create(
+                {
+                  AWB: AWB,
+                  serviceID: 3,
+                },
+                { transaction: t }
+              );
+            }
+          }
+        }
+
+
+
         return {
           transHdrID: newTransactionHdr.ID,
-          AWB: await generateAWB(transactions.subAccountID),
+          AWB: AWB,
           mainAccountID: transactions.mainAccountID,
           subAccountID: transactions.subAccountID,
           serviceID: await getServiceIDByName(row.Service),
@@ -209,20 +326,23 @@ async function insertDataIntoDatabase(
           deliveryBranchID: DeliveryBranchID,
           toBranchID: ToBranchID,
           shipmentTypeID: 1,
-          Ref: row.Ref,
-          specialInstructions: row.specialInstructions,
-          productID: await getProductIDByName(row.Product),
-          packageTypeID: await getPackageTypeIDByName(row.PackageType),
-          noOfPcs: row.noOfPcs,
-          contents: row.contents,
-          weight: row.weight,
-          actualWeight: row.weight,
-          Cash: row.Cash,
+          Ref: row["Order Reference"],
+          specialInstructions: row["Special Instructions"],
+          productID: productTypeID?.productTypeID,
+          packageTypeID: await getPackageTypeIDByName(row["Package Type"]),
+          noOfPcs: row["#Pieces"],
+          contents: row.Contents,
+          weight: row.Weight,
+          actualWeight: row.Weight,
+          Cash: row.Service !== 'Return' ? row.Cash : -row.Cash,
         };
       })
     );
 
     const createdTransactions = await Transactions.bulkCreate(transactionData, { transaction: t, returning: ['ID', 'AWB'] });
+
+    createdAWBs = createdTransactions.map((transaction) => transaction.AWB);
+
     const transIDs = createdTransactions.map((transaction) => transaction.ID);
 
     const transactionHistoryData = await Promise.all(
@@ -243,8 +363,8 @@ async function insertDataIntoDatabase(
     const contactPersonData = await Promise.all(
       data.map(async (row: any) => {
         return {
-          firstName: row.firstName,
-          lastName: row.lastName,
+          firstName: row["First Name"],
+          lastName: row["Last Name"],
         };
       })
     );
@@ -258,15 +378,13 @@ async function insertDataIntoDatabase(
       AWBs.map(async (AWB, index) => {
         return {
           AWB: AWB,
-          streetName: data[index].streetName,
-          apartmentNumber: data[index].apartmentNumber,
-          floorNumber: data[index].floorNumber,
-          buildingNumber: data[index].buildingNumber,
-          cityID: await getBranchIDByCityName(data[index].City),
-          postalCode: data[index].postalCode,
+          streetName: data[index]["Street Name"],
+          apartmentNumber: data[index]["Apartment#"],
+          floorNumber: data[index]["Floor#"],
+          buildingNumber: data[index]["Building#"],
+          cityID: await getCityIDByCityName(data[index].City),
+          postalCode: data[index]["Postal Code"],
           cneeContactPersonID: ContactPersonIDs[index],
-          longitude: data[index].longitude,
-          latitude: data[index].latitude,
         };
       })
     );
@@ -275,7 +393,7 @@ async function insertDataIntoDatabase(
 
     const contactNumberData = ContactPersonIDs.map((ContactPersonID, index) => {
       return {
-        contactNumber: data[index].contactNumber,
+        contactNumber: data[index]["Mobile Number"],
         cneeContactPersonID: ContactPersonID,
         numberTypeID: 1,
       };
@@ -295,130 +413,437 @@ export class CreateShipmentsController {
     transactionHistory: TransactionHistoryModel,
     contactPersons: ContactPersonsModel,
     contactNumbers: ContactNumbersModel,
-    addresses: AddressesModel
+    addresses: AddressesModel,
+    serviceTypeIDs: number[],
+    collectionTypeID: number,
+    returnRef: string,
+    returnPackageTypeID: number,
+    returnNoOfPcs: number,
+    returnContents: string,
+    returnWeight: number,
+    returnActualWeight: number,
+    returnSpecialInstructions: string
   ): Promise<any> {
     try {
-      const result = await sequelize.transaction(async (t) => {
-        const AWB = await generateAWB(transactionHdr.subAccountID);
-        const newTransactionHdr = await TransactionHdr.create(
-          {
-            mainAccountID: transactionHdr.mainAccountID,
-            subAccountID: transactionHdr.subAccountID,
-            userID: transactionHdr.userID,
-            serviceID: transactionHdr.serviceID,
-            creationDate: transactionHdr.creationDate,
-            noOfAWBs: transactionHdr.noOfAWBs,
-          },
-          { transaction: t, returning: ['ID'] } // pass transaction object and specify returning column(s)
-        );
+      if (transactions.serviceID !== 3) {
+        let ToBranchID: any;
+        let DeliveryBranchID: any;
 
-        const newPickup = await Pickups.create(
-          {
-            mainAccountID: pickup.mainAccountID,
-            subAccountID: pickup.subAccountID,
-            pickupLocationID: pickup.pickupLocationID,
-            transHdrID: newTransactionHdr.ID,
-            pickupTypeID: pickup.pickupTypeID,
-            vehicleTypeID: pickup.vehicleTypeID,
-            noOfAWBs: pickup.noOfAWBs,
-            actualAWBs: pickup.actualAWBs,
-            timeFrom: pickup.timeFrom,
-            toTime: pickup.toTime,
-            statusID: 1,
-            userID: pickup.userID,
-            creationDate: pickup.creationDate,
-            createdAWBs: 0,
-            Notes: pickup.Notes,
-          },
-          { transaction: t, returning: ['ID'] } // pass transaction object to query
-        );
+        if (transactions.serviceID !== 2) {
+          ToBranchID = await getBranchIDByPickupLocationID(pickup.pickupLocationID);
+          DeliveryBranchID = await getBranchIDByCityID(addresses.cityID);
+        } else {
+          DeliveryBranchID = await getBranchIDByReturnLocationID(pickup.returnLocationID);
+          ToBranchID = await getBranchIDByCityID(addresses.cityID);
+        }
 
-        await PickupHistory.create(
-          {
-            pickupID: newPickup.ID,
-            statusID: 1,
-            actionTime: pickupHistory.actionTime,
-            userID: pickupHistory.userID,
-          },
-          { transaction: t }
-        );
+        const result = await sequelize.transaction(async (t) => {
+          const AWB = await generateAWB(transactionHdr.subAccountID);
+          const RefExists = await checkRefExists(transactions.Ref);
 
-        const newTransaction = await Transactions.create(
-          {
-            transHdrID: newTransactionHdr.ID,
-            AWB: AWB,
-            Ref: transactions.Ref,
-            mainAccountID: transactions.mainAccountID,
-            subAccountID: transactions.subAccountID,
-            serviceID: transactions.serviceID,
-            shipmentTypeID: 1,
-            statusID: 1,
-            expectedDeliveryDate: transactions.expectedDeliveryDate,
-            productID: transactions.productID,
-            creationDate: transactions.creationDate,
-            lastChangeDate: transactions.lastChangeDate,
-            userID: transactions.userID,
-            expiryDate: transactions.expiryDate,
-            deliveryBranchID: transactions.deliveryBranchID,
-            toBranchID: transactions.toBranchID,
-            specialInstructions: transactions.specialInstructions,
-            packageTypeID: transactions.packageTypeID,
-            noOfPcs: transactions.noOfPcs,
-            contents: transactions.contents,
-            weight: transactions.weight,
-            actualWeight: transactions.actualWeight,
-            Cash: transactions.Cash,
-          },
-          { transaction: t, returning: ['ID', 'AWB'] } // pass transaction object to query
-        );
+          const productTypeID = await SubAccounts.findOne({
+            attributes: ['productTypeID'],
+            where: { ID: transactionHdr.subAccountID }, transaction: t
+          });
 
-        await TransactionHistory.create(
-          {
-            transID: newTransaction.ID,
-            shipmentTypeID: 1,
-            statusID: 1,
-            auditDate: transactionHistory.auditDate,
-            userID: transactionHistory.userID,
-            toBranchID: transactionHistory.toBranchID,
-          },
-          { transaction: t } // pass transaction object to query
-        );
 
-        const newContactPerson = await ContactPersons.create(
-          {
-            firstName: contactPersons.firstName,
-            lastName: contactPersons.lastName,
-          },
-          { transaction: t, returning: ['ID'] }
-        );
+          if (RefExists) {
+            return 'Ref already exists';
+          }
+          const newTransactionHdr = await TransactionHdr.create(
+            {
+              mainAccountID: transactionHdr.mainAccountID,
+              subAccountID: transactionHdr.subAccountID,
+              userID: transactionHdr.userID,
+              serviceID: transactionHdr.serviceID,
+              creationDate: transactionHdr.creationDate,
+              noOfAWBs: 1,
+            },
+            { transaction: t, returning: ['ID'] } // pass transaction object and specify returning column(s)
+          );
 
-        await ContactNumbers.create({
-          contactNumber: contactNumbers.contactNumber,
-          cneeContactPersonID: newContactPerson.ID,
-          numberTypeID: contactNumbers.numberTypeID,
+          const newPickup = await Pickups.create(
+            {
+              mainAccountID: pickup.mainAccountID,
+              subAccountID: pickup.subAccountID,
+              pickupLocationID: pickup.pickupLocationID,
+              returnLocationID: pickup.returnLocationID,
+              transHdrID: newTransactionHdr.ID,
+              pickupTypeID: pickup.pickupTypeID,
+              vehicleTypeID: pickup.vehicleTypeID,
+              noOfAWBs: 1,
+              actualAWBs: 1,
+              timeFrom: pickup.timeFrom,
+              toTime: pickup.toTime,
+              statusID: 1,
+              userID: pickup.userID,
+              creationDate: pickup.creationDate,
+              createdAWBs: 1,
+              Notes: pickup.Notes,
+            },
+            { transaction: t, returning: ['ID'] } // pass transaction object to query
+          );
+
+          await PickupHistory.create(
+            {
+              pickupID: newPickup.ID,
+              statusID: 1,
+              actionTime: pickupHistory.actionTime,
+              userID: pickupHistory.userID,
+            },
+            { transaction: t }
+          );
+
+          const newTransaction = await Transactions.create(
+            {
+              transHdrID: newTransactionHdr.ID,
+              AWB: AWB,
+              Ref: transactions.Ref,
+              mainAccountID: transactions.mainAccountID,
+              subAccountID: transactions.subAccountID,
+              serviceID: transactions.serviceID,
+              shipmentTypeID: 1,
+              statusID: 1,
+              expectedDeliveryDate: transactions.expectedDeliveryDate,
+              productID: productTypeID?.productTypeID,
+              creationDate: transactions.creationDate,
+              lastChangeDate: transactions.lastChangeDate,
+              userID: transactions.userID,
+              expiryDate: transactions.expiryDate,
+              deliveryBranchID: DeliveryBranchID,
+              toBranchID: ToBranchID,
+              specialInstructions: transactions.specialInstructions,
+              packageTypeID: transactions.packageTypeID,
+              noOfPcs: transactions.noOfPcs,
+              contents: transactions.contents,
+              weight: transactions.weight,
+              actualWeight: transactions.actualWeight,
+              Cash: transactions.serviceID !== 2 ? transactions.Cash : -transactions.Cash,
+            },
+            { transaction: t, returning: ['ID', 'AWB'] } // pass transaction object to query
+          );
+
+          await TransactionHistory.create(
+            {
+              transID: newTransaction.ID,
+              shipmentTypeID: 1,
+              statusID: 1,
+              auditDate: transactionHistory.auditDate,
+              userID: transactionHistory.userID,
+              toBranchID: ToBranchID,
+            },
+            { transaction: t } // pass transaction object to query
+          );
+
+          const newContactPerson = await ContactPersons.create(
+            {
+              firstName: contactPersons.firstName,
+              lastName: contactPersons.lastName,
+            },
+            { transaction: t, returning: ['ID'] }
+          );
+
+          await ContactNumbers.create({
+            contactNumber: contactNumbers.contactNumber,
+            cneeContactPersonID: newContactPerson.ID,
+            numberTypeID: contactNumbers.numberTypeID,
+          });
+
+          await Addresses.create(
+            {
+              AWB: newTransaction.AWB,
+              streetName: addresses.streetName,
+              apartmentNumber: addresses.apartmentNumber,
+              floorNumber: addresses.floorNumber,
+              buildingNumber: addresses.buildingNumber,
+              cityID: addresses.cityID,
+              postalCode: addresses.postalCode,
+              cneeContactPersonID: newContactPerson.ID,
+              longitude: addresses.longitude,
+              latitude: addresses.latitude,
+            },
+            { transaction: t } // pass transaction object to query
+          );
+
+
+          if (serviceTypeIDs.length > 0) {
+            for (let i = 0; i < serviceTypeIDs.length; i++) {
+              await ShipmentServices.create(
+                {
+                  AWB: newTransaction.AWB,
+                  serviceID: serviceTypeIDs[i],
+                },
+                { transaction: t }
+              );
+            }
+          }
+
+          return [newTransaction.AWB];
         });
 
-        await Addresses.create(
-          {
-            AWB: newTransaction.AWB,
-            streetName: addresses.streetName,
-            apartmentNumber: addresses.apartmentNumber,
-            floorNumber: addresses.floorNumber,
-            buildingNumber: addresses.buildingNumber,
-            cityID: addresses.cityID,
-            postalCode: addresses.postalCode,
-            cneeContactPersonID: newContactPerson.ID,
-            longitude: addresses.longitude,
-            latitude: addresses.latitude,
-          },
-          { transaction: t } // pass transaction object to query
-        );
+        return result;
+      }
+      else {
+        let ToBranchIDDelivery: any;
+        let DeliveryBranchIDDelivery: any;
 
-        return [newTransaction.AWB];
-      });
+        let ToBranchIDReturn: any;
+        let DeliveryBranchIDReturn: any;
 
-      return result;
+
+        ToBranchIDDelivery = await getBranchIDByPickupLocationID(pickup.pickupLocationID);
+        DeliveryBranchIDDelivery = await getBranchIDByCityID(addresses.cityID);
+
+        ToBranchIDReturn = await getBranchIDByCityID(addresses.cityID);
+        DeliveryBranchIDReturn = await getBranchIDByReturnLocationID(pickup.returnLocationID);
+
+
+        const result = await sequelize.transaction(async (t) => {
+          const RefExists = await checkRefExists(transactions.Ref);
+          const ReturnRefExists = await checkRefExists(returnRef);
+
+          const productTypeID = await SubAccounts.findOne({
+            attributes: ['productTypeID'],
+            where: { ID: transactionHdr.subAccountID }, transaction: t
+          });
+
+          if (RefExists || ReturnRefExists) {
+            return 'Ref already exists';
+          }
+
+          const newTransactionHdr = await TransactionHdr.create(
+            {
+              mainAccountID: transactionHdr.mainAccountID,
+              subAccountID: transactionHdr.subAccountID,
+              userID: transactionHdr.userID,
+              serviceID: transactionHdr.serviceID,
+              creationDate: transactionHdr.creationDate,
+              noOfAWBs: 2,
+            },
+            { transaction: t, returning: ['ID'] } // pass transaction object and specify returning column(s)
+          );
+
+          const pickupData = [
+            {
+              mainAccountID: pickup.mainAccountID,
+              subAccountID: pickup.subAccountID,
+              pickupLocationID: pickup.pickupLocationID,
+              transHdrID: newTransactionHdr.ID,
+              pickupTypeID: pickup.pickupTypeID,
+              vehicleTypeID: pickup.vehicleTypeID,
+              noOfAWBs: 1,
+              actualAWBs: 1,
+              timeFrom: pickup.timeFrom,
+              toTime: pickup.toTime,
+              statusID: 1,
+              userID: pickup.userID,
+              creationDate: pickup.creationDate,
+              createdAWBs: 1,
+              Notes: pickup.Notes,
+            },
+            {
+              mainAccountID: pickup.mainAccountID,
+              subAccountID: pickup.subAccountID,
+              returnLocationID: pickup.returnLocationID,
+              transHdrID: newTransactionHdr.ID,
+              pickupTypeID: pickup.pickupTypeID,
+              vehicleTypeID: pickup.vehicleTypeID,
+              noOfAWBs: 1,
+              actualAWBs: 1,
+              timeFrom: pickup.timeFrom,
+              toTime: pickup.toTime,
+              statusID: 1,
+              userID: pickup.userID,
+              creationDate: pickup.creationDate,
+              createdAWBs: 1,
+              Notes: pickup.Notes,
+            },
+          ];
+
+          const newPickups = await Pickups.bulkCreate(pickupData, { transaction: t, returning: ['ID'] });
+
+          const newDeliveryPickup = newPickups[0];
+          const newReturnPickup = newPickups[1];
+
+          const pickupHistoryData = [
+            {
+              pickupID: newDeliveryPickup.ID,
+              statusID: 1,
+              actionTime: pickupHistory.actionTime,
+              userID: pickupHistory.userID,
+            },
+            {
+              pickupID: newReturnPickup.ID,
+              statusID: 1,
+              actionTime: pickupHistory.actionTime,
+              userID: pickupHistory.userID,
+            },
+          ];
+
+          await PickupHistory.bulkCreate(pickupHistoryData, { transaction: t });
+
+
+          const transactionData = [
+            {
+              transHdrID: newTransactionHdr.ID,
+              AWB: await generateAWB(transactionHdr.subAccountID),
+              Ref: transactions.Ref,
+              mainAccountID: transactions.mainAccountID,
+              subAccountID: transactions.subAccountID,
+              serviceID: 1,
+              shipmentTypeID: 1,
+              statusID: 1,
+              expectedDeliveryDate: transactions.expectedDeliveryDate,
+              productID: productTypeID?.productTypeID,
+              creationDate: transactions.creationDate,
+              lastChangeDate: transactions.lastChangeDate,
+              userID: transactions.userID,
+              expiryDate: transactions.expiryDate,
+              deliveryBranchID: DeliveryBranchIDDelivery,
+              toBranchID: ToBranchIDDelivery,
+              specialInstructions: transactions.specialInstructions,
+              packageTypeID: transactions.packageTypeID,
+              noOfPcs: transactions.noOfPcs,
+              contents: transactions.contents,
+              weight: transactions.weight,
+              actualWeight: transactions.actualWeight,
+              Cash: collectionTypeID == 1 ? transactions.Cash : 0,
+            },
+            {
+              transHdrID: newTransactionHdr.ID,
+              AWB: await generateAWB(transactionHdr.subAccountID),
+              Ref: returnRef,
+              mainAccountID: transactions.mainAccountID,
+              subAccountID: transactions.subAccountID,
+              serviceID: 2,
+              shipmentTypeID: 1,
+              statusID: 1,
+              expectedDeliveryDate: transactions.expectedDeliveryDate,
+              productID: productTypeID?.productTypeID,
+              creationDate: transactions.creationDate,
+              lastChangeDate: transactions.lastChangeDate,
+              userID: transactions.userID,
+              expiryDate: transactions.expiryDate,
+              deliveryBranchID: DeliveryBranchIDReturn,
+              toBranchID: ToBranchIDReturn,
+              specialInstructions: returnSpecialInstructions,
+              packageTypeID: returnPackageTypeID,
+              noOfPcs: returnNoOfPcs,
+              contents: returnContents,
+              weight: returnWeight,
+              actualWeight: returnWeight,
+              Cash: collectionTypeID == 2 ? -transactions.Cash : 0,
+            },
+          ];
+
+          const newTransactions = await Transactions.bulkCreate(transactionData, { transaction: t, returning: ['ID', 'AWB'] });
+
+          // Assuming you want to use the generated IDs in the next steps
+          const newDeliveryTransaction = newTransactions[0]; // The first transaction
+          const newReturnTransaction = newTransactions[1]; // The second transaction
+
+          const transactionHistoryData = [
+            {
+              transID: newDeliveryTransaction.ID,
+              shipmentTypeID: 1,
+              statusID: 1,
+              auditDate: transactionHistory.auditDate,
+              userID: transactionHistory.userID,
+              toBranchID: ToBranchIDDelivery,
+            },
+            {
+              transID: newReturnTransaction.ID,
+              shipmentTypeID: 1,
+              statusID: 1,
+              auditDate: transactionHistory.auditDate,
+              userID: transactionHistory.userID,
+              toBranchID: ToBranchIDReturn,
+            },
+          ];
+
+          await TransactionHistory.bulkCreate(transactionHistoryData, { transaction: t });
+
+          const contactPersonData = [
+            {
+              firstName: contactPersons.firstName,
+              lastName: contactPersons.lastName,
+            },
+            {
+              firstName: contactPersons.firstName,
+              lastName: contactPersons.lastName,
+            },
+          ];
+
+          const newContactPersons = await ContactPersons.bulkCreate(contactPersonData, { transaction: t, returning: ['ID'] });
+
+          const newDeliveryContactPerson = newContactPersons[0];
+          const newReturnContactPerson = newContactPersons[1];
+
+          const contactNumberData = [
+            {
+              contactNumber: contactNumbers.contactNumber,
+              cneeContactPersonID: newDeliveryContactPerson.ID,
+              numberTypeID: contactNumbers.numberTypeID,
+            },
+            {
+              contactNumber: contactNumbers.contactNumber,
+              cneeContactPersonID: newReturnContactPerson.ID,
+              numberTypeID: contactNumbers.numberTypeID,
+            },
+          ];
+
+          await ContactNumbers.bulkCreate(contactNumberData, { transaction: t });
+
+          const addressData = [
+            {
+              AWB: newDeliveryTransaction.AWB,
+              streetName: addresses.streetName,
+              apartmentNumber: addresses.apartmentNumber,
+              floorNumber: addresses.floorNumber,
+              buildingNumber: addresses.buildingNumber,
+              cityID: addresses.cityID,
+              postalCode: addresses.postalCode,
+              cneeContactPersonID: newDeliveryContactPerson.ID,
+              longitude: addresses.longitude,
+              latitude: addresses.latitude,
+            },
+            {
+              AWB: newReturnTransaction.AWB,
+              streetName: addresses.streetName,
+              apartmentNumber: addresses.apartmentNumber,
+              floorNumber: addresses.floorNumber,
+              buildingNumber: addresses.buildingNumber,
+              cityID: addresses.cityID,
+              postalCode: addresses.postalCode,
+              cneeContactPersonID: newReturnContactPerson.ID,
+              longitude: addresses.longitude,
+              latitude: addresses.latitude,
+            },
+          ];
+
+          await Addresses.bulkCreate(addressData, { transaction: t });
+
+          if (serviceTypeIDs.length > 0) {
+            for (let i = 0; i < serviceTypeIDs.length; i++) {
+              await ShipmentServices.create(
+                {
+                  AWB: newDeliveryTransaction.AWB,
+                  serviceID: serviceTypeIDs[i],
+                },
+                { transaction: t }
+              );
+            }
+          }
+
+          return [newDeliveryTransaction.AWB, newReturnTransaction.AWB];
+        });
+
+        return result;
+      }
+
     } catch (err) {
+      // console.log(err);
+
       throw new Error(`Could not add new TransactionHdr. Error: ${err}`);
     }
   }
@@ -435,28 +860,30 @@ export class CreateShipmentsController {
     const sheet = workbook.Sheets[workbook.SheetNames[0]];
     const data: any = xlsx.utils.sheet_to_json(sheet, {
       header: [
-        'Ref',
-        'Service',
-        'Product',
-        'specialInstructions',
-        'PackageType',
-        'noOfPcs',
-        'contents',
-        'weight',
-        'Cash',
-        'firstName',
-        'lastName',
-        'contactNumber',
-        'streetName',
-        'apartmentNumber',
-        'floorNumber',
-        'buildingNumber',
+        'First Name',
+        'Last Name',
+        'Mobile Number',
         'City',
-        'postalCode',
-        'longitude',
-        'latitude',
+        'Street Name',
+        'Building#',
+        'Floor#',
+        'Apartment#',
+        'Postal Code',
+        'Service',
+        'Cash',
+        'Package Type',
+        '#Pieces',
+        'Weight',
+        'Contents',
+        'Special Instructions',
+        'Order Reference',
+        'Allow Opening Packages?',
+        'Fees On Consignee?',
+        'Same Day Delivery?'
       ],
     });
+    console.log(data);
+    
 
     const Delivery: any = [];
     const Return: any = [];
@@ -505,6 +932,6 @@ export class CreateShipmentsController {
       }
     }
 
-    return pickupIDs;
+    return [pickupIDs, createdAWBs];
   }
 }

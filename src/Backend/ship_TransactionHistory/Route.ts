@@ -23,6 +23,8 @@ const getByAWB = async (req: Request, res: Response) => {
     const result = await transactionHistoryController.getTransactionHistoryByAWB(String(req.params.AWB), language);
     res.json(result);
   } catch (error) {
+    console.log(error);
+    
     res.status(400);
     res.json(error);
   }

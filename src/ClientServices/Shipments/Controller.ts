@@ -9,8 +9,9 @@ const getByTransHdrID = async (transHdrID: number, language: string, t: Transact
   return result as unknown as any;
 };
 
-const getByAWB = async (AWB: string, language: string, t: Transaction, subAccountID: number) => {
+const getByAWB = async (AWB: string, language: string, t: Transaction, subAccountID?: number) => {
   const query = 'EXEC [dbo].[p_GET_ship_TransactionsForClient] @language = :language , @Method = :Method, @AWB = :AWB, @subAccountID = :subAccountID';
+  if(!subAccountID) subAccountID = 0;
   const replacements = { language: language, Method: 'GET_ByAWB', AWB: AWB, subAccountID: subAccountID };
   const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
   const result = await sequelize.query(query, options);
@@ -77,10 +78,11 @@ export class ShipmentsController {
     }
   }
 
-  async getTransactionsByAWB(AWB: string, language: string, subAccountID: number): Promise<any | string> {
+  async getTransactionsByAWB(AWB: string, language: string, subAccountID?: number): Promise<any | string> {
     try {
       const result = await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
+        //@ts-ignore
         const item = await getByAWB(AWB, language, t, subAccountID); // pass transaction object to getById function
         return item;
       });

@@ -28,6 +28,20 @@ const getById = async (req: Request, res: Response) => {
     }
 };
 
+const getByUserID = async (req: Request, res: Response) => {
+    try {
+        const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
+        //@ts-ignore
+        const userID = req.userID
+        const result = await callPlansController.getByUserID(userID, language);
+        res.json(result);
+    } catch (error) {
+        res.status(400);
+        res.json(error);
+    }
+};
+
+
 const create = async (req: Request, res: Response) => {
     try {
         //@ts-ignore
@@ -44,7 +58,7 @@ const create = async (req: Request, res: Response) => {
         res.json(result);
     } catch (error) {
         console.log(error);
-        
+
         res.status(400);
         res.json(error);
     }
@@ -70,10 +84,27 @@ const update = async (req: Request, res: Response) => {
         const result = await callPlansController.update(callPlan, language);
         res.json(result);
     } catch (error) {
+        console.log(error);
+
         res.status(400);
         res.json(error);
     }
 };
+
+const updateResult = async (req: Request, res: Response) => {
+    try {
+        const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
+        const callPlan = <CallPlansModel>(<unknown>{
+            ID: Number(req.params.ID),
+            callResultID: req.body.callResultID,
+        });
+        const result = await callPlansController.updateResult(callPlan, language);
+        res.json(result);
+    } catch (error) {
+        res.status(400);
+        res.json(error);
+    }
+}
 
 
 const deActivate = async (req: Request, res: Response) => {
@@ -99,8 +130,10 @@ const activate = async (req: Request, res: Response) => {
 const callPlansRouter = (app: express.Application) => {
     app.get('/call-plans/:limit?', getAll);
     app.get('/call-plans-by-id/:ID', getById);
+    app.get('/call-plans-by-user-id', getByUserID);
     app.post('/call-plans', create);
     app.put('/call-plans/:ID', update);
+    app.put('/call-plans-result/:ID', updateResult);
     app.delete('/call-plans/de-activate/:ID', deActivate);
     app.put('/call-plans/activate/:ID', activate);
 };
