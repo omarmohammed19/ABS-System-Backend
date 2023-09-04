@@ -1,8 +1,6 @@
-import { rgb } from 'pdf-lib';
 import { sequelize } from '../../Config/database';
 import { PackageTypes } from '../../Backend/ship_PackageTypes/Model';
-import { Products } from '../../Backend/ship_Products/Model';
-import { Cities, CitiesModel } from '../../Backend/cmp_Cities/Model';
+import { Cities } from '../../Backend/cmp_Cities/Model';
 import { CompanyServices } from '../../Backend/cmp_Services/Model';
 import { TransactionHdrModel, TransactionHdr } from '../../Backend/ship_TransactionHdr/Model';
 import { PickupsModel, Pickups } from '../../Backend/ship_Pickups/Model';
@@ -13,16 +11,13 @@ import { ContactPersonsModel, ContactPersons } from '../../Backend/cnee_ContactP
 import { ContactNumbersModel, ContactNumbers } from '../../Backend/cnee_ContactNumbers/Model';
 import { AddressesModel, Addresses } from '../../Backend/cnee_Addresses/Model';
 import { SubAccounts } from '../../Backend/cust_SubAccounts/Model';
-import { BranchesController } from '../../Backend/cmp_Branches/Controller';
 import xlsx from 'xlsx';
-import { TransactionsController } from '../../Backend/ship_Transactions/Controller';
 import Sequelize from 'sequelize';
 import { ShipmentServices } from '../../Backend/ship_Services/Model';
 import { Services } from '../../Backend/cust_Services/Model';
 
-const branchesController = new BranchesController();
+let createdAWBs: any;
 
-const transactionsController = new TransactionsController();
 
 const getPrefix = async (subAccountID: number) => {
   const result: any = await SubAccounts.findOne({ where: { ID: subAccountID } });
@@ -250,7 +245,7 @@ async function insertDataIntoDatabase(
         let AWB: any = await generateAWB(transactionHdr.subAccountID);
 
         if (row.Service !== 'Return') {
-          if (row.allowOpenPackages === 'Yes') {
+          if (row["Allow Opening Packages?"] === 'Yes') {
             await ShipmentServices.create(
               {
                 AWB: AWB,
@@ -259,7 +254,7 @@ async function insertDataIntoDatabase(
               { transaction: t }
             );
           }
-          else if (row.allowOpenPackages !== 'No') {
+          else if (row["Allow Opening Packages?"] !== 'No') {
             if (subAccountServicesIDs.serviceTypeIDs.includes(1)) {
               await ShipmentServices.create(
                 {
@@ -271,7 +266,7 @@ async function insertDataIntoDatabase(
             }
           }
 
-          if (row.feesOnConsignee === 'Yes') {
+          if (row["Fees On Consignee?"] === 'Yes') {
             await ShipmentServices.create(
               {
                 AWB: AWB,
@@ -280,7 +275,7 @@ async function insertDataIntoDatabase(
               { transaction: t }
             );
           }
-          else if (row.feesOnConsignee !== 'No') {
+          else if (row["Fees On Consignee?"] !== 'No') {
             if (subAccountServicesIDs.serviceTypeIDs.includes(2)) {
               await ShipmentServices.create(
                 {
@@ -292,7 +287,7 @@ async function insertDataIntoDatabase(
             }
           }
 
-          if (row.sameDayDelivery === 'Yes') {
+          if (row["Same Day Delivery?"] === 'Yes') {
             await ShipmentServices.create(
               {
                 AWB: AWB,
@@ -301,7 +296,7 @@ async function insertDataIntoDatabase(
               { transaction: t }
             );
           }
-          else if (row.sameDayDelivery !== 'No') {
+          else if (row["Same Day Delivery?"] !== 'No') {
             if (subAccountServicesIDs.serviceTypeIDs.includes(3)) {
               await ShipmentServices.create(
                 {
@@ -331,14 +326,14 @@ async function insertDataIntoDatabase(
           deliveryBranchID: DeliveryBranchID,
           toBranchID: ToBranchID,
           shipmentTypeID: 1,
-          Ref: row.Ref,
-          specialInstructions: row.specialInstructions,
+          Ref: row["Order Reference"],
+          specialInstructions: row["Special Instructions"],
           productID: productTypeID?.productTypeID,
-          packageTypeID: await getPackageTypeIDByName(row.PackageType),
-          noOfPcs: row.noOfPcs,
-          contents: row.contents,
-          weight: row.weight,
-          actualWeight: row.weight,
+          packageTypeID: await getPackageTypeIDByName(row["Package Type"]),
+          noOfPcs: row["#Pieces"],
+          contents: row.Contents,
+          weight: row.Weight,
+          actualWeight: row.Weight,
           Cash: row.Service !== 'Return' ? row.Cash : -row.Cash,
         };
       })
@@ -346,7 +341,7 @@ async function insertDataIntoDatabase(
 
     const createdTransactions = await Transactions.bulkCreate(transactionData, { transaction: t, returning: ['ID', 'AWB'] });
 
-
+    createdAWBs = createdTransactions.map((transaction) => transaction.AWB);
 
     const transIDs = createdTransactions.map((transaction) => transaction.ID);
 
@@ -368,8 +363,8 @@ async function insertDataIntoDatabase(
     const contactPersonData = await Promise.all(
       data.map(async (row: any) => {
         return {
-          firstName: row.firstName,
-          lastName: row.lastName,
+          firstName: row["First Name"],
+          lastName: row["Last Name"],
         };
       })
     );
@@ -383,15 +378,13 @@ async function insertDataIntoDatabase(
       AWBs.map(async (AWB, index) => {
         return {
           AWB: AWB,
-          streetName: data[index].streetName,
-          apartmentNumber: data[index].apartmentNumber,
-          floorNumber: data[index].floorNumber,
-          buildingNumber: data[index].buildingNumber,
+          streetName: data[index]["Street Name"],
+          apartmentNumber: data[index]["Apartment#"],
+          floorNumber: data[index]["Floor#"],
+          buildingNumber: data[index]["Building#"],
           cityID: await getCityIDByCityName(data[index].City),
-          postalCode: data[index].postalCode,
+          postalCode: data[index]["Postal Code"],
           cneeContactPersonID: ContactPersonIDs[index],
-          longitude: data[index].longitude,
-          latitude: data[index].latitude,
         };
       })
     );
@@ -400,7 +393,7 @@ async function insertDataIntoDatabase(
 
     const contactNumberData = ContactPersonIDs.map((ContactPersonID, index) => {
       return {
-        contactNumber: data[index].contactNumber,
+        contactNumber: data[index]["Mobile Number"],
         cneeContactPersonID: ContactPersonID,
         numberTypeID: 1,
       };
@@ -688,7 +681,7 @@ export class CreateShipmentsController {
           ];
 
           await PickupHistory.bulkCreate(pickupHistoryData, { transaction: t });
-          
+
 
           const transactionData = [
             {
@@ -867,30 +860,30 @@ export class CreateShipmentsController {
     const sheet = workbook.Sheets[workbook.SheetNames[0]];
     const data: any = xlsx.utils.sheet_to_json(sheet, {
       header: [
-        'Ref',
-        'Service',
-        'specialInstructions',
-        'PackageType',
-        'noOfPcs',
-        'contents',
-        'weight',
-        'Cash',
-        'firstName',
-        'lastName',
-        'contactNumber',
-        'streetName',
-        'apartmentNumber',
-        'floorNumber',
-        'buildingNumber',
+        'First Name',
+        'Last Name',
+        'Mobile Number',
         'City',
-        'postalCode',
-        'longitude',
-        'latitude',
-        'allowOpenPackages',
-        'feesOnConsignee',
-        'sameDayDelivery'
+        'Street Name',
+        'Building#',
+        'Floor#',
+        'Apartment#',
+        'Postal Code',
+        'Service',
+        'Cash',
+        'Package Type',
+        '#Pieces',
+        'Weight',
+        'Contents',
+        'Special Instructions',
+        'Order Reference',
+        'Allow Opening Packages?',
+        'Fees On Consignee?',
+        'Same Day Delivery?'
       ],
     });
+    console.log(data);
+    
 
     const Delivery: any = [];
     const Return: any = [];
@@ -939,6 +932,6 @@ export class CreateShipmentsController {
       }
     }
 
-    return pickupIDs;
+    return [pickupIDs, createdAWBs];
   }
 }
