@@ -126,7 +126,6 @@ const createSingleShipment = async (req: Request, res: Response) => {
       returnNoOfPcs,
       returnContents,
       returnWeight,
-      returnActualWeight,
       returnSpecialInstructions
     );
     res.json(result);
@@ -148,7 +147,6 @@ const createMultipleShipments = async (req: Request, res: Response) => {
     const userID = req.userID;
     const fileName = req.body.fileName;
     const excelPath = path.join(__dirname, '../../../uploads/', fileName);
-    const checkBox = req.body.checkBox;
 
     const transactionHdr = <TransactionHdrModel>(<unknown>{
       mainAccountID: mainAccountID,
@@ -199,6 +197,7 @@ const createMultipleShipments = async (req: Request, res: Response) => {
       transaction,
       transactionHistory
     );
+    
 
     res.json(result);
   } catch (error) {

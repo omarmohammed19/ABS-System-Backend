@@ -7,6 +7,7 @@ const awbController = new AWBController();
 const generatePdf = async (req: Request, res: Response) => {
     try {
         const AWBs = req.params.AWB.split(',');
+   
         const pdfBytes = await awbController.generatePdf(AWBs);
         res.contentType('application/pdf');
         res.send(pdfBytes);
