@@ -33,6 +33,7 @@ export class AWBController {
                 const fontBytes = fs.readFileSync(path.join(__dirname, '../../../fonts/Cairo-Light.ttf'));
                 const dataFont = await pdfDoc.embedFont(fontBytes);
                 // Generate the barcode image using bwip-js
+                
 
                 const barcodeOptions = {
                     bcid: 'code128', // Replace with your desired barcode format
