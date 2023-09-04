@@ -40,7 +40,6 @@ export class StatusController {
     }
   }
 
-
   async create(status: StatusModel): Promise<StatusModel | string> {
     try {
       return await sequelize.transaction(async (t) => {
@@ -102,22 +101,55 @@ export class StatusController {
     }
   }
 
-  async updateStatus(AWBs: String, statusID: Number, userID: Number, shipmentTypeID: Number, runnerID?: Number, toBranchID?: Number, fromBranchID?: Number, currentBranchID?: Number, recipientID?: Number, recipientName?: String): Promise<any> {
+  async updateStatus(
+    AWBs: String,
+    statusID: Number,
+    userID: Number,
+    shipmentTypeID: Number,
+    runnerID?: Number,
+    toBranchID?: Number,
+    fromBranchID?: Number,
+    currentBranchID?: Number,
+    recipientID?: Number,
+    recipientName?: String
+  ): Promise<any> {
     try {
-      const query = 'EXEC [dbo].[p_Update_AWBStatus] @AWBs = :AWBs , @statusID = :statusID , @userID = :userID , @shipmentTypeID = :shipmentTypeID , @runnerID = :runnerID , @toBranchID = :toBranchID , @fromBranchID = :fromBranchID , @currentBranchID = :currentBranchID , @recipientID = :recipientID , @recipientName = :recipientName';
-      const replacements = { AWBs: AWBs, statusID: statusID, userID: userID, shipmentTypeID: shipmentTypeID, runnerID: runnerID, toBranchID: toBranchID, fromBranchID: fromBranchID, currentBranchID: currentBranchID, recipientID: recipientID, recipientName: recipientName };
+      const query =
+        'EXEC [dbo].[p_Update_AWBStatus] @AWBs = :AWBs , @statusID = :statusID , @userID = :userID , @shipmentTypeID = :shipmentTypeID , @runnerID = :runnerID , @toBranchID = :toBranchID , @fromBranchID = :fromBranchID , @currentBranchID = :currentBranchID , @recipientID = :recipientID , @recipientName = :recipientName';
+      const replacements = {
+        AWBs: AWBs,
+        statusID: statusID,
+        userID: userID,
+        shipmentTypeID: shipmentTypeID,
+        runnerID: runnerID,
+        toBranchID: toBranchID,
+        fromBranchID: fromBranchID,
+        currentBranchID: currentBranchID,
+        recipientID: recipientID,
+        recipientName: recipientName,
+      };
       const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
       const result = await sequelize.query(query, options);
       return result;
     } catch (err) {
       console.log(err);
       throw new Error(`Could not update Status. Error: ${err}`);
-
     }
   }
 
-
-  async updateAWbStatus(AWB: String, statusID: Number, transID: Number, userID: Number, shipmentTypeID: Number, runnerID?: Number, toBranchID?: Number, fromBranchID?: Number, currentBranchID?: Number, recipientID?: Number, recipientName?: String): Promise<any> {
+  async updateAWbStatus(
+    AWB: String,
+    statusID: Number,
+    transID: Number,
+    userID: Number,
+    shipmentTypeID: Number,
+    runnerID?: Number,
+    toBranchID?: Number,
+    fromBranchID?: Number,
+    currentBranchID?: Number,
+    recipientID?: Number,
+    recipientName?: String
+  ): Promise<any> {
     try {
       const result = await sequelize.transaction(async (t) => {
         await Transactions.update(
@@ -139,20 +171,17 @@ export class StatusController {
           }
         );
 
-        await TransactionHistory.create(
-          {
-            transID: transID,
-            shipmentTypeID: shipmentTypeID,
-            statusID: statusID,
-            auditDate: sequelize.literal('CURRENT_TIMESTAMP'),
-            runnerID: runnerID,
-            userID: userID,
-            fromBranchID: fromBranchID,
-            toBranchID: toBranchID,
-            currentBranchID: currentBranchID,
-          }
-        );
-
+        await TransactionHistory.create({
+          transID: transID,
+          shipmentTypeID: shipmentTypeID,
+          statusID: statusID,
+          auditDate: sequelize.literal('CURRENT_TIMESTAMP'),
+          runnerID: runnerID,
+          userID: userID,
+          fromBranchID: fromBranchID,
+          toBranchID: toBranchID,
+          currentBranchID: currentBranchID,
+        });
       });
       return result;
     } catch (err) {
