@@ -131,7 +131,7 @@ const createSingleShipment = async (req: Request, res: Response) => {
     res.json(result);
   } catch (error) {
     console.log(error);
-    
+
     res.status(400);
     res.json(error);
   }
@@ -197,7 +197,6 @@ const createMultipleShipments = async (req: Request, res: Response) => {
       transaction,
       transactionHistory
     );
-    
 
     res.json(result);
   } catch (error) {

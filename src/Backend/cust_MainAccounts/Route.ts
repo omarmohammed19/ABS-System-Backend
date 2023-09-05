@@ -65,7 +65,7 @@ const getMainAccountByClientTypeID = async (req: Request, res: Response) => {
 const getSubAccounts = async (req: Request, res: Response) => {
   try {
     const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-    const result = await mainAccountsController.getSubAccountsByMainAccountId(Number(req.params.ID), language);
+    const result = await mainAccountsController.getSubAccountsByMainAccountId(Number(req.body.ID), language);
     res.json(result);
   } catch (error) {
     res.status(400);
@@ -163,7 +163,7 @@ const mainAccountsRouter = (app: express.Application) => {
   app.get('/main-accounts/:isActive/:limit', getAll);
   app.get('/main-accounts-by-ID/:ID', getById);
   app.get('/main-accounts-by-user-ID/:ID', getByUserId);
-  app.get('/sub-accounts-by-main-account-ID/:ID', getSubAccounts);
+  app.post('/sub-accounts-by-main-account-ID', getSubAccounts);
   app.post('/main-accounts', create);
   app.put('/main-accounts/:ID', update);
   app.put('/main-accounts/de-activate/:ID', deactivate);
