@@ -24,7 +24,7 @@ export class SubAccountsVerificationController {
     try {
       return await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
-        const attributes = ['ID', 'subAccountID', 'verificationTypeID', "isVerified"];
+        const attributes = ['ID', 'subAccountID', 'verificationTypeID', 'isVerified'];
         const result = await SubAccountsVerification.findAll({
           attributes: attributes,
           where: {
@@ -47,7 +47,7 @@ export class SubAccountsVerificationController {
         const result = await SubAccountsVerification.create(
           {
             subAccountID: subAccountsVerification.subAccountID,
-            verificationTypeID: subAccountsVerification.verificationTypeID
+            verificationTypeID: subAccountsVerification.verificationTypeID,
           },
           { transaction: t } // pass transaction object to query
         );
@@ -92,7 +92,7 @@ export class SubAccountsVerificationController {
           {
             subAccountID: subAccountsVerification.subAccountID,
             verificationTypeID: subAccountsVerification.verificationTypeID,
-            isVerified: subAccountsVerification.isVerified
+            isVerified: subAccountsVerification.isVerified,
           },
           {
             where: {
@@ -115,7 +115,7 @@ export class SubAccountsVerificationController {
         // start managed transaction and pass transaction object to the callback function
         await SubAccountsVerification.update(
           {
-            isVerified: true
+            isVerified: true,
           },
           {
             where: {

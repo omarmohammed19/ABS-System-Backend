@@ -106,6 +106,7 @@ import subAccountVerificationRouter from './Backend/cust_SubAccountsVerification
 import verifyEmailRouter from './ClientServices/verifyEmail/Route';
 import shipmentWeightRouter from './EmployeeServices/Shipment Weight/Route';
 import awbStatusHistoryRouter from './EmployeeServices/AWBStatusHistory/Route';
+import pickupsEmployeeRouter from './EmployeeServices/Pickups/Route';
 
 const corsOptions = {
   origin: '*',
@@ -224,6 +225,7 @@ ClientTypesRouter(app);
 companyDataRouter(app);
 shipmentWeightRouter(app);
 awbStatusHistoryRouter(app);
+pickupsEmployeeRouter(app);
 
 cmpservicesRouter(app);
 // AddMembersRouter(app);
