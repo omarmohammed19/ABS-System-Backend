@@ -29,7 +29,7 @@ const verified = async (subAccountID: number) => {
   const result: any = await SubAccountsVerification.findAll({
     where: {
       subAccountID: subAccountID,
-      isVerified: false,  
+      isVerified: false,
     }
   });
   if (result.length === 0) {
@@ -342,7 +342,29 @@ async function insertDataIntoDatabase(
                 );
               }
             }
+
+            if (row['Hide Shipping Fees?'] === 'Yes') {
+              await ShipmentServices.create(
+                {
+                  AWB: AWB,
+                  serviceID: 4,
+                },
+                { transaction: t }
+              );
+            } else if (row['Hide Shipping Fees?'] !== 'No') {
+              if (subAccountServicesIDs.serviceTypeIDs.includes(4)) {
+                await ShipmentServices.create(
+                  {
+                    AWB: AWB,
+                    serviceID: 4,
+                  },
+                  { transaction: t }
+                );
+              }
+            } 
           }
+
+
 
           return {
             transHdrID: newTransactionHdr.ID,
@@ -586,6 +608,26 @@ async function insertDataIntoDatabase(
                 {
                   AWB: AWB,
                   serviceID: 3,
+                },
+                { transaction: t }
+              );
+            }
+          }
+
+          if (row['Hide Shipping Fees?'] === 'Yes') {
+            await ShipmentServices.create(
+              {
+                AWB: AWB,
+                serviceID: 4,
+              },
+              { transaction: t }
+            );
+          } else if (row['Hide Shipping Fees?'] !== 'No') {
+            if (subAccountServicesIDs.serviceTypeIDs.includes(4)) {
+              await ShipmentServices.create(
+                {
+                  AWB: AWB,
+                  serviceID: 4,
                 },
                 { transaction: t }
               );
@@ -1272,6 +1314,7 @@ export class CreateShipmentsController {
           'Allow Opening Packages?',
           'Fees On Consignee?',
           'Same Day Delivery?',
+          'Hide Shipping Fees?'
         ],
       });
 

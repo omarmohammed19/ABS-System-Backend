@@ -6,6 +6,7 @@ import QRCode from 'qrcode';
 import path from 'path';
 import { sequelize } from '../../Config/database';
 import Sequelize from 'sequelize';
+import { ShipmentServices } from '../ship_Services/Model';
 
 
 
@@ -127,11 +128,21 @@ export class AWBController {
                     thickness: 1,
                     color: rgb(0, 0, 0),
                 });
-                const cash = result[0].Cash?.toString();
-                const absFees = result[0]['ABS Fees']?.toString();
-                const total = result[0].Total?.toString();
-                const weight = result[0].Weight?.toString();
-                const pieces = result[0]['No Of Pcs']?.toString();
+
+
+                const services = await ShipmentServices.findAll({ where: { AWB: AWB } });
+
+                const servicesList = services.map((service) => {
+                    return service.serviceID;
+                });
+
+                const HideFees = servicesList.includes(4) ? true : false;
+
+                const cash = result[0].Cash.toString() ? result[0].Cash.toString() : '';
+                const absFees = result[0]['ABS Fees'].toString() ? result[0]['ABS Fees'].toString() : '';
+                const total = result[0].Total.toString() ? result[0].Total.toString() : '';
+                const weight = result[0].Weight.toString() ? result[0].Weight.toString() : '';
+                const pieces = result[0]['No Of Pcs'].toString() ? result[0]['No Of Pcs'].toString() : '';
 
                 const contents = result[0].Contents.toString() ? result[0].Contents.toString() : '';
                 const serviceType = result[0].enService.toString() ? result[0].enService.toString() : '';
@@ -141,9 +152,9 @@ export class AWBController {
 
                 this.drawTextWithUnderline(page, 'Shipment', 20, 210, font, 12, true);
                 this.drawTextWithUnderline(page, 'COD : ', 20, 195, font, 8, false);
-                this.drawTextWithUnderline(page, cash + " EGP", 45, 195, dataFont, 8, false);
+                this.drawTextWithUnderline(page, HideFees ? total + " EGP" : cash + " EGP", 45, 195, dataFont, 8, false);
                 this.drawTextWithUnderline(page, 'ABS Fees : ', 250, 195, font, 8, false);
-                this.drawTextWithUnderline(page, absFees + " EGP", 294, 195, dataFont, 8, false);
+                this.drawTextWithUnderline(page, HideFees ? "0 EGP" : absFees + " EGP", 294, 195, dataFont, 8, false);
                 this.drawTextWithUnderline(page, 'Total : ', 465, 195, font, 8, false);
                 this.drawTextWithUnderline(page, total + " EGP", 491, 195, dataFont, 8, false);
                 this.drawTextWithUnderline(page, 'Content : ', 20, 180, font, 8, false);
