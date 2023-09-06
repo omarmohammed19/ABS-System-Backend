@@ -1,3 +1,4 @@
+import { Branch } from './../../../src2/Models2/BranchesModel';
 import { sequelize } from '../../Config/database';
 import Sequelize from 'sequelize';
 import { TransactionHdrModel, TransactionHdr } from '../../Backend/ship_TransactionHdr/Model';
@@ -56,6 +57,7 @@ export class CreatePickupController {
             mainAccountID: pickup.mainAccountID,
             subAccountID: pickup.subAccountID,
             pickupLocationID: pickup.pickupLocationID,
+            branchID: pickup.branchID,
             transHdrID: newTransactionHdr.ID,
             pickupTypeID: pickup.pickupTypeID,
             vehicleTypeID: pickup.vehicleTypeID,
