@@ -33,11 +33,12 @@ export class AWBController {
                 const fontBytes = fs.readFileSync(path.join(__dirname, '../../../fonts/Cairo-Light.ttf'));
                 const dataFont = await pdfDoc.embedFont(fontBytes);
                 // Generate the barcode image using bwip-js
-                
+
+                const shipmentID = result[0].AWB.toString() ? result[0].AWB.toString() : '000000000000';
 
                 const barcodeOptions = {
                     bcid: 'code128', // Replace with your desired barcode format
-                    text: result[0].AWB.toString(), // Replace with your desired barcode value
+                    text: shipmentID, // Replace with your desired barcode value
                     scale: 3, // Replace with your desired barcode scale
                     height: 10, // Replace with your desired barcode height
                     includetext: true, // Replace with true/false depending on whether or not you want the text to be included in the barcode image
@@ -83,17 +84,25 @@ export class AWBController {
                     height: qrCodeHeight,
                 });
                 //Add data
+
+                const mainAccountName = result[0]['Main Account Name']?.toString() ? result[0]['Main Account Name']?.toString() : '';
+                const subAccountName = result[0]['Sub Account Name']?.toString() ? result[0]['Sub Account Name']?.toString() : '';
+                const accountNumber = result[0]['Account Number']?.toString() ? result[0]['Account Number']?.toString() : '';
+                const contactPerson = result[0].firstName?.toString() + " " + result[0].lastName?.toString() ? result[0].firstName?.toString() + " " + result[0].lastName?.toString() : '';
+                const contactNumber = result[0].contactNumber?.toString() ? result[0].contactNumber?.toString() : '';
+                const address = result[0].buildingNumber?.toString() + ", " + result[0].streetName?.toString() + ", " + result[0].floorNumber?.toString() + ", " + result[0].apartmentNumber?.toString() + ", " + result[0].enCityName?.toString() ? result[0].buildingNumber?.toString() + ", " + result[0].streetName?.toString() + ", " + result[0].floorNumber?.toString() + ", " + result[0].apartmentNumber?.toString() + ", " + result[0].enCityName?.toString() : '';
+
                 this.drawTextWithUnderline(page, 'Sender', 20, 345, font, 12, true);
                 this.drawTextWithUnderline(page, 'Account Name : ', 20, 330, font, 8, false);
-                this.drawTextWithUnderline(page, result[0]['Main Account Name'].toString() + " - " + result[0]['Sub Account Name'].toString(), 83, 330, dataFont, 8, false);
+                this.drawTextWithUnderline(page, mainAccountName + " - " + subAccountName, 83, 330, dataFont, 8, false);
                 this.drawTextWithUnderline(page, 'Account Number : ', 250, 330, font, 8, false);
-                this.drawTextWithUnderline(page, result[0]['Account Number'].toString(), 321, 330, dataFont, 8, false);
+                this.drawTextWithUnderline(page, accountNumber, 321, 330, dataFont, 8, false);
                 this.drawTextWithUnderline(page, 'Contact Person : ', 20, 315, font, 8, false);
-                this.drawTextWithUnderline(page, result[0].firstName.toString() + " " + result[0].lastName.toString(), 86, 315, dataFont, 8, false);
+                this.drawTextWithUnderline(page, contactPerson, 86, 315, dataFont, 8, false);
                 this.drawTextWithUnderline(page, 'Contact Number : ', 250, 315, font, 8, false);
-                this.drawTextWithUnderline(page, result[0].contactNumber.toString(), 320, 315, dataFont, 8, false);
+                this.drawTextWithUnderline(page, contactNumber, 320, 315, dataFont, 8, false);
                 this.drawTextWithUnderline(page, 'Address : ', 20, 300, font, 8, false);
-                this.drawTextWithUnderline(page, result[0].buildingNumber.toString() + ", " + result[0].streetName.toString() + ", " + result[0].floorNumber.toString() + ", " + result[0].apartmentNumber.toString() + ", " + result[0].enCityName.toString(), 60, 300, dataFont, 8, false);
+                this.drawTextWithUnderline(page, address, 60, 300, dataFont, 8, false);
                 page.drawLine({
                     start: { x: 0, y: 290 },
                     end: { x: page.getWidth(), y: 290 },
@@ -101,24 +110,34 @@ export class AWBController {
                     color: rgb(0, 0, 0),
                 });
 
+                const receiverName = result[0]['Rec First Name']?.toString() + " " + result[0]['Rec Last Name']?.toString() ? result[0]['Rec First Name']?.toString() + " " + result[0]['Rec Last Name']?.toString() : '';
+                const receiverContactNumber = result[0]['Rec Contact Number']?.toString() ? result[0]['Rec Contact Number']?.toString() : '';
+                const receiverAddress = result[0]['Rec Build']?.toString() + ", " + result[0]['Rec Street Name']?.toString() + ", " + result[0]['Rec Floor']?.toString() + ", " + result[0]['Rec Apartment']?.toString() + ", " + result[0]['Rec City']?.toString() ? result[0]['Rec Build']?.toString() + ", " + result[0]['Rec Street Name']?.toString() + ", " + result[0]['Rec Floor']?.toString() + ", " + result[0]['Rec Apartment']?.toString() + ", " + result[0]['Rec City']?.toString() : '';
+
                 this.drawTextWithUnderline(page, 'Receiver', 20, 270, font, 12, true);
                 this.drawTextWithUnderline(page, 'Contact Person : ', 20, 255, font, 8, false);
-                this.drawTextWithUnderline(page, result[0]['Rec First Name'].toString() + " " + result[0]['Rec Last Name'].toString(), 86, 255, dataFont, 8, false);
+                this.drawTextWithUnderline(page, receiverName, 86, 255, dataFont, 8, false);
                 this.drawTextWithUnderline(page, 'Contact Number : ', 250, 255, font, 8, false);
-                this.drawTextWithUnderline(page, result[0]['Rec Contact Number'].toString(), 320, 255, dataFont, 8, false);
+                this.drawTextWithUnderline(page, receiverContactNumber, 320, 255, dataFont, 8, false);
                 this.drawTextWithUnderline(page, 'Address : ', 20, 240, font, 8, false);
-                this.drawTextWithUnderline(page, result[0]['Rec Build'].toString() + ", " + result[0]['Rec Street Name'].toString() + ", " + result[0]['Rec Floor'].toString() + ", " + result[0]['Rec Apartment'].toString() + ", " + result[0]['Rec City'].toString(), 60, 240, dataFont, 8, false);
+                this.drawTextWithUnderline(page, receiverAddress, 60, 240, dataFont, 8, false);
                 page.drawLine({
                     start: { x: 0, y: 230 },
                     end: { x: page.getWidth(), y: 230 },
                     thickness: 1,
                     color: rgb(0, 0, 0),
                 });
-                const cash = result[0].Cash.toString();
-                const absFees = result[0]['ABS Fees'].toString();
-                const total = result[0].Total.toString();
-                const weight = result[0].Weight.toString();
-                const pieces = result[0]['No Of Pcs'].toString();
+                const cash = result[0].Cash?.toString();
+                const absFees = result[0]['ABS Fees']?.toString();
+                const total = result[0].Total?.toString();
+                const weight = result[0].Weight?.toString();
+                const pieces = result[0]['No Of Pcs']?.toString();
+
+                const contents = result[0].Contents.toString() ? result[0].Contents.toString() : '';
+                const serviceType = result[0].enService.toString() ? result[0].enService.toString() : '';
+                const ref = result[0].Ref.toString() ? result[0].Ref.toString() : '';
+                const specialInstructions = result[0]['Special Instructions'].toString() ? result[0]['Special Instructions'].toString() : '';
+                const runnerCode = result[0]['Runner Code'].toString() ? result[0]['Runner Code'].toString() : '';
 
                 this.drawTextWithUnderline(page, 'Shipment', 20, 210, font, 12, true);
                 this.drawTextWithUnderline(page, 'COD : ', 20, 195, font, 8, false);
@@ -128,19 +147,19 @@ export class AWBController {
                 this.drawTextWithUnderline(page, 'Total : ', 465, 195, font, 8, false);
                 this.drawTextWithUnderline(page, total + " EGP", 491, 195, dataFont, 8, false);
                 this.drawTextWithUnderline(page, 'Content : ', 20, 180, font, 8, false);
-                this.drawTextWithUnderline(page, result[0].Contents.toString(), 58, 180, dataFont, 8, false);
+                this.drawTextWithUnderline(page, contents, 58, 180, dataFont, 8, false);
                 this.drawTextWithUnderline(page, 'Weight : ', 250, 180, font, 8, false);
                 this.drawTextWithUnderline(page, weight + " KG", 284, 180, dataFont, 8, false);
                 this.drawTextWithUnderline(page, 'Pieces : ', 465, 180, font, 8, false);
                 this.drawTextWithUnderline(page, pieces, 496, 180, dataFont, 8, false);
                 this.drawTextWithUnderline(page, 'Service Type : ', 20, 165, font, 8, false);
-                this.drawTextWithUnderline(page, result[0].enService.toString(), 76, 165, dataFont, 8, false);
+                this.drawTextWithUnderline(page, serviceType, 76, 165, dataFont, 8, false);
                 this.drawTextWithUnderline(page, 'Ref : ', 250, 165, font, 8, false);
-                this.drawTextWithUnderline(page, result[0].Ref.toString(), 269, 165, dataFont, 8, false);
+                this.drawTextWithUnderline(page, ref, 269, 165, dataFont, 8, false);
                 this.drawTextWithUnderline(page, 'Special Instructions : ', 20, 150, font, 8, false);
-                this.drawTextWithUnderline(page, result[0]['Special Instructions'].toString(), 103, 150, dataFont, 8, false);
+                this.drawTextWithUnderline(page, specialInstructions, 103, 150, dataFont, 8, false);
                 this.drawTextWithUnderline(page, 'Runner Code : ', 465, 165, font, 8, false);
-                this.drawTextWithUnderline(page, result[0]['Runner Code'].toString(), 522, 165, dataFont, 8, false);
+                this.drawTextWithUnderline(page, runnerCode, 522, 165, dataFont, 8, false);
                 page.drawLine({
                     start: { x: 0, y: 140 },
                     end: { x: page.getWidth(), y: 140 },
@@ -200,7 +219,7 @@ export class AWBController {
         }
     }
 
-    async drawTextWithUnderline(page: PDFPage, text: string, x: number, y: number, font: PDFFont, size: number, underline: boolean): Promise<void> {
+    async drawTextWithUnderline(page: PDFPage, text: any, x: number, y: number, font: PDFFont, size: number, underline: boolean): Promise<void> {
         page.drawText(text, { x, y, font, size });
 
         if (underline) {

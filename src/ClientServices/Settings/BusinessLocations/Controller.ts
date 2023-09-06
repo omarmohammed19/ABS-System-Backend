@@ -7,7 +7,7 @@ import { ContactPersons, ContactPersonsModel } from '../../../Backend/cust_Conta
 import { Emails, EmailsModel } from '../../../Backend/cust_Emails/Model';
 
 export class BusinessLocationsController {
-  async addBusinessLocation(address: AddressesModel, location: LocationsModel, contactPerson: ContactPersonsModel, contactNumber : ContactNumbersModel, email: EmailsModel): Promise<any> {
+  async addBusinessLocation(address: AddressesModel, location: LocationsModel, contactPerson: ContactPersonsModel, contactNumber: ContactNumbersModel, email: EmailsModel): Promise<any> {
     try {
       return await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
@@ -71,6 +71,96 @@ export class BusinessLocationsController {
       });
     } catch (err) {
       throw new Error(`Could not add new CallType. Error: ${err}`);
+    }
+  }
+
+  async editBusinessLocation(location: LocationsModel, address: AddressesModel,  contactPerson: ContactPersonsModel, contactNumber: ContactNumbersModel, email: EmailsModel): Promise<any> {
+    try {
+      return await sequelize.transaction(async (t) => {
+
+        const updatedLocation = await Locations.update(
+          {
+            locationName: location.locationName
+          },
+          {
+            where: {
+              ID: location.ID
+            },
+            transaction: t,
+            returning: ['addressID']
+          }
+        );
+
+        const updatedAddress = await Addresses.update(
+          {
+            streetName: address.streetName,
+            apartmentNumber: address.apartmentNumber,
+            floorNumber: address.floorNumber,
+            buildingNumber: address.buildingNumber,
+            cityID: address.cityID,
+            postalCode: address.postalCode,
+            addressTypeID: address.addressTypeID,
+            longitude: address.longitude,
+            latitude: address.latitude
+          },
+          {
+            where: {
+              ID: updatedLocation[1][0].addressID
+            },
+            transaction: t,
+            returning: ['ID']
+          }
+        );
+
+        const updatedContactPerson = await ContactPersons.update(
+          {
+            firstName: contactPerson.firstName,
+            lastName: contactPerson.lastName,
+            contactPersonTypeID: address.addressTypeID
+          },
+          {
+            where: {
+              addressID: updatedAddress[1][0].ID
+            },
+            transaction: t,
+            returning: ['ID']
+          }
+        );
+
+        await ContactNumbers.update(
+          {
+            contactNumber: contactNumber.contactNumber,
+            contactTypeID: address.addressTypeID,
+            numberTypeID: 1
+          },
+          {
+            where: {
+              contactPersonID: updatedContactPerson[1][0].ID
+            },
+            transaction: t
+          }
+        );
+
+        await Emails.update(
+          {
+            email: email.email,
+            emailTypeID: address.addressTypeID
+          },
+          {
+            where: {
+              contactPersonID: updatedContactPerson[1][0].ID
+            },
+            transaction: t
+          }
+        );
+
+        return "Business Location Edited Successfully";
+
+      });
+    } catch (err) {
+      console.log(err);
+      
+      throw new Error(`Could not edt Business Location. Error: ${err}`);
     }
   }
 

@@ -40,6 +40,17 @@ const getBySubAccountId = async (req: Request, res: Response) => {
   }
 };
 
+const getByIdToEdit = async (req: Request, res: Response) => {
+  try {
+    const result = await locationsController.getByIdToEdit(Number(req.params.locationID));
+    res.json(result);
+  } catch (error) {
+    
+    res.status(400);
+    res.json(error);
+  }
+}
+
 const create = async (req: Request, res: Response) => {
   try {
     const mobileCash = <LocationsModel>{
@@ -96,6 +107,7 @@ const activate = async (req: Request, res: Response) => {
 const locationsRouter = (app: express.Application) => {
   app.get('/locations/:isActive/:limit', getAll);
   app.get('/locations-by-ID/:ID', getById);
+  app.get('/locations-by-ID-to-edit/:locationID', getByIdToEdit);
   app.get('/locations-by-sub-account-ID/:subAccountID', getBySubAccountId);
   app.post('/locations', create);
   app.put('/locations/:ID', update);

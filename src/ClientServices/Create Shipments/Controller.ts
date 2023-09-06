@@ -15,10 +15,29 @@ import xlsx from 'xlsx';
 import Sequelize from 'sequelize';
 import { ShipmentServices } from '../../Backend/ship_Services/Model';
 import { Services } from '../../Backend/cust_Services/Model';
+import { SubAccountsVerification } from '../../Backend/cust_SubAccountsVerification/Model';
 
 let createdAWBs: any = [];
 let deliveryCreatedAWBs: any;
 let returnCreatedAWBs: any;
+
+let RefExists: any;
+
+let isVerified: any;
+
+const verified = async (subAccountID: number) => {
+  const result: any = await SubAccountsVerification.findAll({
+    where: {
+      subAccountID: subAccountID,
+      isVerified: false,  
+    }
+  });
+  if (result.length === 0) {
+    return true;
+  }
+  return false;
+}
+
 
 const getPrefix = async (subAccountID: number) => {
   const result: any = await SubAccounts.findOne({ where: { ID: subAccountID } });
@@ -124,13 +143,13 @@ const getServiceIDByName = async (name: string) => {
   return service ? service.ID : null;
 };
 
-const checkRefExists = async (Ref: string) => {
-  const result: any = await Transactions.findOne({ where: { Ref: Ref } });
+const checkRefExists = async (Ref: string, subAccountID: number) => {
+  const result: any = await Transactions.findOne({ where: { Ref: Ref, subAccountID: subAccountID } });
   if (result) {
-    return true;
+    return Ref;
   }
-  return false;
-};
+  return null;
+}
 
 const getServicesBySubAccountId = async (subAccountID: number) => {
   const results = await Services.findAll({
@@ -175,6 +194,18 @@ async function insertDataIntoDatabase(
   data: any,
   service: string
 ) {
+
+  isVerified = await verified(transactionHdr.subAccountID);
+
+  if (!isVerified) {
+    return 'Account is not verified';
+  }
+
+  RefExists = await checkRefExists(data[0]["Order Reference"], transactionHdr.subAccountID);
+  if (RefExists !== null) {
+    return `Ref ${data[0]["Order Reference"]} already exists`;
+  }
+
   if (data[0].Service !== 'Exchange') {
     // Use a Sequelize transaction to insert the data into the database
     let newPickup: any;
@@ -774,6 +805,13 @@ export class CreateShipmentsController {
     returnSpecialInstructions: string
   ): Promise<any> {
     try {
+
+      isVerified = await verified(transactionHdr.subAccountID);
+
+      if (!isVerified) {
+        return 'Account is not verified';
+      }
+
       if (transactions.serviceID !== 3) {
         let ToBranchID: any;
         let DeliveryBranchID: any;
@@ -788,7 +826,7 @@ export class CreateShipmentsController {
 
         const result = await sequelize.transaction(async (t) => {
           const AWB = await generateAWB(transactionHdr.subAccountID);
-          const RefExists = await checkRefExists(transactions.Ref);
+          const RefExists = await checkRefExists(transactions.Ref, transactionHdr.subAccountID);
 
           const productTypeID = await SubAccounts.findOne({
             attributes: ['productTypeID'],
@@ -796,7 +834,8 @@ export class CreateShipmentsController {
             transaction: t,
           });
 
-          if (RefExists) {
+
+          if (RefExists !== null) {
             return 'Ref already exists';
           }
           const newTransactionHdr = await TransactionHdr.create(
@@ -945,8 +984,8 @@ export class CreateShipmentsController {
         DeliveryBranchIDReturn = await getBranchIDByReturnLocationID(pickup.returnLocationID);
 
         const result = await sequelize.transaction(async (t) => {
-          const RefExists = await checkRefExists(transactions.Ref);
-          const ReturnRefExists = await checkRefExists(returnRef);
+          const RefExists = await checkRefExists(transactions.Ref, transactionHdr.subAccountID);
+          const ReturnRefExists = await checkRefExists(returnRef, transactionHdr.subAccountID);
 
           const productTypeID = await SubAccounts.findOne({
             attributes: ['productTypeID'],
@@ -954,7 +993,7 @@ export class CreateShipmentsController {
             transaction: t,
           });
 
-          if (RefExists || ReturnRefExists) {
+          if (RefExists !== null || ReturnRefExists !== null) {
             return 'Ref already exists';
           }
 
@@ -1300,6 +1339,13 @@ export class CreateShipmentsController {
       }
       const flattenedAWBS = [].concat(...createdAWBs);
 
+      if (!isVerified) {
+        return 'Account is not verified';
+      }
+
+      if (RefExists !== null) {
+        return `Ref ${RefExists} already exists`;
+      }
       return [pickupIDs, flattenedAWBS];
     } catch (err) {
       console.log(err);

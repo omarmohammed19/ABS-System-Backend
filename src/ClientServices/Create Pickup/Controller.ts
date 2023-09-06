@@ -4,6 +4,20 @@ import Sequelize from 'sequelize';
 import { TransactionHdrModel, TransactionHdr } from '../../Backend/ship_TransactionHdr/Model';
 import { PickupsModel, Pickups } from '../../Backend/ship_Pickups/Model';
 import { PickupHistoryModel, PickupHistory } from '../../Backend/ship_PickupHistory/Model';
+import { SubAccountsVerification } from '../../Backend/cust_SubAccountsVerification/Model';
+
+const verified = async (subAccountID: number) => {
+  const result: any = await SubAccountsVerification.findAll({
+    where: {
+      subAccountID: subAccountID,
+      isVerified: false,
+    }
+  });
+  if (result.length === 0) {
+    return true;
+  }
+  return false;
+}
 
 export class CreatePickupController {
   async getPickup_ReturnLocationsBySubAccountID(locationType: string, subAccountID: number): Promise<any> {
@@ -20,6 +34,12 @@ export class CreatePickupController {
 
   async CreatePickup(transactionHdr: TransactionHdrModel, pickup: PickupsModel, pickupHistory: PickupHistoryModel): Promise<any> {
     try {
+
+      const isVerified = await verified(transactionHdr.subAccountID);
+      if (!isVerified) {
+        return (`Account is not verified`);
+      }
+
       let newPickup: any;
       await sequelize.transaction(async (t) => {
         const newTransactionHdr = await TransactionHdr.create(
