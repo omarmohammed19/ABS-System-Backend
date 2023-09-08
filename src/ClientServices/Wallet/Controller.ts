@@ -6,8 +6,10 @@ export class WalletController {
 
     async getABSFees(subAccountID: number, fromDate: Date, toDate: Date): Promise<WalletModel> {
         try {
+            const fromDates = fromDate || null;
+            const toDates = toDate || null;
             const query = 'EXEC [dbo].[p_GET_ABS_Fees_BySubAccountID] @subAccountID= :subAccountID, @fromDate=:fromDate , @toDate=:toDate';
-            const replacements = { subAccountID: subAccountID, fromDate: fromDate, toDate: toDate };
+            const replacements = { subAccountID: subAccountID, fromDate: fromDates, toDate: toDates };
             const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
             const result = await sequelize.query(query, options);
             return result as unknown as WalletModel;
