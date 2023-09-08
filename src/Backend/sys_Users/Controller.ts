@@ -144,6 +144,28 @@ export class UsersController {
     }
   }
 
+  async updateAvatar(user: UsersModel, language: string): Promise<UsersModel> {
+    try {
+      return await sequelize.transaction(async (t) => {
+
+        await Users.update(
+          {
+            avatar: user.avatar,
+          },
+          {
+            where: {
+              ID: user.ID,
+            },
+          }
+        );
+        const result = await getById(t, Number(user.ID), language);
+        return result;
+      });
+    } catch (err) {
+      throw new Error(`Could not update User. Error: ${err}`);
+    }
+  }
+
   async changePassword(user: UsersModel, password: string): Promise<any> {
     try {
       await sequelize.transaction(async (t) => {

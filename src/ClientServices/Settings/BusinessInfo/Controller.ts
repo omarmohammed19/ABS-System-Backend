@@ -4,7 +4,6 @@ import { Addresses, AddressesModel } from '../../../Backend/cust_Addresses/Model
 import { SalesChannels, SalesChannelsModel } from '../../../Backend/cust_SalesChannels/Model';
 import { Info, InfoModel } from '../../../Backend/cmp_Info/Model';
 import { MainAccounts } from '../../../Backend/cust_MainAccounts/Model';
-import { ca } from 'date-fns/locale';
 import { SubAccounts } from '../../../Backend/cust_SubAccounts/Model';
 import { Services } from '../../../Backend/cust_Services/Model';
 import { LegalPapers } from '../../../Backend/cust_LegalPapers/Model';
@@ -12,7 +11,18 @@ import { LegalPapers } from '../../../Backend/cust_LegalPapers/Model';
 export class BusinessInfoController {
   async addBusinessInfo(companyInfo: InfoModel, mainAccountID: number, salesChannel: SalesChannelsModel, address: AddressesModel, productTypeID: number, prefix: string, serviceTypesIDs: number[], nationalID: string, commercialRegister: string): Promise<any> {
     try {
+
       return await sequelize.transaction(async (t) => {
+        const prefixExist = await SubAccounts.findOne({
+          where: {
+            prefix: prefix,
+          },
+          transaction: t,
+        });
+
+        if (prefixExist) {
+          return "Prefix Already Exists";
+        }
         // start managed transaction and pass transaction object to the callback function
         const cmpInfo = await Info.create(
           {
@@ -33,17 +43,6 @@ export class BusinessInfoController {
             transaction: t,
           }
         );
-
-        const prefixExist = await SubAccounts.findOne({
-          where: {
-            prefix: prefix,
-          },
-          transaction: t,
-        });
-
-        if (prefixExist) {
-          return "Prefix Already Exists";
-        }
 
         await SubAccounts.update(
           {
