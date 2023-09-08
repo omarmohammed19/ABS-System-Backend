@@ -134,8 +134,6 @@ const changePassword = async (req: Request, res: Response) => {
     const result = await usersController.changePassword(user, oldPassword);
     res.json(result);
   } catch (error) {
-    console.log(error);
-
     res.status(400);
     res.json(error);
   }
