@@ -3,6 +3,7 @@ import { PricePlansController } from './Controller';
 import { PricePlansModel } from './Model';
 import Sequalize from 'sequelize';
 import { log } from 'console';
+import verifyJWT from '../../Middlewares/verifyJWT';
 
 const pricePlansController = new PricePlansController();
 
@@ -32,8 +33,10 @@ const getByPricePlanID = async (req: Request, res: Response) => {
 
 const getBySubAccountID = async (req: Request, res: Response) => {
     try {
+        //@ts-ignore
+        const subAccountID = req.subAccountID;
         const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-        const result = await pricePlansController.getPricePlanBySubAccountID(Number(req.params.subAccountID), language);
+        const result = await pricePlansController.getPricePlanBySubAccountID(subAccountID, language);
         res.json(result);
     } catch (error) {
         res.status(400);
@@ -43,9 +46,12 @@ const getBySubAccountID = async (req: Request, res: Response) => {
 
 const getPricePlanMatrixBySubAccountID = async (req: Request, res: Response) => {
     try {
-        const result = await pricePlansController.getPricePlanMatrixBySubAccountID(Number(req.params.subAccountID));
+        //@ts-ignore
+        const subAccountID = req.subAccountID;
+        const result = await pricePlansController.getPricePlanMatrixBySubAccountID(subAccountID);
         res.json(result);
     } catch (error) {
+
         res.status(400);
         res.json(error);
     }
@@ -124,8 +130,8 @@ const activate = async (req: Request, res: Response) => {
 const pricePlansRouter = (app: express.Application) => {
     app.get('/price-plans/:isActive', getAll);
     app.get('/price-plans-by-price-plan-ID/:pricePlanID', getByPricePlanID);
-    app.get('/price-plans-by-sub-account-ID/:subAccountID', getBySubAccountID);
-    app.get('/price-plans-matrix-by-sub-account-ID/:subAccountID', getPricePlanMatrixBySubAccountID);
+    app.get('/price-plans-by-sub-account-ID', verifyJWT, getBySubAccountID);
+    app.get('/price-plans-matrix-by-sub-account-ID', verifyJWT, getPricePlanMatrixBySubAccountID);
     app.get('/price-plans-matrix-by-ID/:pricePlanID', getPricePlanMatrixByID);
     app.post('/price-plans', create);
     app.put('/price-plans/:ID', update);

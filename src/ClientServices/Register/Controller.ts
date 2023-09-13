@@ -209,14 +209,14 @@ export class UsersController {
                         password: hashedPassword,
                         subAccountID: newSubAccount.ID,
                         displayedName: newCustInfo.firstName + ' ' + newCustInfo.lastName,
-                        roleID: clientTypeID === 3 ? 3 : clientTypeID === 2 ? 2 : 1,
+                        roleID: clientTypeID === 3 ? 3 : clientTypeID === 2 ? 1 : 2,
                         isActive: true
                     },
                     { transaction: t, returning: ['ID'] }
                 );
 
                 const query = 'EXEC [dbo].[p_POST_sys_UserRoles]  @userID = :ID , @RoleIDs = :ROLES ';
-                const replacements = { ID: newUser.ID, ROLES: clientTypeID === 3 ? 3 : clientTypeID === 2 ? 2 : 1 };
+                const replacements = { ID: newUser.ID, ROLES: clientTypeID === 3 ? 3 : clientTypeID === 2 ? 1 : 2 };
                 const options = { replacements: replacements, type: Sequelize.QueryTypes.INSERT, transaction: t };
                 await sequelize.query(query, options);
 
