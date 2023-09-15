@@ -63,10 +63,27 @@ const getShipments = async (req: Request, res: Response) => {
     }
 }
 
+const getShipmentByAWB = async (req: Request, res: Response) => {
+    try {
+        //@ts-ignore
+        const subAccountID = req.subAccountID;
+        const AWB = req.params.AWB;        
+        const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
+        const result = await walletController.getShipmentByAWB(language, subAccountID, AWB);
+        res.json(result);
+    } catch (error) {
+        console.log(error);
+        
+        res.status(400);
+        res.json(error);
+    }
+}
+
 const walletServicesRouter = (app: express.Application) => {
     app.post('/wallet-ABS-Fees', getABSFees);
     app.post('/wallet-paid-cash', getPaidCash);
     app.post('/wallet-expected-cash', getExpectedCash);
     app.post('/wallet-shipments/:limit/', getShipments);
+    app.get('/wallet-shipments/:AWB/', getShipmentByAWB);
 }
 export default walletServicesRouter;
