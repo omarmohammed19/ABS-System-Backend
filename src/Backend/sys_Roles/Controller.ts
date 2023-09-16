@@ -36,6 +36,7 @@ export class RolesController {
                     }, { transaction: t }
                 );
                 return result;
+                //hi
             });
         } catch (err) {
             throw new Error(`Could not add new companyData. Error: ${err}`);
