@@ -44,7 +44,6 @@ const GetClientPersonalInfoById = async (req: Request, res: Response) => {
   try {
     //@ts-ignore
     const userID = req.userID;
-
     const result = await usersController.getClientPersonalInfoById(Number(userID));
     res.json(result);
   } catch (error) {
@@ -106,6 +105,23 @@ const update = async (req: Request, res: Response) => {
   }
 };
 
+const updateAvatar = async (req: Request, res: Response) => {
+  try {
+    // @ts-ignore
+    const userId = req.userID;
+    const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
+    const user = <UsersModel>{
+      ID: Number(userId),
+      avatar: req.body.avatar,
+    };
+    const result = await usersController.updateAvatar(user, language);
+    res.json(result);
+  } catch (error) {
+    res.status(400);
+    res.json(error);
+  }
+}
+
 const changePassword = async (req: Request, res: Response) => {
   try {
     // @ts-ignore
@@ -118,8 +134,6 @@ const changePassword = async (req: Request, res: Response) => {
     const result = await usersController.changePassword(user, oldPassword);
     res.json(result);
   } catch (error) {
-    console.log(error);
-
     res.status(400);
     res.json(error);
   }
@@ -179,6 +193,7 @@ const usersRouter = (app: express.Application) => {
   app.get('/users', getById);
   app.post('/users', create);
   app.put('/users', update);
+  app.put('/user-avatar', updateAvatar);
   app.put('/change/password', changePassword);
   app.put('/users/de-activate/:ID', deactivate);
   app.put('/users/activate/:ID', activate);

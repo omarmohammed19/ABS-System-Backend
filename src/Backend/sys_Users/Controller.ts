@@ -10,8 +10,9 @@ dotenv.config();
 const { SALT_ROUNDS, pepper } = process.env;
 
 const getById = async (t: Transaction, ID: Number, language?: string): Promise<UsersModel> => {
+  const lang = language ? language : 'en';
   const query = 'EXEC [dbo].[p_GET_sys_Users] @language = :language, @Method = :Method, @ID = :ID';
-  const replacements = { language: language, Method: 'GET_ByID', ID: ID };
+  const replacements = { language: lang, Method: 'GET_ByID', ID: ID };
   const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
   const result = await sequelize.query(query, options);
   return result as unknown as UsersModel;
@@ -144,11 +145,33 @@ export class UsersController {
     }
   }
 
+  async updateAvatar(user: UsersModel, language: string): Promise<UsersModel> {
+    try {
+      return await sequelize.transaction(async (t) => {
+
+        await Users.update(
+          {
+            avatar: user.avatar,
+          },
+          {
+            where: {
+              ID: user.ID,
+            },
+          }
+        );
+        const result = await getById(t, Number(user.ID), language);
+        return result;
+      });
+    } catch (err) {
+      throw new Error(`Could not update User. Error: ${err}`);
+    }
+  }
+
   async changePassword(user: UsersModel, password: string): Promise<any> {
     try {
+      let message = '';
       await sequelize.transaction(async (t) => {
         const oldPassword: any = await Users.findOne({ where: { ID: user.ID }, attributes: ['password'], transaction: t });
-
         if (bcrypt.compareSync(password + pepper, oldPassword.password)) {
           //@ts-ignore
           const hashedPassword = bcrypt.hashSync(user.password + pepper, parseInt(SALT_ROUNDS));
@@ -163,11 +186,13 @@ export class UsersController {
               },
             }
           );
-          const result = await getById(t, Number(user.ID));
-          return result;
+          message = 'Password updated successfully!';
         }
-        return 'Old Password is incorrect';
+        else {
+          message = 'Old password is incorrect!';
+        }
       });
+      return message;
     } catch (err) {
       console.log(err);
 

@@ -53,6 +53,19 @@ const getByZoneID = async (req: Request, res: Response) => {
   }
 };
 
+const getOtherCitiesByZoneID = async (req: Request, res: Response) => {
+  try {
+    const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
+    const isActive = Number(req.params.isActive);
+    const zoneID = Number(req.params.zoneID);
+    const result = await citiesController.getOtherCitiesByZoneID(language, isActive, zoneID);
+    res.json(result);
+  } catch (error) {
+    res.status(400);
+    res.json(error);
+  }
+};
+
 const create = async (req: Request, res: Response) => {
   try {
     const city = <CitiesModel>{
@@ -122,6 +135,7 @@ const citiesRouter = (app: express.Application) => {
   app.put('/cities/activate/:ID', activate);
   app.get('/cities-by-governorate-id/:governorateID/:isActive', getByGovernorateID);
   app.get('/cities-by-zone-id/:zoneID/:isActive', getByZoneID);
+  app.get('/other-cities-by-zone-id/:zoneID/:isActive', getOtherCitiesByZoneID);
 };
 
 export default citiesRouter;

@@ -83,6 +83,18 @@ export class CitiesController {
     }
   }
 
+  async getOtherCitiesByZoneID(language: string, isActive: number, zoneID: number): Promise<CitiesModel[]> {
+    try {
+      const query = 'EXEC [dbo].[p_GET_cmp_Cities] @language = :language, @Method = :Method, @isActive= :isActive, @zoneID= :zoneID';
+      const replacements = { language: language, Method: 'GET_OtherCitiesByZoneID', isActive: isActive, zoneID: zoneID };
+      const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
+      const result = await sequelize.query(query, options);
+      return result as unknown as CitiesModel[];
+    } catch (err) {
+      throw new Error(`Could not get Cities by Zone ID. Error: ${err}`);
+    }
+  }
+
   async update(city: CitiesModel, language: string): Promise<CitiesModel | string> {
     try {
       return await sequelize.transaction(async (t) => {

@@ -3,11 +3,17 @@ import { De_Activate } from '../../Services/De_Activate';
 import { sequelize } from '../../Config/database';
 import Sequelize, { Transaction } from 'sequelize';
 
-
-
 const getById = async (t: Transaction, ID?: Number, language?: string, subAccountID?: number): Promise<LocationsModel> => {
   const query = 'EXEC [dbo].[p_GET_cust_Locations] @language = :language, @Method = :Method, @ID = :ID , @subAccountID = :subAccountID';
   const replacements = { language: language, Method: 'GET_ByID', ID: ID, subAccountID: subAccountID };
+  const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
+  const result = await sequelize.query(query, options);
+  return result as unknown as LocationsModel;
+};
+
+const getByIdToEdit = async (t: Transaction, locationID: number): Promise<LocationsModel> => {
+  const query = 'EXEC [dbo].[p_GET_cust_Addresses] @Method = :Method, @locationID = :locationID';
+  const replacements = { Method: 'GET_ToEdit', locationID: locationID };
   const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
   const result = await sequelize.query(query, options);
   return result as unknown as LocationsModel;
@@ -70,6 +76,18 @@ export class LocationsController {
     }
   }
 
+  async getByIdToEdit(locationID: number): Promise<LocationsModel> {
+    try {
+      return await sequelize.transaction(async (t) => {
+        const result = await getByIdToEdit(t, locationID);
+        return result;
+
+      });
+    } catch (err) {
+      throw new Error(`Could not get Locations by ID. Error: ${err}`);
+    }
+  }
+
 
   async update(locations: LocationsModel, language: string): Promise<LocationsModel | string> {
 
@@ -90,7 +108,7 @@ export class LocationsController {
         );
 
 
-        const result = await getById(t, Number(locations.ID), language , 0);
+        const result = await getById(t, Number(locations.ID), language, 0);
         return result;
 
       });

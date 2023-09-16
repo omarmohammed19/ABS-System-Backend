@@ -31,17 +31,15 @@ const createSingleShipment = async (req: Request, res: Response) => {
       userID: userID,
       serviceID: req.body.serviceID,
       creationDate: currentDate,
-      noOfAWBs: req.body.noOfAWBs,
     });
 
     const pickup = <PickupsModel>(<unknown>{
       mainAccountID: mainAccountID,
       subAccountID: subAccountID,
       pickupLocationID: req.body.pickupLocationID,
+      returnLocationID: req.body.returnLocationID,
       pickupTypeID: req.body.pickupTypeID,
       vehicleTypeID: req.body.vehicleTypeID,
-      noOfAWBs: req.body.noOfAWBs,
-      actualAWBs: req.body.actualAWBs,
       timeFrom: req.body.timeFrom,
       toTime: req.body.toTime,
       userID: userID,
@@ -59,14 +57,11 @@ const createSingleShipment = async (req: Request, res: Response) => {
       mainAccountID: mainAccountID,
       subAccountID: subAccountID,
       serviceID: req.body.serviceID,
-      shipmentTypeID: req.body.shipmentTypeID,
       expectedDeliveryDate: expectedDeliveryDate,
-      productID: req.body.productID,
       creationDate: currentDate,
       lastChangeDate: currentDate,
       userID: userID,
       expiryDate: expiryDate,
-      deliveryBranchID: req.body.deliveryBranchID,
       specialInstructions: req.body.specialInstructions,
       packageTypeID: req.body.packageTypeID,
       noOfPcs: req.body.noOfPcs,
@@ -77,7 +72,6 @@ const createSingleShipment = async (req: Request, res: Response) => {
     });
 
     const transactionHistory = <TransactionHistoryModel>(<unknown>{
-      shipmentTypeID: req.body.shipmentTypeID,
       auditDate: currentDate,
       userID: userID,
     });
@@ -105,6 +99,17 @@ const createSingleShipment = async (req: Request, res: Response) => {
       latitude: req.body.latitude,
     });
 
+    const serviceTypeIDs = req.body.serviceTypeIDs;
+
+    const collectionTypeID = req.body.collectionTypeID;
+    const returnRef = req.body.returnRef;
+    const returnPackageTypeID = req.body.returnPackageTypeID;
+    const returnNoOfPcs = req.body.returnNoOfPcs;
+    const returnContents = req.body.returnContents;
+    const returnWeight = req.body.returnWeight;
+    const returnActualWeight = req.body.returnWeight;
+    const returnSpecialInstructions = req.body.returnSpecialInstructions;
+
     const result = await createShipmentsController.createSingleShipment(
       transactionHdr,
       pickup,
@@ -113,10 +118,20 @@ const createSingleShipment = async (req: Request, res: Response) => {
       transactionHistory,
       contactPerson,
       contactNumber,
-      address
+      address,
+      serviceTypeIDs,
+      collectionTypeID,
+      returnRef,
+      returnPackageTypeID,
+      returnNoOfPcs,
+      returnContents,
+      returnWeight,
+      returnSpecialInstructions
     );
     res.json(result);
   } catch (error) {
+    console.log(error);
+
     res.status(400);
     res.json(error);
   }
@@ -132,7 +147,6 @@ const createMultipleShipments = async (req: Request, res: Response) => {
     const userID = req.userID;
     const fileName = req.body.fileName;
     const excelPath = path.join(__dirname, '../../../uploads/', fileName);
-    const checkBox = req.body.checkBox;
 
     const transactionHdr = <TransactionHdrModel>(<unknown>{
       mainAccountID: mainAccountID,

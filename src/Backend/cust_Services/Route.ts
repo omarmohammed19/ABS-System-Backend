@@ -28,6 +28,18 @@ const getById = async (req: Request, res: Response) => {
   }
 };
 
+const getBySubAccountId = async (req: Request, res: Response) => {
+  try {
+    const result = await servicesController.getServicesBySubAccountIDId(Number(req.params.subAccountID));
+    res.json(result);
+  } catch (error) {
+    console.log(error);
+    
+    res.status(400);
+    res.json(error);
+  }
+}
+
 const create = async (req: Request, res: Response) => {
   try {
     const service = <ServicesModel>{
@@ -84,6 +96,7 @@ const activate = async (req: Request, res: Response) => {
 const servicesRouter = (app: express.Application) => {
   app.get('/services/:isActive/:limit', getAll);
   app.get('/services-by-ID/:ID', getById);
+  app.get('/services-by-subAccountID/:subAccountID', getBySubAccountId);
   app.post('/services', create);
   app.put('/services/:ID', update);
   app.put('/services/de-activate/:ID', deactivate);

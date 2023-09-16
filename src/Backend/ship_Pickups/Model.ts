@@ -7,6 +7,7 @@ export interface PickupsModel extends Model {
   subAccountID: number;
   pickupLocationID: number;
   returnLocationID: number;
+  branchID: number;
   transHdrID: number;
   pickupTypeID: number;
   vehicleTypeID: number;
@@ -40,6 +41,12 @@ export const Pickups = sequelize.define<PickupsModel>(
       type: DataTypes.INTEGER,
     },
     pickupLocationID: {
+      type: DataTypes.INTEGER,
+    },
+    returnLocationID: {
+      type: DataTypes.INTEGER,
+    },
+    branchID: {
       type: DataTypes.INTEGER,
     },
     transHdrID: {

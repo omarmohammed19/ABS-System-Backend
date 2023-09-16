@@ -92,11 +92,21 @@ import downloadTemplateRouter from './ClientServices/Download Template/Route';
 import UserRolesRouter from './Backend/sys_UserRoles/Routes';
 import ResetPasswordRouter from './ClientServices/Reset Password/Route';
 import AddPaymentMethodsRouter from './ClientServices/Settings/PaymentMethods/Route';
+import cmpservicesRouter from './Backend/cmp_Services/Route';
 import custStatusRouter from './Backend/cust_DisplayedStatus/Route';
 import callPlansRouter from './Backend/cc_CallPlans/Route';
 import rolesRouter from './Backend/sys_Roles/Route';
 import callHistoryRouter from './Backend/cc_CallHistory/Route';
 import callCenterRouter from './EmployeeServices/CallCenter/Route';
+import transactionsForDetailInquiryRouter from './EmployeeServices/DetailInquiry/Route';
+import companyDataRouter from './Backend/cmp_CompanyData/Route';
+import BusinessInfoRouter from './ClientServices/Settings/BusinessInfo/Route';
+import verificationTypesRouter from './Backend/cust_VerificationTypes/Route';
+import subAccountVerificationRouter from './Backend/cust_SubAccountsVerification/Route';
+import verifyEmailRouter from './ClientServices/verifyEmail/Route';
+import shipmentWeightRouter from './EmployeeServices/Shipment Weight/Route';
+import awbStatusHistoryRouter from './EmployeeServices/AWBStatusHistory/Route';
+import pickupsEmployeeRouter from './EmployeeServices/Pickups/Route';
 
 const corsOptions = {
   origin: '*',
@@ -122,9 +132,15 @@ mail_route(app);
 ResetPasswordRouter(app);
 downloadTemplateRouter(app);
 app.use('/images', imageRouter);
+pricePlansRouter(app);
+pricePlanNamesRouter(app);
+zonesRouter(app);
+citiesRouter(app);
+verifyEmailRouter(app);
 
 //with authorization
 app.use(verifyJWT);
+
 UsersRouter(app);
 contactLogTypesRouter(app);
 callResultsRouter(app);
@@ -153,7 +169,7 @@ shipmentTypesRouter(app);
 productsRouter(app);
 servicesRouter(app);
 nearestBranchRouter(app);
-pricePlanNamesRouter(app);
+
 salesChannelsRouter(app);
 AddressTypesRouter(app);
 ContactNumberTypesRouter(app);
@@ -162,7 +178,7 @@ EmailTypesRouter(app);
 NumberTypesRouter(app);
 LegalPaperTypesRouter(app);
 InfoRouter(app);
-zonesRouter(app);
+
 zonesTypesRouter(app);
 extraInfoRouter(app);
 addressesRouter(app);
@@ -171,7 +187,7 @@ emailRouter(app);
 legalPaperRouter(app);
 contactPersonRouter(app);
 custAddressesRouter(app);
-pricePlansRouter(app);
+
 contactLogsRouter(app);
 languagesRouter(app);
 TicketStatus(app);
@@ -183,7 +199,7 @@ userSessionsRouter(app);
 employeesRouter(app);
 governoratesRouter(app);
 templateRouter(app);
-citiesRouter(app);
+
 ticketsRouter(app);
 prevStatusRouter(app);
 statusRouter(app);
@@ -206,8 +222,17 @@ BusinessLocationsRouter(app);
 shipmentsRouter(app);
 TeamMembersRouter(app);
 ClientTypesRouter(app);
+companyDataRouter(app);
+shipmentWeightRouter(app);
+awbStatusHistoryRouter(app);
+pickupsEmployeeRouter(app);
+
+cmpservicesRouter(app);
+// AddMembersRouter(app);
+
 servicesRouter(app);
 // AddMembersRouter(app);
+
 UserRolesRouter(app);
 AddPaymentMethodsRouter(app);
 custStatusRouter(app);
@@ -215,7 +240,10 @@ callPlansRouter(app);
 rolesRouter(app);
 callHistoryRouter(app);
 callCenterRouter(app);
-
+transactionsForDetailInquiryRouter(app);
+BusinessInfoRouter(app);
+verificationTypesRouter(app);
+subAccountVerificationRouter(app);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port http://${address}:${process.env.PORT}`);

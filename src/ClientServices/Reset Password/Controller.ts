@@ -13,10 +13,14 @@ export class ResetPasswordController {
   async getUserDetails(userCred: string): Promise<any> {
     try {
       return await sequelize.transaction(async (t) => {
-        const query = 'EXEC [dbo].[p_GET_sys_UsersByCredentials] @userCred = :userCred';
-        const replacements = { userCred: userCred };
+        const query = 'EXEC [dbo].[p_GET_sys_UsersByCredentials] @userCred = :userCred, @Method = :Method';
+        const replacements = { userCred: userCred, Method: 'client_login' };
         const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
         const result = await sequelize.query(query, options);
+
+        if (result.length < 1) {
+          throw new Error('User not found');
+        }
 
         //@ts-ignore
         const userID = result[0].ID;
@@ -40,13 +44,16 @@ export class ResetPasswordController {
             pass: password,
           }
         });
+        //@ts-ignore
+        console.log(result[0].email);
+
 
         const mailOptions = {
           from: '"Adham Ahmed" <adhamahmeds2312@gmail.com>', // sender address
           //@ts-ignore
           to: result[0].email, // list of receivers
-          subject: 'Registration OTP', // Subject of the email
-          text: `<p>Please click the following link to reset your password: <a href="${resetLink}">${resetLink}</a></p>` // OTP message
+          subject: 'Reset Password', // Subject of the email
+          text: `Click the following link to reset your password: ${resetLink}` // OTP message
         };
         // send mail with defined transport object
         await transporter.sendMail(mailOptions);

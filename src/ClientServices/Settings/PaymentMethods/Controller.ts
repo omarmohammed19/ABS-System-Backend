@@ -17,7 +17,6 @@ export default class AddPaymentMethodsController {
         let BankDetailsID = null;
 
         if (paymentMethodID == 1) {
-          console.log(mobileCash.mobileNumber);
           
           MobileCashID = await MobileCash.create(
             {
