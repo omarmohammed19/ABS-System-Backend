@@ -4,10 +4,22 @@ import { RolesModel } from './Model';
 
 const rolesController = new RolesController();
 
-const getAll = async (req: Request, res: Response) => {
+const getClientRoles = async (req: Request, res: Response) => {
     try {
         const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-        const result = await rolesController.index(language);
+        const result = await rolesController.getClientRoles(language);
+        res.json(result);
+    }
+    catch (error) {
+        res.status(400);
+        res.json(error);
+    }
+}
+
+const getEmployeeRoles = async (req: Request, res: Response) => {
+    try {
+        const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
+        const result = await rolesController.getEmployeeRoles(language);
         res.json(result);
     }
     catch (error) {
@@ -70,7 +82,8 @@ const activate = async (req: Request, res: Response) => {
 
 
 const rolesRouter = (app: express.Application) => {
-    app.get('/roles', getAll);
+    app.get('/roles', getClientRoles);
+    app.get('/roles-employee', getEmployeeRoles);
     app.get('/roles/:ID', getById);
     app.post('/roles', create);
     app.put('/roles/:ID/de-activate', deActivate);

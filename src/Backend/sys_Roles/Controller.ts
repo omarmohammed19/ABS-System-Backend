@@ -12,7 +12,7 @@ const getById = (ID: number, t: Transaction, language?: string) => {
 };
 
 export class RolesController {
-    async index(language: string): Promise<RolesModel[]> {
+    async getClientRoles(language: string): Promise<RolesModel[]> {
         try {
             const query = 'EXEC [dbo].[p_GET_sys_Roles] @language = :language, @Method = :Method';
             const replacements = { language: language, Method: 'GET_Client' };
@@ -23,6 +23,19 @@ export class RolesController {
             throw new Error(`Could not get all companyData. Error: ${err}`);
         }
     }
+
+    async getEmployeeRoles(language: string): Promise<RolesModel[]> {
+        try {
+            const query = 'EXEC [dbo].[p_GET_sys_Roles] @language = :language, @Method = :Method';
+            const replacements = { language: language, Method: 'GET_Employee' };
+            const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
+            const result = await sequelize.query(query, options);
+            return result as unknown as RolesModel[];
+        } catch (err) {
+            throw new Error(`Could not get all companyData. Error: ${err}`);
+        }
+    }
+
 
     async create(roles: RolesModel): Promise<RolesModel | string> {
         try {
