@@ -1,66 +1,55 @@
 import { ReasonsModel, Reasons } from './Model';
 import { De_Activate } from '../../Services/De_Activate';
 import { sequelize } from '../../Config/database';
-import { Transaction } from 'sequelize';
+import Sequelize, { Transaction } from 'sequelize';
 
-const getById = (ID: number, t: Transaction, language?: string) => {
-  const attributes = language === 'en' ? ['ID', 'enReason', 'Notes'] : ['ID', 'arReason', 'Notes'];
-  return Reasons.findOne({
-    attributes: attributes,
-    where: {
-      ID: ID,
-      isActive: true,
-    },
-    transaction: t, // pass transaction object to query
-  });
+
+const getByID = async (ID: number, language: string, t: Transaction) => {
+  const query = 'EXEC [dbo].[p_GET_ship_Reasons] @language = :language , @Method = :Method, @ID = :ID';
+  const replacements = { language: language, Method: 'GET_ByID', ID: ID };
+  const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
+  const result = await sequelize.query(query, options);
+  return result as unknown as ReasonsModel;
 };
 
 export class ReasonsController {
   async index(language: string): Promise<ReasonsModel[]> {
     try {
-      return await sequelize.transaction(async (t) => {
-        // start managed transaction and pass transaction object to the callback function
-        const attributes = language === 'en' ? ['ID', 'enReason', 'Notes'] : ['ID', 'arReason', 'Notes'];
-        const result = await Reasons.findAll({
-          attributes: attributes,
-          where: {
-            isActive: true,
-          },
-          transaction: t, // pass transaction object to query
-        });
-
-        return result.map((item: any) => item.toJSON()) as ReasonsModel[]; // return the result of the query (if successful) to be committed automatically
-      });
+      const query = 'EXEC [dbo].[p_GET_ship_Reasons] @language = :language , @Method = :Method';
+      const replacements = { language: language, Method: 'GET' };
+      const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
+      const result = await sequelize.query(query, options);
+      return result as unknown as ReasonsModel[];
     } catch (err) {
-      throw new Error(`Could not get all Reasons. Error: ${err}`);
+      throw new Error(`Could not get all Reason. Error: ${err}`);
     }
   }
 
-  async create(reasons: ReasonsModel): Promise<ReasonsModel | string> {
+  async create(reason: ReasonsModel): Promise<ReasonsModel | string> {
     try {
       return await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
         const result = await Reasons.create(
           {
-            enReason: reasons.enReason,
-            arReason: reasons.arReason,
-            Notes: reasons.Notes,
+            enReason: reason.enReason,
+            arReason: reason.arReason,
+            Notes: reason.Notes,
           },
           { transaction: t } // pass transaction object to query
         );
-        return result ? result.toJSON() : 'Could not add new Reasons';
+        return result ? result.toJSON() : 'Could not add new Reason';
       });
     } catch (err) {
       throw new Error(`Could not add new Reason. Error: ${err}`);
     }
   }
 
-  async getReasonById(language: string, ID: number): Promise<ReasonsModel | string> {
+  async getReasonByID(ID: number, language: string): Promise<ReasonsModel | string> {
     try {
       const result = await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
-        const item = await getById(ID, t, language); // pass transaction object to getById function
-        return item ? item.toJSON() : 'Could not get Reasons by ID';
+        const item = await getByID(ID, language, t); // pass transaction object to getById function
+        return item;
       });
       return result;
     } catch (err) {
@@ -68,25 +57,25 @@ export class ReasonsController {
     }
   }
 
-  async update(reasons: ReasonsModel): Promise<ReasonsModel | string> {
+  async update(language: string, reason: ReasonsModel): Promise<ReasonsModel | string> {
     try {
       return await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
         await Reasons.update(
           {
-            enReason: reasons.enReason,
-            arReason: reasons.arReason,
-            Notes: reasons.Notes,
+            enReason: reason.enReason,
+            arReason: reason.arReason,
+            Notes: reason.Notes,
           },
           {
             where: {
-              ID: reasons.ID,
+              ID: reason.ID,
             },
             transaction: t, // pass transaction object to query
           }
         );
-        const result = await getById(Number(reasons.ID), t);
-        return result ? result.toJSON() : 'Could not update Reasons';
+        const result = await getByID(reason.ID, language, t);
+        return result;
       });
     } catch (err) {
       throw new Error(`Could not update Reason. Error: ${err}`);

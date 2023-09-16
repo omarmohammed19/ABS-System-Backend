@@ -4,10 +4,21 @@ import { ZonesModel } from './Model';
 
 const zonesController = new ZonesController();
 
-const getAll = async (req: Request, res: Response) => {
+const getAllActive = async (req: Request, res: Response) => {
     try {
         const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
         const result = await zonesController.index(language, Number(req.params.isActive));
+        res.json(result);
+    } catch (error) {
+        res.status(400);
+        res.json(error);
+    }
+}
+
+const getAll = async (req: Request, res: Response) => {
+    try {
+        const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
+        const result = await zonesController.getAll(language);
         res.json(result);
     } catch (error) {
         res.status(400);
@@ -52,6 +63,21 @@ const create = async (req: Request, res: Response) => {
     }
 }
 
+const createZoneWithCities = async (req: Request, res: Response) => {
+    try {
+        const zone = <ZonesModel>{
+            zoneName: req.body.zoneName,
+            zoneTypeID: req.body.zoneTypeID,
+        };
+        const cities = req.body.cities;
+        const result = await zonesController.createZoneWithCities(zone, cities);
+        res.json(result);
+    } catch (error) {
+        res.status(400);
+        res.json(error);
+    }
+}
+
 
 const update = async (req: Request, res: Response) => {
     try {
@@ -67,6 +93,24 @@ const update = async (req: Request, res: Response) => {
         res.status(400);
         res.json(error);
     }
+}
+
+const updateZoneWithCities = async (req: Request, res: Response) => {
+    try {
+        const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
+        const zone = <ZonesModel>{
+            ID: Number(req.params.ID),
+            zoneName: req.body.zoneName,
+            zoneTypeID: req.body.zoneTypeID,
+        };
+        const cities = req.body.cities;
+        const result = await zonesController.updateZoneWithCities(zone, cities, language);
+        res.json(result);
+    } catch (error) {
+        res.status(400);
+        res.json(error);
+    }
+
 }
 
 const deactivate = async (req: Request, res: Response) => {
@@ -90,12 +134,15 @@ const activate = async (req: Request, res: Response) => {
 }
 
 const zonesRouter = (app: express.Application) => {
-    app.get('/zones/:isActive', getAll);
+    app.get('/zones/:isActive', getAllActive);
+    app.get('/zones', getAll);
     app.get('/zones-by-id/:ID', getById);
     app.get('/zones-by-zone-type/:zoneTypeID', getByZoneTypeID);
     app.post('/zones', create);
+    app.post('/zones-with-cities', createZoneWithCities);
     app.put('/zones/:ID', update);
-    app.put('/zones/deactivate/:ID', deactivate);
+    app.put('/zones-with-cities/:ID', updateZoneWithCities);
+    app.put('/zones/de-activate/:ID', deactivate);
     app.put('/zones/activate/:ID', activate);
 }
 
