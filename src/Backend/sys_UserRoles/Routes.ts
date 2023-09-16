@@ -10,7 +10,7 @@ const postRoles = async (req: Request, res: Response) => {
     await userRolesController.postRoles(Number(req.params.ID), req.body.ROLES);
     res.json('Roles are inserted successfully !');
   } catch (error) {
-    console.log(error);
+    // console.log(error);
 
     res.status(400);
     res.json(error);

@@ -18,7 +18,7 @@ const getRolesByUserID = async (ID: Number): Promise<UsersRolesModel[]> => {
 };
 
 export class UserRolesController {
-  async postRoles(ID: Number, ROLES: String): Promise<UsersRolesModel> {
+  async postRoles(ID: Number, ROLES: String[]): Promise<UsersRolesModel> {
     try {
       return await sequelize.transaction(async (t) => {
         const query = 'EXEC [dbo].[p_POST_sys_UserRoles]  @userID = :ID , @RoleIDs = :ROLES ';
@@ -28,6 +28,7 @@ export class UserRolesController {
         return result as unknown as UsersRolesModel;
       });
     } catch (err) {
+      console.log(err);
       throw new Error(`Could not post Roles. Error: ${err}`);
     }
   }
