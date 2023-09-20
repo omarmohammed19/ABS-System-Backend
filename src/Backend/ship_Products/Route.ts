@@ -26,6 +26,17 @@ const getById = async (req: Request, res: Response) => {
   }
 };
 
+const getBySubAccount = async (req: Request, res: Response) => {
+  try {
+    const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
+    const result = await productsController.getProductsBySubAccount(language, Number(req.params.subAccountID));
+    res.json(result);
+  } catch (error) {
+    res.status(400);
+    res.json(error);
+  }
+};
+
 const create = async (req: Request, res: Response) => {
   try {
     const product = <ProductsModel>{
@@ -82,6 +93,7 @@ const activate = async (req: Request, res: Response) => {
 const productsRouter = (app: express.Application) => {
   app.get('/products', getAll);
   app.get('/products/:ID', getById);
+  app.get('/products-by-sub-account/:subAccountID', getBySubAccount);
   app.post('/products', create);
   app.put('/products/:ID', update);
   app.put('/products/de-activate/:ID', deactivate);

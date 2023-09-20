@@ -107,6 +107,9 @@ import verifyEmailRouter from './ClientServices/verifyEmail/Route';
 import shipmentWeightRouter from './EmployeeServices/Shipment Weight/Route';
 import awbStatusHistoryRouter from './EmployeeServices/AWBStatusHistory/Route';
 import pickupsEmployeeRouter from './EmployeeServices/Pickups/Route';
+import EmpployeeCreateShipmentServicesRouter from './EmployeeServices/Create Shipments/Route';
+import editShipmentsRouter from './EmployeeServices/Edit Shipments/Route';
+import shipServicesRouter from './Backend/ship_Services/Route';
 
 const corsOptions = {
   origin: '*',
@@ -231,6 +234,9 @@ cmpservicesRouter(app);
 // AddMembersRouter(app);
 
 servicesRouter(app);
+EmpployeeCreateShipmentServicesRouter(app);
+editShipmentsRouter(app);
+shipServicesRouter(app);
 // AddMembersRouter(app);
 
 UserRolesRouter(app);

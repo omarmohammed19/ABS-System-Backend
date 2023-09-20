@@ -80,7 +80,7 @@ export const Pickups = sequelize.define<PickupsModel>(
       type: DataTypes.INTEGER,
     },
     creationDate: {
-      type: DataTypes.DATE,
+      type: DataTypes.INTEGER,
     },
     assignedBy: {
       type: DataTypes.INTEGER,
