@@ -34,11 +34,10 @@ const getBySubAccountId = async (req: Request, res: Response) => {
     res.json(result);
   } catch (error) {
     console.log(error);
-    
     res.status(400);
     res.json(error);
   }
-}
+};
 
 const create = async (req: Request, res: Response) => {
   try {

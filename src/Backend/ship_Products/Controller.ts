@@ -1,7 +1,7 @@
 import { ProductsModel, Products } from './Model';
 import { De_Activate } from '../../Services/De_Activate';
 import { sequelize } from '../../Config/database';
-import { Transaction } from 'sequelize';
+import Sequelize, { Transaction } from 'sequelize';
 
 const getById = (ID: number, t: Transaction, language?: string) => {
   const attributes = language === 'en' ? ['ID', 'enProduct', 'Notes'] : ['ID', 'arProduct', 'Notes'];
@@ -13,6 +13,14 @@ const getById = (ID: number, t: Transaction, language?: string) => {
     },
     transaction: t, // pass transaction object to query
   });
+};
+
+const getProductBySubAccount = async (language: string, subAccountID: number, t: Transaction) => {
+  const query = 'EXEC [dbo].[p_GET_ship_Products] @Method = :Method, @subAccountID = :subAccountID';
+  const replacements = { language: language, Method: 'GET_BySubAccount', subAccountID: subAccountID };
+  const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
+  const result = await sequelize.query(query, options);
+  return result as unknown as ProductsModel[];
 };
 
 export class ProductsController {
@@ -33,6 +41,18 @@ export class ProductsController {
       });
     } catch (err) {
       throw new Error(`Could not get all Products. Error: ${err}`);
+    }
+  }
+
+  async getProductsBySubAccount(language: string, subAccountID: number): Promise<ProductsModel[]> {
+    try {
+      const result = await sequelize.transaction(async (t) => {
+        const products = await getProductBySubAccount(language, subAccountID, t);
+        return products;
+      });
+      return result;
+    } catch (err) {
+      throw new Error(`Could not get Products by SubAccount. Error: ${err}`);
     }
   }
 

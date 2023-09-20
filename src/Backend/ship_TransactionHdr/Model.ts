@@ -34,7 +34,7 @@ export const TransactionHdr = sequelize.define<TransactionHdrModel>(
       type: DataTypes.INTEGER,
     },
     creationDate: {
-      type: DataTypes.DATE,
+      type: DataTypes.INTEGER,
     },
     noOfAWBs: {
       type: DataTypes.INTEGER,
