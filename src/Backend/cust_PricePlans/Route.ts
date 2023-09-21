@@ -48,7 +48,8 @@ const getPricePlanMatrixBySubAccountID = async (req: Request, res: Response) => 
     try {
         //@ts-ignore
         const subAccountID = req.subAccountID;
-        const result = await pricePlansController.getPricePlanMatrixBySubAccountID(subAccountID);
+        const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
+        const result = await pricePlansController.getPricePlanMatrixBySubAccountID(subAccountID, language);
         res.json(result);
     } catch (error) {
 

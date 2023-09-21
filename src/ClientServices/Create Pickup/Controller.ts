@@ -20,10 +20,10 @@ const verified = async (subAccountID: number) => {
 }
 
 export class CreatePickupController {
-  async getPickup_ReturnLocationsBySubAccountID(locationType: string, subAccountID: number): Promise<any> {
+  async getPickup_ReturnLocationsBySubAccountID(locationType: string, subAccountID: number, language: String): Promise<any> {
     try {
-      const query = 'EXEC [dbo].[p_GET_Pickup_Return_Locations]@locationType = :locationType, @subAccountID= :subAccountID';
-      const replacements = { locationType: locationType, subAccountID: subAccountID };
+      const query = 'EXEC [dbo].[p_GET_Pickup_Return_Locations]@locationType = :locationType, @subAccountID= :subAccountID , @language=:language';
+      const replacements = { locationType: locationType, subAccountID: subAccountID, language: language };
       const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
       const result = await sequelize.query(query, options);
       return result as unknown as any;

@@ -5,7 +5,7 @@ import { Transaction } from 'sequelize';
 
 const getById = (ID: number, t: Transaction, language: string) => {
   return SalesChannelTypes.findOne({
-    attributes: language === 'en' ? [['ID', 'Sales Channeel Type ID'], ['enSalesChannelType', 'Sales Channeel Type'], 'Notes'] : [['ID', 'رقم التسلسل'], ['arSalesChannelType', 'نوع قناة المبيعات'], ['Notes', 'ملاحظات']],
+    attributes: language === 'en' ? [['ID', 'Sales Channeel Type ID'], ['enSalesChannelType', 'Sales Channeel Type'], 'Notes'] : [['ID', 'Sales Channeel Type ID'], ['arSalesChannelType', 'Sales Channeel Type'], ['Notes', 'Notes']],
     where: {
       ID: ID,
       isActive: true,
@@ -20,7 +20,7 @@ export class SalesChannelTypesController {
       return await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
         const result = await SalesChannelTypes.findAll({
-          attributes: language === 'en' ? [['ID', 'Sales Channeel Type ID'], ['enSalesChannelType', 'Sales Channeel Type'], 'Notes'] : [['ID', 'رقم التسلسل'], ['arSalesChannelType', 'نوع قناة المبيعات'], ['Notes', 'ملاحظات']],
+          attributes: language === 'en' ? [['ID', 'Sales Channeel Type ID'], ['enSalesChannelType', 'Sales Channeel Type'], 'Notes'] : [['ID', 'Sales Channeel Type ID'], ['arSalesChannelType', 'Sales Channeel Type'], ['Notes', 'Notes']],
           where: {
             isActive: isActive,
           },

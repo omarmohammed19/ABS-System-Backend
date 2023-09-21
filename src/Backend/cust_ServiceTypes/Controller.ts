@@ -5,7 +5,7 @@ import { Transaction } from 'sequelize';
 
 const getById = (ID: number, t: Transaction, language: string) => {
   return ServiceTypes.findOne({
-    attributes: language === 'en' ? [['ID', 'Service Type ID'], ['enServiceType', 'Service Type'], ["price", "Price"], 'Notes'] : [['ID', 'رقم التسلسل'], ['arServiceType', 'نوع الخدمة'], ['price', 'السعر'], ['Notes', 'ملاحظات']],
+    attributes: language === 'en' ? [['ID', 'Service Type ID'], ['enServiceType', 'Service Type'], ["price", "Price"], 'Notes'] : [['ID', 'Service Type ID'], ['arServiceType', 'Service Type'], ['price', 'Price'], ['Notes', 'Notes']],
     where: {
       ID: ID,
       isActive: true,
@@ -20,7 +20,7 @@ export class ServiceTypesController {
       return await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
         const result = await ServiceTypes.findAll({
-          attributes: language === 'en' ? [['ID', 'Service Type ID'], ['enServiceType', 'Service Type'], ["price", "Price"], 'Notes'] : [['ID', 'رقم التسلسل'], ['arServiceType', 'نوع الخدمة'], ['price', 'السعر'], ['Notes', 'ملاحظات']],
+          attributes: language === 'en' ? [['ID', 'Service Type ID'], ['enServiceType', 'Service Type'], ["price", "Price"], 'Notes'] : [['ID', 'Service Type ID'], ['arServiceType', 'Service Type'], ['price', 'Price'], ['Notes', 'Notes']],
           where: {
             isActive: isActive,
           },

@@ -12,7 +12,8 @@ const getPickup_ReturnLocationsBySubAccountID = async (req: Request, res: Respon
     //@ts-ignore
     const subAccountID = Number(req.params.subAccountID) ? Number(req.params.subAccountID) : req.subAccountID;
     const locationType = req.body.locationType;
-    const result = await createPickupController.getPickup_ReturnLocationsBySubAccountID(locationType, subAccountID);
+    const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
+    const result = await createPickupController.getPickup_ReturnLocationsBySubAccountID(locationType, subAccountID, language);
     res.json(result);
   } catch (error) {
     res.status(400);

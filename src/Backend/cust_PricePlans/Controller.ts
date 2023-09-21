@@ -63,10 +63,10 @@ export class PricePlansController {
     }
   }
 
-  async getPricePlanMatrixBySubAccountID(subAccountID: number): Promise<PricePlansModel[] | string> {
+  async getPricePlanMatrixBySubAccountID(subAccountID: number, language: String): Promise<PricePlansModel[] | string> {
     try {
-      const query = 'EXEC [dbo].[p_GET_cust_PricePlans]  @Method = :Method, @subAccountID = :subAccountID';
-      const replacements = { Method: 'GET_PricePlanMatrix', subAccountID: subAccountID };
+      const query = 'EXEC [dbo].[p_GET_cust_PricePlans]  @Method = :Method, @subAccountID = :subAccountID , @language = :language';
+      const replacements = { Method: 'GET_PricePlanMatrix', subAccountID: subAccountID, language: language };
       const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
       const result = sequelize.query(query, options);
       return result as unknown as PricePlansModel[];
