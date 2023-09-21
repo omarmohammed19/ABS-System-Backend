@@ -12,7 +12,7 @@ const getById = (ID: number, t: Transaction, language: string) => {
 };
 
 const getBySubAccountId = (subAccountID: number, t: Transaction, language: string) => {
-  const query = 'EXEC [dbo].[p_GET_cust_SubAccountsVerification]  @Method = :Method, @subAccountID = :subAccountID';
+  const query = 'EXEC [dbo].[p_GET_cust_SubAccountsVerification]  @Method = :Method, @subAccountID = :subAccountID, @language = :language';
   const replacements = { Method: 'GET_By_SubAccountID', subAccountID: subAccountID, language: language };
   const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
   const result = sequelize.query(query, options);

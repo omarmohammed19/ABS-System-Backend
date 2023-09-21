@@ -9,7 +9,8 @@ const getStatusCountOfShipmentsBySubAccountID = async (req: Request, res: Respon
     const subAccountID = req.subAccountID
     const fromDate = req.body.fromDate;
     const toDate = req.body.toDate;
-    const result = await homeController.getStatusCountOfShipmentsBySubAccountID(subAccountID, fromDate, toDate);
+    const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
+    const result = await homeController.getStatusCountOfShipmentsBySubAccountID(subAccountID, language, fromDate, toDate);
     res.json(result);
   } catch (error) {
     res.status(400);
@@ -20,12 +21,15 @@ const getStatusCountOfShipmentsBySubAccountID = async (req: Request, res: Respon
 const getStatusCountOfShipmentsByMainAccountID = async (req: Request, res: Response) => {
   try {
     //@ts-ignore
-    const mainAccount = req.mainAccount
+    const mainAccount = req.mainAccountID
     const fromDate = req.body.fromDate;
     const toDate = req.body.toDate;
-    const result = await homeController.getStatusCountOfShipmentsByMainAccountID(mainAccount, fromDate, toDate);
+    const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
+    const result = await homeController.getStatusCountOfShipmentsByMainAccountID(mainAccount, language, fromDate, toDate);
     res.json(result);
   } catch (error) {
+    console.log(error);
+
     res.status(400);
     res.json(error);
   }
