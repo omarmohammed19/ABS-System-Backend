@@ -108,6 +108,7 @@ import shipmentWeightRouter from './EmployeeServices/Shipment Weight/Route';
 import awbStatusHistoryRouter from './EmployeeServices/AWBStatusHistory/Route';
 import pickupsEmployeeRouter from './EmployeeServices/Pickups/Route';
 
+
 const corsOptions = {
   origin: '*',
   credentials: true,
