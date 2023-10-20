@@ -63,7 +63,7 @@ const handlesignin_client = async (req: Request, res: Response) => {
     const user = result.result[0] as UsersModel;
     const userRoles = result.Roles.map((role: any) => role.roleID).join(',');
 
-    if(!user){
+    if (!user) {
       return res.json('User not found');
     }
 
@@ -75,7 +75,7 @@ const handlesignin_client = async (req: Request, res: Response) => {
     }
     try {
       const match = await bcrypt.compareSync(req.body.password + process.env.pepper, user.password);
-      
+
       if (match) {
         const id = user.ID;
         const name = user.displayedName;
@@ -123,6 +123,9 @@ const handlesignin_employee = async (req: Request, res: Response) => {
     const result: any = await usersController.handlesignin_employee(req.body.userCred, req.body.password);
     const user = result.result[0] as UsersModel;
     const userRoles = result.Roles.map((role: any) => role.roleID).join(',');
+    if (!user) {
+      return res.json('User not found');
+    }
 
     if (result.length === 0) {
       return res.json('User not found');
@@ -142,17 +145,23 @@ const handlesignin_employee = async (req: Request, res: Response) => {
         const departmentID = user.departmentID;
         //@ts-ignore
         const roleTypeID = user.roleTypeID;
+        //@ts-ignore
+        const employeeID = user.employeeID;
+        //@ts-ignore
+        const titleID = user.titleID;
         const message = 'success';
         // create JWTs
         const accessToken = jwt.sign(
           {
             UserInfo: {
               id: id,
-              name: name, 
+              name: name,
               role: role,
               branchID: branchID,
               departmentID: departmentID,
               roleTypeID: roleTypeID,
+              employeeID: employeeID,
+              titleID: titleID,
             },
           },
           //@ts-ignore

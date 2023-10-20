@@ -110,6 +110,7 @@ import pickupsEmployeeRouter from './EmployeeServices/Pickups/Route';
 import EmpployeeCreateShipmentServicesRouter from './EmployeeServices/Create Shipments/Route';
 import editShipmentsRouter from './EmployeeServices/Edit Shipments/Route';
 import shipServicesRouter from './Backend/ship_Services/Route';
+import courierRouter from './EmployeeServices/Courier/Route';
 
 
 const corsOptions = {
@@ -251,6 +252,7 @@ transactionsForDetailInquiryRouter(app);
 BusinessInfoRouter(app);
 verificationTypesRouter(app);
 subAccountVerificationRouter(app);
+courierRouter(app);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port http://${address}:${process.env.PORT}`);
