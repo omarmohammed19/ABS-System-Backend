@@ -30,6 +30,10 @@ const verifyJWT = (req: Request, res: Response, next: NextFunction) => {
             req.branchID = decoded.UserInfo.branchID;
             //@ts-ignore
             req.roleTypeID = decoded.UserInfo.roleTypeID;
+            //@ts-ignore
+            req.employeeID = decoded.UserInfo.employeeID;
+            //@ts-ignore
+            req.titleID = decoded.UserInfo.titleID;
             next();
         }
     );

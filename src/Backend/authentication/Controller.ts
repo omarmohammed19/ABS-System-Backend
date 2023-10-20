@@ -55,6 +55,12 @@ export class UsersController {
         const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
         const result = await sequelize.query(query, options);
 
+        //@ts-ignore
+        if (result.length === 0) {
+          // Handle the case where result is an empty array
+          return { result: [], Roles: [] };
+        }
+
         const roles = await UserRoles.findAll({
           attributes: ['roleID'],
           where: {
