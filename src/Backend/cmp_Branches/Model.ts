@@ -6,6 +6,8 @@ export interface BranchesModel extends Model {
     enBranchName: string;
     arBranchName: string;
     cityID: number;
+    address: string;
+    location: string;
     isActive: boolean;
 }
 
@@ -25,6 +27,12 @@ export const Branches = sequelize.define<BranchesModel>(
         },
         cityID: {
             type: DataTypes.INTEGER,
+        },
+        address: {
+            type: DataTypes.STRING,
+        },
+        location: {
+            type: DataTypes.STRING,
         },
         isActive: {
             type: DataTypes.BOOLEAN,

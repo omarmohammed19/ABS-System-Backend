@@ -31,6 +31,18 @@ const getAll = async (req: Request, res: Response) => {
   }
 };
 
+const getAllWithPrevStatus = async (req: Request, res: Response) => {
+  try {
+    const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
+    const result = await statusController.getAllWithPrevStatus(language);
+    res.json(result);
+  } catch (error) {
+    console.log(error);
+    res.status(400);
+    res.json(error);
+  }
+};
+
 const getById = async (req: Request, res: Response) => {
   try {
     const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
@@ -74,6 +86,28 @@ const update = async (req: Request, res: Response) => {
     const result = await statusController.update(language, status);
     res.json(result);
   } catch (error) {
+    res.status(400);
+    res.json(error);
+  }
+};
+
+const updateWithPreviousStatus = async (req: Request, res: Response) => {
+  try {
+    const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
+    const previousStatus = req.body.previousStatus;
+    const status = <StatusModel>(<unknown>{
+      ID: req.params.ID,
+      enStatus: req.body.enStatus,
+      arStatus: req.body.arStatus,
+      custDisplayedStatusID: req.body.custDisplayedStatusID,
+      requireReason: req.body.requireReason,
+      Notes: req.body.Notes,
+    });
+    const result = await statusController.updateWithPreviousStatus(language, status, previousStatus);
+    res.json(result);
+  } catch (error) {
+    console.log(error);
+    
     res.status(400);
     res.json(error);
   }
@@ -156,10 +190,12 @@ const activate = async (req: Request, res: Response) => {
 
 const statusRouter = (app: express.Application) => {
   app.get('/status', getAll);
+  app.get('/status-with-prev', getAllWithPrevStatus);
   app.get('/status/:isActive', getAllActive);
   app.get('/status-by-ID/:ID', getById);
   app.post('/status', create);
   app.put('/status/:ID', update);
+  app.put('/status-with-prev/:ID', updateWithPreviousStatus);
   app.put('/status-awb', updateAwbStatus);
   app.put('/status-update', updateStatus);
   app.put('/status/de-activate/:ID', deactivate);

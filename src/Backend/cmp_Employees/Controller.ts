@@ -2,6 +2,11 @@ import { EmployeesModel, Employees } from './Model';
 import { De_Activate } from '../../Services/De_Activate';
 import { sequelize } from '../../Config/database';
 import Sequelize, { Transaction } from 'sequelize';
+import { Users } from '../sys_Users/Model';
+import bcrypt from 'bcrypt';
+import dotenv from 'dotenv';
+dotenv.config();
+const { SALT_ROUNDS, pepper } = process.env;
 
 const getByTitleId = (titleID: number, t: Transaction, language?: string) => {
   return Employees.findAll({
@@ -59,13 +64,15 @@ export class EmployeesController {
             Code: employee.Code,
             fingerPrintCode: employee.fingerPrintCode,
             HRCode: employee.HRCode,
+            userID: employee.userID,
             titleID: employee.titleID,
             departmentID: employee.departmentID,
             branchID: employee.branchID,
             hiringDate: employee.hiringDate,
             IDNO: employee.IDNO,
-            contactNumberID: employee.contactNumberID,
             Email: employee.Email,
+            Mobile1: employee.Mobile1,
+            Mobile2: employee.Mobile2,
             Address: employee.Address,
             salaryID: employee.salaryID,
             dateOfBirth: employee.dateOfBirth,
@@ -75,6 +82,61 @@ export class EmployeesController {
           { transaction: t }
         );
         return result;
+      });
+    } catch (err) {
+      throw new Error(`Could not add new Employee. Error: ${err}`);
+    }
+  }
+
+  async createWithUser(employee: EmployeesModel, userName: string, password: string, displayedName: string, roles: string): Promise<string> {
+    try {
+      return await sequelize.transaction(async (t) => {
+        const usernameExists = await Users.findOne({ where: { username: userName, isActive: 1 } });
+        if (usernameExists) {
+          return (`Username already exists`);
+        }
+        //@ts-ignore
+        const hashedPassword = bcrypt.hashSync(password + pepper, parseInt(SALT_ROUNDS));
+        const newUser = await Users.create(
+          {
+            username: userName,
+            password: hashedPassword,
+            displayedName: displayedName,
+          },
+          { returning: ['ID'], transaction: t }
+        );
+        const query = 'EXEC [dbo].[p_POST_sys_UserRoles]  @userID = :ID , @RoleIDs = :ROLES ';
+        const replacements = { ID: newUser.ID, ROLES: roles };
+        const options = { replacements: replacements, type: Sequelize.QueryTypes.INSERT, transaction: t };
+        await sequelize.query(query, options);
+        console.log(employee.hiringDate);
+
+        await Employees.create(
+          {
+            enEmployeeName: employee.enEmployeeName,
+            arEmployeeName: employee.arEmployeeName,
+            Code: employee.Code,
+            fingerPrintCode: employee.fingerPrintCode,
+            HRCode: employee.HRCode,
+            userID: newUser.ID,
+            titleID: employee.titleID,
+            departmentID: employee.departmentID,
+            branchID: employee.branchID,
+            hiringDate: employee.hiringDate,
+            IDNO: employee.IDNO,
+            Email: employee.Email,
+            Mobile1: employee.Mobile1,
+            Mobile2: employee.Mobile2,
+            Address: employee.Address,
+            salaryID: employee.salaryID,
+            dateOfBirth: employee.dateOfBirth,
+            genderID: employee.genderID,
+            isActive: true,
+          },
+          { transaction: t }
+        );
+
+        return "Employee Created Successfully";
       });
     } catch (err) {
       throw new Error(`Could not add new Employee. Error: ${err}`);
@@ -159,8 +221,9 @@ export class EmployeesController {
               branchID: employee.branchID,
               hiringDate: employee.hiringDate,
               IDNO: employee.IDNO,
-              contactNumberID: employee.contactNumberID,
               Email: employee.Email,
+              Mobile1: employee.Mobile1,
+              Mobile2: employee.Mobile2,
               Address: employee.Address,
               salaryID: employee.salaryID,
               dateOfBirth: employee.dateOfBirth,

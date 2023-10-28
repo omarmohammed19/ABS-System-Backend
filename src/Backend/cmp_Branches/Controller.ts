@@ -53,6 +53,8 @@ export class BranchesController {
             enBranchName: branch.enBranchName,
             arBranchName: branch.arBranchName,
             cityID: branch.cityID,
+            address: branch.address,
+            location: branch.location,
             isActive: true,
           },
           { transaction: t } // pass transaction object to query
@@ -95,6 +97,8 @@ export class BranchesController {
             enBranchName: branch.enBranchName,
             arBranchName: branch.arBranchName,
             cityID: branch.cityID,
+            address: branch.address,
+            location: branch.location,
           },
           {
             where: {
