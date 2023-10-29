@@ -7,7 +7,7 @@ export interface TransactionHdrModel extends Model {
   subAccountID: number;
   userID: number;
   serviceID: number;
-  creationDate: Date;
+  creationDate: string;
   noOfAWBs: number;
   BranchID: number;
   isActive: boolean;
@@ -34,7 +34,7 @@ export const TransactionHdr = sequelize.define<TransactionHdrModel>(
       type: DataTypes.INTEGER,
     },
     creationDate: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
     },
     noOfAWBs: {
       type: DataTypes.INTEGER,

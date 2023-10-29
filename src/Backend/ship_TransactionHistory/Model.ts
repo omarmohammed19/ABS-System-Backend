@@ -7,7 +7,7 @@ export interface TransactionHistoryModel extends Model {
   shipmentTypeID: number;
   statusID: number;
   runnerID: number;
-  auditDate: Date;
+  auditDate: string;
   reasonID: number;
   userID: number;
   fromBranchID: number;
@@ -37,7 +37,7 @@ export const TransactionHistory = sequelize.define<TransactionHistoryModel>(
       type: DataTypes.INTEGER,
     },
     auditDate: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
     },
     reasonID: {
       type: DataTypes.INTEGER,

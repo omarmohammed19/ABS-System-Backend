@@ -5,7 +5,7 @@ export interface PickupHistoryModel extends Model {
   ID: number;
   pickupID: number;
   statusID: number;
-  actionTime: Date;
+  actionTime: string;
   userID: number;
   runnerID: number;
   reasonID: number;
@@ -27,7 +27,7 @@ export const PickupHistory = sequelize.define<PickupHistoryModel>(
       type: DataTypes.INTEGER,
     },
     actionTime: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
     },
     userID: {
       type: DataTypes.INTEGER,

@@ -112,6 +112,7 @@ import editShipmentsRouter from './EmployeeServices/Edit Shipments/Route';
 import shipServicesRouter from './Backend/ship_Services/Route';
 import courierRouter from './EmployeeServices/Courier/Route';
 import gendersRouter from './Backend/sys_Genders/Route';
+import EmployeeTicketsRouter from './EmployeeServices/Tickets/Route';
 
 
 const corsOptions = {
@@ -255,6 +256,7 @@ verificationTypesRouter(app);
 subAccountVerificationRouter(app);
 courierRouter(app);
 gendersRouter(app);
+EmployeeTicketsRouter(app);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port http://${address}:${process.env.PORT}`);

@@ -134,7 +134,6 @@ const createWithUser = async (req: Request, res: Response) => {
     const password = req.body.password;
     const displayedName = req.body.displayedName;
     const roles = req.body.roles;
-  console.log(req.body);
       
     const employee = <EmployeesModel>{
       enEmployeeName: req.body.enEmployeeName,

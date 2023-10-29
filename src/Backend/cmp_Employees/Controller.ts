@@ -109,7 +109,6 @@ export class EmployeesController {
         const replacements = { ID: newUser.ID, ROLES: roles };
         const options = { replacements: replacements, type: Sequelize.QueryTypes.INSERT, transaction: t };
         await sequelize.query(query, options);
-        console.log(employee.hiringDate);
 
         await Employees.create(
           {
