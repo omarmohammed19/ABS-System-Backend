@@ -1,14 +1,14 @@
 import express, { Request, Response } from 'express';
-import { TransactionsController } from './Controller';
-import { TransactionsModel } from './Model';
+import { TransactionsDelController } from './Controller';
+import { TransactionsDelModel } from './Model';
 import Sequalize from 'sequelize';
 
-const transactionsController = new TransactionsController();
+const transactionsDelController = new TransactionsDelController();
 
 const getAll = async (req: Request, res: Response) => {
   try {
     const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-    const result = await transactionsController.index(language, Number(req.params.isActive), Number(req.params.limit));
+    const result = await transactionsDelController.index(language, Number(req.params.isActive), Number(req.params.limit));
     res.json(result);
   } catch (error) {
     console.log(error);
@@ -20,7 +20,7 @@ const getAll = async (req: Request, res: Response) => {
 const getByTransHdrID = async (req: Request, res: Response) => {
   try {
     const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-    const result = await transactionsController.getTransactionsByTransHdrID(Number(req.params.transHdrID), language);
+    const result = await transactionsDelController.getTransactionsByTransHdrID(Number(req.params.transHdrID), language);
     res.json(result);
   } catch (error) {
     res.status(400);
@@ -31,7 +31,7 @@ const getByTransHdrID = async (req: Request, res: Response) => {
 const getBymainAccountID = async (req: Request, res: Response) => {
   try {
     const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-    const result = await transactionsController.getTransactionsBymainAccountID(Number(req.params.mainAccountID), language, Number(req.params.limit));
+    const result = await transactionsDelController.getTransactionsBymainAccountID(Number(req.params.mainAccountID), language, Number(req.params.limit));
     res.json(result);
   } catch (error) {
     res.status(400);
@@ -42,7 +42,7 @@ const getBymainAccountID = async (req: Request, res: Response) => {
 const getBysubAccountID = async (req: Request, res: Response) => {
   try {
     const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-    const result = await transactionsController.getTransactionsBysubAccountID(Number(req.params.subAccountID), language, Number(req.params.limit));
+    const result = await transactionsDelController.getTransactionsBysubAccountID(Number(req.params.subAccountID), language, Number(req.params.limit));
     res.json(result);
   } catch (error) {
     console.log(error);
@@ -54,7 +54,7 @@ const getBysubAccountID = async (req: Request, res: Response) => {
 const getByAWB = async (req: Request, res: Response) => {
   try {
     const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-    const result = await transactionsController.getTransactionsByAWB(String(req.params.AWB), language);
+    const result = await transactionsDelController.getTransactionsByAWB(String(req.params.AWB), language);
     res.json(result);
   } catch (error) {
     res.status(400);
@@ -67,7 +67,7 @@ const create = async (req: Request, res: Response) => {
     const currentDate = Sequalize.literal('GETDATE()');
     const expectedDeliveryDate = Sequalize.literal('GETDATE()+1');
     const expiryDate = Sequalize.literal('GETDATE()+3');
-    const transactions = <TransactionsModel>(<unknown>{
+    const transactions = <TransactionsDelModel>(<unknown>{
       transHdrID: req.body.transHdrID,
       AWB: req.body.AWB,
       Ref: req.body.Ref,
@@ -102,7 +102,7 @@ const create = async (req: Request, res: Response) => {
       Cash: req.body.Cash,
     });
 
-    const result = await transactionsController.create(transactions);
+    const result = await transactionsDelController.create(transactions);
     res.json(result);
   } catch (error) {
     res.status(400);
@@ -114,7 +114,7 @@ const updateByAWB = async (req: Request, res: Response) => {
   try {
     const currentDate = Sequalize.literal('GETDATE()');
     const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-    const transactions = <TransactionsModel>(<unknown>{
+    const transactions = <TransactionsDelModel>(<unknown>{
       AWB: req.params.AWB,
       transHdrID: req.body.transHdrID,
       Ref: req.body.Ref,
@@ -150,7 +150,7 @@ const updateByAWB = async (req: Request, res: Response) => {
       isPaid: req.body.isPaid,
       paymentDate: currentDate,
     });
-    const result = await transactionsController.updateByAWB(language, transactions);
+    const result = await transactionsDelController.updateByAWB(language, transactions);
     res.json(result);
   } catch (error) {
     res.status(400);
@@ -162,7 +162,7 @@ const updateByTransHdrID = async (req: Request, res: Response) => {
   try {
     const currentDate = Sequalize.literal('GETDATE()');
     const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
-    const transactions = <TransactionsModel>(<unknown>{
+    const transactions = <TransactionsDelModel>(<unknown>{
       transHdrID: req.params.transHdrID,
       AWB: req.body.AWB,
       Ref: req.body.Ref,
@@ -198,7 +198,7 @@ const updateByTransHdrID = async (req: Request, res: Response) => {
       isPaid: req.body.isPaid,
       paymentDate: currentDate,
     });
-    const result = await transactionsController.updateByTransHdrID(language, transactions);
+    const result = await transactionsDelController.updateByTransHdrID(language, transactions);
     res.json(result);
   } catch (error) {
     res.status(400);
@@ -208,7 +208,7 @@ const updateByTransHdrID = async (req: Request, res: Response) => {
 
 const deactivateByAWB = async (req: Request, res: Response) => {
   try {
-    const result = await transactionsController.deactivateByAWB(String(req.params.AWB));
+    const result = await transactionsDelController.deactivateByAWB(String(req.params.AWB));
     res.json(result);
   } catch (error) {
     console.log(error);
@@ -219,7 +219,7 @@ const deactivateByAWB = async (req: Request, res: Response) => {
 
 const deactivateByTransHdrID = async (req: Request, res: Response) => {
   try {
-    const result = await transactionsController.deactivateByTransHdrID(Number(req.params.transHdrID));
+    const result = await transactionsDelController.deactivateByTransHdrID(Number(req.params.transHdrID));
     res.json(result);
   } catch (error) {
     console.log(error);
@@ -230,7 +230,7 @@ const deactivateByTransHdrID = async (req: Request, res: Response) => {
 
 const deactivateByMainAccountID = async (req: Request, res: Response) => {
   try {
-    const result = await transactionsController.deactivateByMainAccountID(Number(req.params.mainAccountID));
+    const result = await transactionsDelController.deactivateByMainAccountID(Number(req.params.mainAccountID));
     res.json(result);
   } catch (error) {
     console.log(error);
@@ -241,7 +241,7 @@ const deactivateByMainAccountID = async (req: Request, res: Response) => {
 
 const deactivateBySubAccountID = async (req: Request, res: Response) => {
   try {
-    const result = await transactionsController.deactivateBySubAccountID(Number(req.params.subAccountID));
+    const result = await transactionsDelController.deactivateBySubAccountID(Number(req.params.subAccountID));
     res.json(result);
   } catch (error) {
     console.log(error);
@@ -252,7 +252,7 @@ const deactivateBySubAccountID = async (req: Request, res: Response) => {
 
 const activateByAWB = async (req: Request, res: Response) => {
   try {
-    const result = await transactionsController.activateByAWB(String(req.params.AWB));
+    const result = await transactionsDelController.activateByAWB(String(req.params.AWB));
     res.json(result);
   } catch (error) {
     res.status(400);
@@ -262,7 +262,7 @@ const activateByAWB = async (req: Request, res: Response) => {
 
 const activateByTransHdrID = async (req: Request, res: Response) => {
   try {
-    const result = await transactionsController.activateByTransHdrID(Number(req.params.transHdrID));
+    const result = await transactionsDelController.activateByTransHdrID(Number(req.params.transHdrID));
     res.json(result);
   } catch (error) {
     res.status(400);
@@ -272,7 +272,7 @@ const activateByTransHdrID = async (req: Request, res: Response) => {
 
 const activateByMainAccountID = async (req: Request, res: Response) => {
   try {
-    const result = await transactionsController.activateByMainAccountID(Number(req.params.mainAccountID));
+    const result = await transactionsDelController.activateByMainAccountID(Number(req.params.mainAccountID));
     res.json(result);
   } catch (error) {
     res.status(400);
@@ -282,7 +282,7 @@ const activateByMainAccountID = async (req: Request, res: Response) => {
 
 const activateBySubAccountID = async (req: Request, res: Response) => {
   try {
-    const result = await transactionsController.activateBySubAccountID(Number(req.params.subAccountID));
+    const result = await transactionsDelController.activateBySubAccountID(Number(req.params.subAccountID));
     res.json(result);
   } catch (error) {
     res.status(400);
@@ -290,47 +290,23 @@ const activateBySubAccountID = async (req: Request, res: Response) => {
   }
 };
 
-const deleteByAWBs = async (req: Request, res: Response) => {
-  try {
-    const result = await transactionsController.deleteByAWBs(req.body.AWBs);
-    res.json(result);
-  } catch (error) {
-    console.log(error);
-
-    res.status(400);
-    res.json(error);
-  }
-}
-
-const checkShipmentExists = async (req: Request, res: Response) => {
-  try {
-    const result = await transactionsController.checkShipmentExists(String(req.params.AWB));
-    res.json(result);
-  } catch (error) {
-    res.status(400);
-    res.json(error);
-  }
-}
-
 const transactionsRouter = (app: express.Application) => {
-  app.get('/transactions/:isActive/:limit?', getAll);
-  app.get('/transactions-by-transHdrID/:transHdrID', getByTransHdrID);
-  app.get('/transactions-by-AWB/:AWB', getByAWB);
-  app.get('/transactions-by-mainAccountID/:mainAccountID/:limit?', getBymainAccountID);
-  app.get('/transactions-by-subAccountID/:subAccountID/:limit?', getBysubAccountID);
-  app.post('/transactions', create);
-  app.put('/transactions-by-transHdrID/:transHdrID', updateByTransHdrID);
-  app.put('/transactions-by-AWB/:AWB', updateByAWB);
-  app.put('/transactions/de-activate-by-transHdrID/:transHdrID', deactivateByTransHdrID);
-  app.put('/transactions/de-activate-by-AWB/:AWB', deactivateByAWB);
-  app.put('/transactions/de-activate-by-mainAccountID/:mainAccountID', deactivateByMainAccountID);
-  app.put('/transactions/de-activate-by-subAccountID/:subAccountID', deactivateBySubAccountID);
-  app.put('/transactions/activate-by-transHdrID/:transHdrID', activateByTransHdrID);
-  app.put('/transactions/activate-by-AWB/:AWB', activateByAWB);
-  app.put('/transactions/activate-by-mainAccountID/:mainAccountID', activateByMainAccountID);
-  app.put('/transactions/activate-by-subAccountID/:subAccountID', activateBySubAccountID);
-  app.post('/transactions-to-delete', deleteByAWBs);
-  app.get('/transactions-check-shipment-exists/:AWB', checkShipmentExists);
+  app.get('/transactionsDel/:isActive/:limit?', getAll);
+  app.get('/transactionsDel-by-transHdrID/:transHdrID', getByTransHdrID);
+  app.get('/transactionsDel-by-AWB/:AWB', getByAWB);
+  app.get('/transactionsDel-by-mainAccountID/:mainAccountID/:limit?', getBymainAccountID);
+  app.get('/transactionsDel-by-subAccountID/:subAccountID/:limit?', getBysubAccountID);
+  app.post('/transactionsDel', create);
+  app.put('/transactionsDel-by-transHdrID/:transHdrID', updateByTransHdrID);
+  app.put('/transactionsDel-by-AWB/:AWB', updateByAWB);
+  app.put('/transactionsDel/de-activate-by-transHdrID/:transHdrID', deactivateByTransHdrID);
+  app.put('/transactionsDel/de-activate-by-AWB/:AWB', deactivateByAWB);
+  app.put('/transactionsDel/de-activate-by-mainAccountID/:mainAccountID', deactivateByMainAccountID);
+  app.put('/transactionsDel/de-activate-by-subAccountID/:subAccountID', deactivateBySubAccountID);
+  app.put('/transactionsDel/activate-by-transHdrID/:transHdrID', activateByTransHdrID);
+  app.put('/transactionsDel/activate-by-AWB/:AWB', activateByAWB);
+  app.put('/transactionsDel/activate-by-mainAccountID/:mainAccountID', activateByMainAccountID);
+  app.put('/transactionsDel/activate-by-subAccountID/:subAccountID', activateBySubAccountID);
 };
 
 export default transactionsRouter;

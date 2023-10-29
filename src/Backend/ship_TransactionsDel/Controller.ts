@@ -1,62 +1,61 @@
-import { TransactionsModel, Transactions } from './Model';
+import { TransactionsDelModel, TransactionsDel } from './Model';
 import { De_Activate } from '../../Services/De_Activate';
 import { sequelize } from '../../Config/database';
-import Sequelize, { Op, Transaction } from 'sequelize';
-import { TransactionsDel } from '../ship_TransactionsDel/Model';
+import Sequelize, { Transaction } from 'sequelize';
 
 const getByTransHdrID = async (transHdrID: number, language: string, t: Transaction) => {
-  const query = 'EXEC [dbo].[p_GET_ship_Transactions] @language = :language , @Method = :Method, @TransHdrID = :transHdrID';
+  const query = 'EXEC [dbo].[p_GET_ship_TransactionsDel] @language = :language , @Method = :Method, @TransHdrID = :transHdrID';
   const replacements = { language: language, Method: 'GET_ByTransHdrID', transHdrID: transHdrID };
   const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
   const result = await sequelize.query(query, options);
-  return result as unknown as TransactionsModel;
+  return result as unknown as TransactionsDelModel;
 };
 
 const getByAWB = async (AWB: string, language: string, t: Transaction) => {
-  const query = 'EXEC [dbo].[p_GET_ship_Transactions] @language = :language , @Method = :Method, @AWB = :AWB';
+  const query = 'EXEC [dbo].[p_GET_ship_TransactionsDel] @language = :language , @Method = :Method, @AWB = :AWB';
   const replacements = { language: language, Method: 'GET_ByAWB', AWB: AWB };
   const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
   const result = await sequelize.query(query, options);
-  return result as unknown as TransactionsModel;
+  return result as unknown as TransactionsDelModel;
 };
 
 const getByMainAccountID = async (mainAccountID: number, language: string, t: Transaction, limits?: number) => {
   const limit = limits || 10;
-  const query = 'EXEC [dbo].[p_GET_ship_Transactions]@limit = :limit, @language = :language , @Method = :Method, @mainAccountID = :mainAccountID';
+  const query = 'EXEC [dbo].[p_GET_ship_TransactionsDel]@limit = :limit, @language = :language , @Method = :Method, @mainAccountID = :mainAccountID';
   const replacements = { limit: limit, language: language, Method: 'GET_ByMainAccountID', mainAccountID: mainAccountID };
   const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
   const result = await sequelize.query(query, options);
-  return result as unknown as TransactionsModel;
+  return result as unknown as TransactionsDelModel;
 };
 
 const getBySubAccountID = async (subAccountID: number, language: string, t: Transaction, limits?: number) => {
   const limit = limits || 10;
-  const query = 'EXEC [dbo].[p_GET_ship_Transactions]@limit = :limit, @language = :language , @Method = :Method, @subAccountID = :subAccountID';
+  const query = 'EXEC [dbo].[p_GET_ship_TransactionsDel]@limit = :limit, @language = :language , @Method = :Method, @subAccountID = :subAccountID';
   const replacements = { limit: limit, language: language, Method: 'GET_BySubAccountID', subAccountID: subAccountID };
   const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
   const result = await sequelize.query(query, options);
-  return result as unknown as TransactionsModel;
+  return result as unknown as TransactionsDelModel;
 };
 
-export class TransactionsController {
-  async index(language: string, isActive: number, limits?: number): Promise<TransactionsModel[]> {
+export class TransactionsDelController {
+  async index(language: string, isActive: number, limits?: number): Promise<TransactionsDelModel[]> {
     const limit = limits || 10;
     try {
-      const query = 'EXEC [dbo].[p_GET_ship_Transactions] @limit = :limit ,@language = :language , @Method = :Method , @isActive = :isActive';
+      const query = 'EXEC [dbo].[p_GET_ship_TransactionsDel] @limit = :limit ,@language = :language , @Method = :Method , @isActive = :isActive';
       const replacements = { limit: limit, language: language, Method: 'GET', isActive: isActive };
       const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
       const result = await sequelize.query(query, options);
-      return result as unknown as TransactionsModel[];
+      return result as unknown as TransactionsDelModel[];
     } catch (err) {
-      throw new Error(`Could not get all Transactions. Error: ${err}`);
+      throw new Error(`Could not get all TransactionsDel. Error: ${err}`);
     }
   }
 
-  async create(transactions: TransactionsModel): Promise<TransactionsModel | string> {
+  async create(transactions: TransactionsDelModel): Promise<TransactionsDelModel | string> {
     try {
       return await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
-        const result = await Transactions.create(
+        const result = await TransactionsDel.create(
           {
             transHdrID: transactions.transHdrID,
             AWB: transactions.AWB,
@@ -93,14 +92,14 @@ export class TransactionsController {
           },
           { transaction: t } // pass transaction object to query
         );
-        return result ? result.toJSON() : 'Could not add new Transactions';
+        return result ? result.toJSON() : 'Could not add new TransactionsDel';
       });
     } catch (err) {
-      throw new Error(`Could not add new Transactions. Error: ${err}`);
+      throw new Error(`Could not add new TransactionsDel. Error: ${err}`);
     }
   }
 
-  async getTransactionsByTransHdrID(TransHdrID: number, language: string): Promise<TransactionsModel | string> {
+  async getTransactionsByTransHdrID(TransHdrID: number, language: string): Promise<TransactionsDelModel | string> {
     try {
       const result = await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
@@ -109,11 +108,11 @@ export class TransactionsController {
       });
       return result;
     } catch (err) {
-      throw new Error(`Could not get Transactions by ID. Error: ${err}`);
+      throw new Error(`Could not get TransactionsDel by ID. Error: ${err}`);
     }
   }
 
-  async getTransactionsBymainAccountID(mainAccountID: number, language: string, limit?: number): Promise<TransactionsModel | string> {
+  async getTransactionsBymainAccountID(mainAccountID: number, language: string, limit?: number): Promise<TransactionsDelModel | string> {
     try {
       const result = await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
@@ -122,11 +121,11 @@ export class TransactionsController {
       });
       return result;
     } catch (err) {
-      throw new Error(`Could not get Transactions by ID. Error: ${err}`);
+      throw new Error(`Could not get TransactionsDel by ID. Error: ${err}`);
     }
   }
 
-  async getTransactionsBysubAccountID(subAccountID: number, language: string, limit?: number): Promise<TransactionsModel | string> {
+  async getTransactionsBysubAccountID(subAccountID: number, language: string, limit?: number): Promise<TransactionsDelModel | string> {
     try {
       const result = await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
@@ -135,11 +134,11 @@ export class TransactionsController {
       });
       return result;
     } catch (err) {
-      throw new Error(`Could not get Transactions by ID. Error: ${err}`);
+      throw new Error(`Could not get TransactionsDel by ID. Error: ${err}`);
     }
   }
 
-  async getTransactionsByAWB(AWB: string, language: string): Promise<TransactionsModel | string> {
+  async getTransactionsByAWB(AWB: string, language: string): Promise<TransactionsDelModel | string> {
     try {
       const result = await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
@@ -148,15 +147,15 @@ export class TransactionsController {
       });
       return result;
     } catch (err) {
-      throw new Error(`Could not get Transactions by ID. Error: ${err}`);
+      throw new Error(`Could not get TransactionsDel by ID. Error: ${err}`);
     }
   }
 
-  async updateByAWB(language: string, transactions: TransactionsModel): Promise<TransactionsModel | string> {
+  async updateByAWB(language: string, transactions: TransactionsDelModel): Promise<TransactionsDelModel | string> {
     try {
       return await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
-        await Transactions.update(
+        await TransactionsDel.update(
           {
             transHdrID: transactions.transHdrID,
             Ref: transactions.Ref,
@@ -205,15 +204,15 @@ export class TransactionsController {
         return result;
       });
     } catch (err) {
-      throw new Error(`Could not update Transactions. Error: ${err}`);
+      throw new Error(`Could not update TransactionsDel. Error: ${err}`);
     }
   }
 
-  async updateByTransHdrID(language: string, transactions: TransactionsModel): Promise<TransactionsModel | string> {
+  async updateByTransHdrID(language: string, transactions: TransactionsDelModel): Promise<TransactionsDelModel | string> {
     try {
       return await sequelize.transaction(async (t) => {
         // start managed transaction and pass transaction object to the callback function
-        await Transactions.update(
+        await TransactionsDel.update(
           {
             AWB: transactions.AWB,
             Ref: transactions.Ref,
@@ -262,137 +261,79 @@ export class TransactionsController {
         return result;
       });
     } catch (err) {
-      throw new Error(`Could not update Transactions. Error: ${err}`);
+      throw new Error(`Could not update TransactionsDel. Error: ${err}`);
     }
   }
 
   async deactivateByAWB(AWB: string): Promise<string> {
     try {
-      const result = await De_Activate<TransactionsModel>(Transactions, 'AWB', AWB, 'deactivate');
+      const result = await De_Activate<TransactionsDelModel>(TransactionsDel, 'AWB', AWB, 'deactivate');
       return result;
     } catch (err) {
-      throw new Error(`Could not deactivate Transactions. Error: ${err}`);
+      throw new Error(`Could not deactivate TransactionsDel. Error: ${err}`);
     }
   }
 
   async activateByAWB(AWB: string): Promise<string> {
     try {
-      const result = await De_Activate<TransactionsModel>(Transactions, 'AWB', AWB, 'activate');
+      const result = await De_Activate<TransactionsDelModel>(TransactionsDel, 'AWB', AWB, 'activate');
       return result;
     } catch (err) {
-      throw new Error(`Could not activate Transactions. Error: ${err}`);
+      throw new Error(`Could not activate TransactionsDel. Error: ${err}`);
     }
   }
 
   async deactivateByTransHdrID(TransHdrID: number): Promise<string> {
     try {
-      const result = await De_Activate<TransactionsModel>(Transactions, 'transHdrID', TransHdrID, 'deactivate');
+      const result = await De_Activate<TransactionsDelModel>(TransactionsDel, 'transHdrID', TransHdrID, 'deactivate');
       return result;
     } catch (err) {
-      throw new Error(`Could not deactivate Transactions. Error: ${err}`);
+      throw new Error(`Could not deactivate TransactionsDel. Error: ${err}`);
     }
   }
 
   async activateByTransHdrID(TransHdrID: number): Promise<string> {
     try {
-      const result = await De_Activate<TransactionsModel>(Transactions, 'transHdrID', TransHdrID, 'activate');
+      const result = await De_Activate<TransactionsDelModel>(TransactionsDel, 'transHdrID', TransHdrID, 'activate');
       return result;
     } catch (err) {
-      throw new Error(`Could not activate Transactions. Error: ${err}`);
+      throw new Error(`Could not activate TransactionsDel. Error: ${err}`);
     }
   }
 
   async deactivateByMainAccountID(mainAccountID: number): Promise<string> {
     try {
-      const result = await De_Activate<TransactionsModel>(Transactions, 'mainAccountID', mainAccountID, 'deactivate');
+      const result = await De_Activate<TransactionsDelModel>(TransactionsDel, 'mainAccountID', mainAccountID, 'deactivate');
       return result;
     } catch (err) {
-      throw new Error(`Could not deactivate Transactions. Error: ${err}`);
+      throw new Error(`Could not deactivate TransactionsDel. Error: ${err}`);
     }
   }
 
   async activateByMainAccountID(mainAccountID: number): Promise<string> {
     try {
-      const result = await De_Activate<TransactionsModel>(Transactions, 'mainAccountID', mainAccountID, 'activate');
+      const result = await De_Activate<TransactionsDelModel>(TransactionsDel, 'mainAccountID', mainAccountID, 'activate');
       return result;
     } catch (err) {
-      throw new Error(`Could not activate Transactions. Error: ${err}`);
+      throw new Error(`Could not activate TransactionsDel. Error: ${err}`);
     }
   }
 
   async deactivateBySubAccountID(subAccountID: number): Promise<string> {
     try {
-      const result = await De_Activate<TransactionsModel>(Transactions, 'subAccountID', subAccountID, 'deactivate');
+      const result = await De_Activate<TransactionsDelModel>(TransactionsDel, 'subAccountID', subAccountID, 'deactivate');
       return result;
     } catch (err) {
-      throw new Error(`Could not deactivate Transactions. Error: ${err}`);
+      throw new Error(`Could not deactivate TransactionsDel. Error: ${err}`);
     }
   }
 
   async activateBySubAccountID(subAccountID: number): Promise<string> {
     try {
-      const result = await De_Activate<TransactionsModel>(Transactions, 'subAccountID', subAccountID, 'activate');
+      const result = await De_Activate<TransactionsDelModel>(TransactionsDel, 'subAccountID', subAccountID, 'activate');
       return result;
     } catch (err) {
-      throw new Error(`Could not activate Transactions. Error: ${err}`);
-    }
-  }
-
-  async checkShipmentExists(AWB: string): Promise<boolean> {
-    try {
-      const result = await sequelize.transaction(async (t) => {
-        const shipment = await Transactions.findOne({
-          where: {
-            AWB: AWB,
-          },
-          transaction: t,
-        });
-        return shipment ? true : false;
-      });
-      return result;
-    } catch (err) {
-      throw new Error(`Could not check if shipment exists. Error: ${err}`);
-    }
-  }
-
-  async deleteByAWBs(AWBs: string[]): Promise<string> {
-    try {
-      return await sequelize.transaction(async (t) => {
-        const shipments = await Transactions.findAll({
-          where: {
-            AWB: AWBs,
-          },
-          attributes: {
-            exclude: ['ID']
-          }, transaction: t
-        });
-
-        const shipmentsArray = shipments.map((shipment) => {
-          return {
-            ...shipment.get(), // Copy all attributes from the original shipment
-            // Map the date attributes to string values
-            actualDeliveryDate: shipment.actualDeliveryDate ? new Date(shipment.actualDeliveryDate).toISOString() : null,
-            expectedDeliveryDate: shipment.expectedDeliveryDate ? new Date(shipment.expectedDeliveryDate).toISOString() : null,
-            creationDate: shipment.creationDate ? new Date(shipment.creationDate).toISOString() : null,
-            lastChangeDate: shipment.lastChangeDate ? new Date(shipment.lastChangeDate).toISOString() : null,
-            expiryDate: shipment.expiryDate ? new Date(shipment.expiryDate).toISOString() : null,
-            paymentDate: shipment.paymentDate ? new Date(shipment.paymentDate).toISOString() : null,
-          };
-        });
-
-        await TransactionsDel.bulkCreate(shipmentsArray, { transaction: t });
-
-        await Transactions.destroy({
-          where: {
-            AWB: {
-              [Op.in]: AWBs
-            }
-          }, transaction: t
-        });
-        return 'Shipments Deleted Successfully';
-      });
-    } catch (err) {
-      throw new Error(`Could not delete Transactions. Error: ${err}`);
+      throw new Error(`Could not activate TransactionsDel. Error: ${err}`);
     }
   }
 }

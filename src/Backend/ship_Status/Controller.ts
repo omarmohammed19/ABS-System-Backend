@@ -6,6 +6,7 @@ import { AWBController } from '../AWBGenerator/Controller';
 import { Transactions } from '../ship_Transactions/Model';
 import { ca } from 'date-fns/locale';
 import { TransactionHistory } from '../ship_TransactionHistory/Model';
+import { PrevStatus } from '../ship_prevStatus/Model';
 
 const getByID = async (ID: number, language: string, t: Transaction) => {
   const query = 'EXEC [dbo].[p_GET_ship_Status] @language = :language , @Method = :Method, @ID = :ID';
@@ -32,6 +33,18 @@ export class StatusController {
     try {
       const query = 'EXEC [dbo].[p_GET_ship_Status] @language = :language , @Method = :Method ';
       const replacements = { language: language, Method: 'GET_All' };
+      const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
+      const result = await sequelize.query(query, options);
+      return result as unknown as StatusModel[];
+    } catch (err) {
+      throw new Error(`Could not get all Status. Error: ${err}`);
+    }
+  }
+
+  async getAllWithPrevStatus(language: string): Promise<StatusModel[]> {
+    try {
+      const query = 'EXEC [dbo].[p_GET_ship_Status] @language = :language , @Method = :Method ';
+      const replacements = { language: language, Method: 'GET_All_With_Prev_status' };
       const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT };
       const result = await sequelize.query(query, options);
       return result as unknown as StatusModel[];
@@ -93,6 +106,49 @@ export class StatusController {
             transaction: t, // pass transaction object to query
           }
         );
+        const result = await getByID(status.ID, language, t);
+        return result;
+      });
+    } catch (err) {
+      throw new Error(`Could not update Status. Error: ${err}`);
+    }
+  }
+
+  async updateWithPreviousStatus(language: string, status: StatusModel, prevStatus: string): Promise<StatusModel | string> {
+    try {
+      return await sequelize.transaction(async (t) => {
+        // start managed transaction and pass transaction object to the callback function
+        await Status.update(
+          {
+            enStatus: status.enStatus,
+            arStatus: status.arStatus,
+            custDisplayedStatusID: status.custDisplayedStatusID,
+            requireReason: status.requireReason,
+            Notes: status.Notes,
+          },
+          {
+            where: {
+              ID: status.ID,
+            },
+            transaction: t, // pass transaction object to query
+          }
+        );
+        await PrevStatus.destroy({
+          where: {
+            statusID: status.ID,
+          },
+          transaction: t,
+        });
+        for (let i = 0; i < prevStatus.length; i++) {
+          const prevStatusID = prevStatus[i];
+          await PrevStatus.create(
+            {
+              statusID: status.ID,
+              prevStatusID: prevStatusID,
+            },
+            { transaction: t }
+          );
+        }
         const result = await getByID(status.ID, language, t);
         return result;
       });

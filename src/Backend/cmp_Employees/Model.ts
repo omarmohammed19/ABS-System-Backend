@@ -8,16 +8,18 @@ export interface EmployeesModel extends Model {
     Code: number;
     fingerPrintCode: number;
     HRCode: number;
+    userID: number;
     titleID: number;
     departmentID: number;
     branchID: number;
-    hiringDate: Date;
+    hiringDate: string;
     IDNO: string;
-    contactNumberID: number;
     Email: string;
+    Mobile1: string;
+    Mobile2: string;
     Address: string;
     salaryID: number;
-    dateOfBirth: Date;
+    dateOfBirth: string;
     genderID: number;
     isActive: boolean;
 }
@@ -45,6 +47,9 @@ export const Employees = sequelize.define<EmployeesModel>(
         HRCode: {
             type: DataTypes.INTEGER,
         },
+        userID: {
+            type: DataTypes.INTEGER,
+        },
         titleID: {
             type: DataTypes.INTEGER,
         },
@@ -55,15 +60,18 @@ export const Employees = sequelize.define<EmployeesModel>(
             type: DataTypes.INTEGER,
         },
         hiringDate: {
-            type: DataTypes.DATE,
+            type: DataTypes.STRING,
         },
         IDNO: {
             type: DataTypes.STRING,
         },
-        contactNumberID: {
-            type: DataTypes.INTEGER,
-        },
         Email: {
+            type: DataTypes.STRING,
+        },
+        Mobile1: {
+            type: DataTypes.STRING,
+        },
+        Mobile2: {
             type: DataTypes.STRING,
         },
         Address: {
@@ -73,7 +81,7 @@ export const Employees = sequelize.define<EmployeesModel>(
             type: DataTypes.INTEGER,
         },
         dateOfBirth: {
-            type: DataTypes.DATE,
+            type: DataTypes.STRING,
         },
         genderID: {
             type: DataTypes.INTEGER,

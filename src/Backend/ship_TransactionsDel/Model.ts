@@ -1,7 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../../Config/database';
 
-export interface TransactionsModel extends Model {
+export interface TransactionsDelModel extends Model {
   ID: number;
   transHdrID: number;
   AWB: string;
@@ -43,8 +43,8 @@ export interface TransactionsModel extends Model {
   isActive: boolean;
 }
 
-export const Transactions = sequelize.define<TransactionsModel>(
-  'ship_Transactions',
+export const TransactionsDel = sequelize.define<TransactionsDelModel>(
+  'ship_TransactionsDel',
   {
     ID: {
       type: DataTypes.INTEGER,
@@ -168,5 +168,6 @@ export const Transactions = sequelize.define<TransactionsModel>(
   },
   {
     timestamps: false,
+    tableName: 'ship_TransactionsDel',
   }
 );

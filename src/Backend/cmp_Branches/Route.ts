@@ -56,6 +56,8 @@ const create = async (req: Request, res: Response) => {
       enBranchName: req.body.enBranchName,
       arBranchName: req.body.arBranchName,
       cityID: req.body.cityID,
+      address: req.body.address,
+      location: req.body.location,
     };
     const result = await branchesController.create(branch);
     res.json(result);
@@ -73,6 +75,8 @@ const update = async (req: Request, res: Response) => {
       enBranchName: req.body.enBranchName,
       arBranchName: req.body.arBranchName,
       cityID: req.body.cityID,
+      address: req.body.address,
+      location: req.body.location,
     };
     const result = await branchesController.update(branch, language);
     res.json(result);

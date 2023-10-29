@@ -13,12 +13,12 @@ export interface PickupsModel extends Model {
   vehicleTypeID: number;
   noOfAWBs: number;
   actualAWBs: number;
-  pickedUpDate: Date;
-  timeFrom: Date;
-  toTime: Date;
+  pickedUpDate: string;
+  timeFrom: string;
+  toTime: string;
   statusID: number;
   userID: number;
-  creationDate: Date;
+  creationDate: string;
   assignedBy: number;
   assignedTo: number;
   createdAWBs: boolean;
@@ -65,13 +65,13 @@ export const Pickups = sequelize.define<PickupsModel>(
       type: DataTypes.INTEGER,
     },
     pickedUpDate: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING,
     },
     timeFrom: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
     },
     toTime: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
     },
     statusID: {
       type: DataTypes.INTEGER,
@@ -80,7 +80,7 @@ export const Pickups = sequelize.define<PickupsModel>(
       type: DataTypes.INTEGER,
     },
     creationDate: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
     },
     assignedBy: {
       type: DataTypes.INTEGER,
