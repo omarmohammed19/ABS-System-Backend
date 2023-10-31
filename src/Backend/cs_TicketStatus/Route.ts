@@ -31,6 +31,7 @@ const create = async (req: Request, res: Response) => {
         const ticketStatus = <TicketStatusModel>{
             enStatus: req.body.enStatus,
             arStatus: req.body.arStatus,
+            departmentID: req.body.departmentID,
             Notes: req.body.Notes,
         };
         const result = await ticketStatusController.create(ticketStatus);
@@ -49,6 +50,7 @@ const update = async (req: Request, res: Response) => {
             ID: Number(req.params.ID),
             enStatus: req.body.enStatus,
             arStatus: req.body.arStatus,
+            departmentID: req.body.departmentID,
             Notes: req.body.Notes,
         };
         const result = await ticketStatusController.update(ticketStatus);

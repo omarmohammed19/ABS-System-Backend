@@ -12,6 +12,8 @@ export interface TicketsModel extends Model {
     isClosed: boolean;
     userID: number;
     documentPath: string;
+    assignedDepartmentID: number;
+    assignedCustomerServiceID: number;
     isActive: boolean;
 }
 
@@ -49,6 +51,12 @@ export const Tickets = sequelize.define<TicketsModel>(
         },
         documentPath: {
             type: DataTypes.STRING,
+        },
+        assignedDepartmentID: {
+            type: DataTypes.INTEGER,
+        },
+        assignedCustomerServiceID: {
+            type: DataTypes.INTEGER,
         },
         isActive: {
             type: DataTypes.BOOLEAN,

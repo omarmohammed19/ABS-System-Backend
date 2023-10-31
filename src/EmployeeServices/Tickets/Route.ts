@@ -21,8 +21,10 @@ const getOpenedTickets = async (req: Request, res: Response) => {
     try {
         const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
         const limit = Number(req.params.limit) || 10;
+        const fromDate = req.body.fromDate;
+        const toDate = req.body.toDate;
 
-        const result = await employeeTicketsController.getOpenedTickets(language, limit);
+        const result = await employeeTicketsController.getOpenedTickets(language, limit, fromDate, toDate);
         res.json(result);
     } catch (error) {
         console.log(error);
@@ -35,8 +37,9 @@ const getClosedTickets = async (req: Request, res: Response) => {
     try {
         const language = req.headers['accept-language'] === 'ar' ? 'ar' : 'en';
         const limit = Number(req.params.limit) || 10;
-
-        const result = await employeeTicketsController.getClosedTickets(language, limit);
+        const fromDate = req.body.fromDate;
+        const toDate = req.body.toDate;
+        const result = await employeeTicketsController.getClosedTickets(language, limit, fromDate, toDate);
         res.json(result);
     } catch (error) {
         console.log(error);
@@ -118,8 +121,8 @@ const getTicketByCreationDateRange = async (req: Request, res: Response) => {
 
 const EmployeeTicketsRouter = (app: express.Application) => {
     app.get('/all-tickets-for-employee/:limit', getAllTickets);
-    app.get('/opened-tickets-for-employee/:limit', getOpenedTickets);
-    app.get('/closed-tickets-for-employee/:limit', getClosedTickets);
+    app.post('/opened-tickets-for-employee/:limit', getOpenedTickets);
+    app.post('/closed-tickets-for-employee/:limit', getClosedTickets);
     app.get('/ticket-by-id-for-employee/:ID', getTicketByID);
     app.get('/tickets-by-awb-for-employee/:AWB', getTicketByAWB);
     app.get('/tickets-by-sub-account-id-for-employee/:subAccountID', getTicketBySubAccountID);

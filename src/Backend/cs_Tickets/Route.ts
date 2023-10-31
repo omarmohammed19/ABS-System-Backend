@@ -72,7 +72,10 @@ const create = async (req: Request, res: Response) => {
       lastActionDate: Sequalize.literal('GETDATE()'),
       userID: userID,
       documentPath: req.body.documentPath,
+      assignedDepartmentID: req.body.assignedDepartmentID,
+      assignedCustomerServiceID: req.body.assignedCustomerServiceID,
     });
+
     const result = await ticketsController.create(ticket);
     res.json(result);
   } catch (error) {
@@ -80,6 +83,17 @@ const create = async (req: Request, res: Response) => {
     res.json(error);
   }
 };
+
+const getCustomerServiceByTicketID = async (req: Request, res: Response) => {
+  try {
+    const ticketID = Number(req.params.ticketID);
+    const result = await ticketsController.getCustomerServiceByTicketID(ticketID);
+    res.json(result);
+  } catch (error) {
+    res.status(400);
+    res.json(error);
+  }
+}
 
 const update = async (req: Request, res: Response) => {
   try {
@@ -96,6 +110,8 @@ const update = async (req: Request, res: Response) => {
       lastActionDate: Sequalize.literal('GETDATE()'),
       userID: userID,
       documentPath: req.body.documentPath,
+      assignedDepartmentID: req.body.assignedDepartmentID,
+      assignedCustomerServiceID: req.body.assignedCustomerServiceID,
       isClosed: req.body.isClosed,
     });
     const result = await ticketsController.update(ticket, language);
@@ -129,6 +145,7 @@ const activate = async (req: Request, res: Response) => {
 const ticketsRouter = (app: express.Application) => {
   app.get('/tickets/:isActive/:isClosed/:limit?', getAll);
   app.get('/tickets-by-id/:ID', getById);
+  app.get('/customer-service-by-ticket-id/:ticketID', getCustomerServiceByTicketID);
   app.post('/tickets', create);
   app.put('/tickets/:ID', update);
   app.put('/tickets/de-activate/:ID', deActivate);
