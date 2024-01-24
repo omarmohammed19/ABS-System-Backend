@@ -5,7 +5,7 @@ import { Transaction } from 'sequelize';
 
 const getById = (ID: number, t: Transaction, language?: string,) => {
     return TicketStatus.findOne({
-        attributes: language === 'en' ? ['ID', 'enStatus', 'Notes'] : [['ID', 'ID'], ['arStatus', 'حالة التذكرة '], ['Notes', 'ملحوظات']],
+        attributes: language === 'en' ? ['ID', 'enStatus', 'departmentID', 'Notes'] : [['ID', 'ID'], ['arStatus', 'حالة التذكرة '], ['departmentID', 'departmentID'], ['Notes', 'ملحوظات']],
         where: {
             ID: ID,
             isActive: true,
@@ -20,7 +20,7 @@ export class TicketStatusController {
         try {
             return await sequelize.transaction(async (t) => { // start managed transaction and pass transaction object to the callback function
                 const result = await TicketStatus.findAll({
-                    attributes: language === 'en' ? ['ID', 'enStatus', 'Notes'] : [['ID', 'ID'], ['arStatus', 'حالة التذكرة '], ['Notes', 'ملحوظات']],
+                    attributes: language === 'en' ? ['ID', 'enStatus', 'departmentID', 'Notes'] : [['ID', 'ID'], ['arStatus', 'حالة التذكرة '], ['departmentID', 'departmentID'], ['Notes', 'ملحوظات']],
                     where: {
                         isActive: isActive,
                     },
@@ -43,6 +43,7 @@ export class TicketStatusController {
                     {
                         enStatus: ticketStatus.enStatus,
                         arStatus: ticketStatus.arStatus,
+                        departmentID: ticketStatus.departmentID,
                         Notes: ticketStatus.Notes,
                     },
                     { transaction: t } // pass transaction object to query
@@ -76,6 +77,7 @@ export class TicketStatusController {
                     {
                         enStatus: ticketStatus.enStatus,
                         arStatus: ticketStatus.arStatus,
+                        departmentID: ticketStatus.departmentID,
                         Notes: ticketStatus.Notes,
                     },
                     {

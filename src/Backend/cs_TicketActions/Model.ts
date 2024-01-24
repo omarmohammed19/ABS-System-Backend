@@ -7,6 +7,8 @@ export interface TicketActionsModel extends Model {
     ticketStatusID: number;
     userID: number;
     actionDate: Date;
+    assignedDepartmentID: number;
+    assignedCustomerServiceID: number;
     Notes: string;
     isActive: boolean;
 }
@@ -30,6 +32,12 @@ export const TicketActions = sequelize.define<TicketActionsModel>(
         },
         actionDate: {
             type: DataTypes.DATE,
+        },
+        assignedDepartmentID: {
+            type: DataTypes.INTEGER,
+        },
+        assignedCustomerServiceID: {
+            type: DataTypes.INTEGER,
         },
         Notes: {
             type: DataTypes.STRING,

@@ -5,6 +5,7 @@ export interface TicketStatusModel extends Model {
     ID: number;
     enStatus: string;
     arStatus: string;
+    departmentID: number;
     Notes: string;
     isActive: boolean;
 }
@@ -22,6 +23,9 @@ export const TicketStatus = sequelize.define<TicketStatusModel>(
         },
         arStatus: {
             type: DataTypes.STRING,
+        },
+        departmentID: {
+            type: DataTypes.INTEGER,
         },
         Notes: {
             type: DataTypes.STRING,

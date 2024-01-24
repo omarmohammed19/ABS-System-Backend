@@ -16,6 +16,8 @@ import Sequelize from 'sequelize';
 import { ShipmentServices } from '../../Backend/ship_Services/Model';
 import { Services } from '../../Backend/cust_Services/Model';
 import { SubAccountsVerification } from '../../Backend/cust_SubAccountsVerification/Model';
+import axios from 'axios';
+
 
 let createdAWBs: any = [];
 let deliveryCreatedAWBs: any;
@@ -361,7 +363,7 @@ async function insertDataIntoDatabase(
                   { transaction: t }
                 );
               }
-            } 
+            }
           }
 
 
@@ -445,6 +447,29 @@ async function insertDataIntoDatabase(
       );
 
       await Addresses.bulkCreate(addressData, { transaction: t });
+
+      const runnerData = await Promise.all(
+        AWBs.map(async (AWB, index) => {
+          return {
+            AWB: AWB,
+            streetName: data[index]['Street Name'],
+            cityName: data[index].City,
+          };
+        })
+      );
+
+      for (let i = 0; i < runnerData.length; i++) {
+        const res = await axios.post("http://127.0.0.1:5000/predict_runner", {
+          address: runnerData[i].streetName + ' ' + runnerData[i].cityName,
+        });
+
+        await Transactions.update(
+          {
+            runnerID: res.data.predicted_runner,
+          },
+          { where: { AWB: runnerData[i].AWB }, transaction: t }
+        );
+      }
 
       const contactNumberData = ContactPersonIDs.map((ContactPersonID, index) => {
         return {
@@ -785,6 +810,29 @@ async function insertDataIntoDatabase(
 
       await Addresses.bulkCreate(DeliveryAddressData, { transaction: t });
 
+      const DeliveryRunnerData = await Promise.all(
+        DeliveryAWBs.map(async (AWB, index) => {
+          return {
+            AWB: AWB,
+            streetName: data[index]['Street Name'],
+            cityName: data[index].City,
+          };
+        })
+      );
+
+      for (let i = 0; i < DeliveryRunnerData.length; i++) {
+        const res = await axios.post("http://127.0.0.1:5000/predict_runner", {
+          address: DeliveryRunnerData[i].streetName + ' ' + DeliveryRunnerData[i].cityName,
+        });
+
+        await Transactions.update(
+          {
+            runnerID: res.data.predicted_runner,
+          },
+          { where: { AWB: DeliveryRunnerData[i].AWB }, transaction: t }
+        );
+      }
+
       const ReturnAddressData = await Promise.all(
         ReturnAWBs.map(async (AWB, index) => {
           return {
@@ -801,6 +849,29 @@ async function insertDataIntoDatabase(
       );
 
       await Addresses.bulkCreate(ReturnAddressData, { transaction: t });
+
+      const ReturnRunnerDate = await Promise.all(
+        ReturnAWBs.map(async (AWB, index) => {
+          return {
+            AWB: AWB,
+            streetName: data[index]['Street Name'],
+            cityName: data[index].City,
+          };
+        })
+      );
+
+      for (let i = 0; i < ReturnRunnerDate.length; i++) {
+        const res = await axios.post("http://127.0.0.1:5000/predict_runner", {
+          address: ReturnRunnerDate[i].streetName + ' ' + ReturnRunnerDate[i].cityName,
+        });
+
+        await Transactions.update(
+          {
+            runnerID: res.data.predicted_runner,
+          },
+          { where: { AWB: ReturnRunnerDate[i].AWB }, transaction: t }
+        );
+      }
 
       const DeliveryContactNumberData = DeliveryContactPersonIDs.map((ContactPersonID, index) => {
         return {
@@ -980,6 +1051,23 @@ export class CreateShipmentsController {
             numberTypeID: contactNumbers.numberTypeID,
           });
 
+          const city = await Cities.findOne({
+            attributes: ['arCityName'],
+            where: { ID: addresses.cityID },
+            transaction: t,
+          })
+
+          const res = await axios.post("http://127.0.0.1:5000/predict_runner", {
+            address: addresses.streetName + ' ' + city?.arCityName,
+          });
+
+          await Transactions.update(
+            {
+              runnerID: res.data.predicted_runner,
+            },
+            { where: { AWB: newTransaction.AWB }, transaction: t }
+          );
+
           await Addresses.create(
             {
               AWB: newTransaction.AWB,
@@ -995,6 +1083,8 @@ export class CreateShipmentsController {
             },
             { transaction: t } // pass transaction object to query
           );
+
+
 
           if (serviceTypeIDs.length > 0) {
             for (let i = 0; i < serviceTypeIDs.length; i++) {
@@ -1249,6 +1339,32 @@ export class CreateShipmentsController {
           ];
 
           await Addresses.bulkCreate(addressData, { transaction: t });
+
+          const city = await Cities.findOne({
+            attributes: ['arCityName'],
+            where: { ID: addresses.cityID },
+            transaction: t,
+          })
+
+          const res = await axios.post("http://127.0.0.1:5000/predict_runner", {
+            address: addresses.streetName + ' ' + city?.arCityName,
+          });
+
+          await Transactions.update(
+            {
+              runnerID: res.data.predicted_runner,
+            },
+            { where: { AWB: newDeliveryTransaction.AWB }, transaction: t }
+          );
+
+          await Transactions.update(
+            {
+              runnerID: res.data.predicted_runner,
+            },
+            { where: { AWB: newReturnTransaction.AWB }, transaction: t }
+          );
+
+
 
           if (serviceTypeIDs.length > 0) {
             for (let i = 0; i < serviceTypeIDs.length; i++) {

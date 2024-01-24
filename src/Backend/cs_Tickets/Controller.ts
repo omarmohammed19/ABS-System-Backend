@@ -2,6 +2,9 @@ import { TicketsModel, Tickets } from './Model';
 import { De_Activate } from '../../Services/De_Activate';
 import { sequelize } from '../../Config/database';
 import Sequelize, { Transaction } from 'sequelize';
+import { TicketActions } from '../cs_TicketActions/Model';
+import { SubAccounts } from '../cust_SubAccounts/Model';
+import { Transactions } from '../ship_Transactions/Model';
 
 const getById = (ID: number, t: Transaction, language?: string) => {
   const query = 'EXEC [dbo].[p_GET_cs_Tickets] @language = :language, @Method = :Method, @ID = :ID';
@@ -40,6 +43,19 @@ export class TicketsController {
             lastActionDate: ticket.lastActionDate,
             userID: ticket.userID,
             documentPath: ticket.documentPath,
+            assignedDepartmentID: ticket.assignedDepartmentID,
+            assignedCustomerServiceID: ticket.assignedCustomerServiceID,
+          },
+          { returning: ['ID'], transaction: t } // pass transaction object to query
+        );
+
+        await TicketActions.create(
+          {
+            ticketID: result.ID,
+            ticketStatusID: 1,
+            userID: ticket.userID,
+            actionDate: ticket.creationDate,
+            isActive: true,
           },
           { transaction: t } // pass transaction object to query
         );
@@ -87,6 +103,48 @@ export class TicketsController {
     }
   }
 
+  async getCustomerServiceByTicketID(ticketID: number): Promise<any> {
+    try {
+      return await sequelize.transaction(async (t) => {
+        const ticket = await Tickets.findOne({
+          attributes: ['AWB'],
+          where: {
+            ID: ticketID,
+            isActive: true,
+          },
+          transaction: t, // pass transaction object to query
+        })
+
+        const shipment = await Transactions.findOne({
+          attributes: ['subAccountID'],
+          where: {
+            AWB: ticket?.AWB,
+            isActive: true,
+          },
+          transaction: t, // pass transaction object to query
+        })
+
+        const subAccount = await SubAccounts.findOne({
+          attributes: ['customerServiceID'],
+          where: {
+            ID: shipment?.subAccountID,
+            isActive: true,
+          },
+          transaction: t, // pass transaction object to query
+        });
+
+        //@ts-ignore
+        const customerServiceID = subAccount?.customerServiceID;
+
+        return { customerServiceID: customerServiceID };
+      })
+
+    }
+    catch (err) {
+      throw new Error(`Could not get customer service ID by ticket ID. Error: ${err}`);
+    }
+  }
+
   async update(ticket: TicketsModel, language: string): Promise<TicketsModel | string> {
     try {
       return await sequelize.transaction(async (t) => {
@@ -101,6 +159,8 @@ export class TicketsController {
             lastActionDate: ticket.lastActionDate,
             userID: ticket.userID,
             documentPath: ticket.documentPath,
+            assignedDepartmentID: ticket.assignedDepartmentID,
+            assignedCustomerServiceID: ticket.assignedCustomerServiceID,
           },
           {
             where: {
