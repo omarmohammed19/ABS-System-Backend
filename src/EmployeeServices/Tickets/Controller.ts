@@ -50,6 +50,22 @@ export class EmployeeTicketsController {
         }
     }
 
+    async getTicketsByStatusID(language: string, limit: number, fromDate: string, toDate: string, statusID: number): Promise<any> {
+        try {
+            const result = await sequelize.transaction(async (t) => {
+                const query = 'EXEC [dbo].[p_GET_Complains_For_Employee] @Method = :Method , @language = :language , @limit = :limit, @fromDate = :fromDate , @toDate = :toDate, @statusID = :statusID';
+                const replacements = { Method: 'GET_By_StatusID', language: language, limit: limit, fromDate: fromDate, toDate: toDate, statusID: statusID };
+                const options = { replacements: replacements, type: Sequelize.QueryTypes.SELECT, transaction: t };
+                const result = await sequelize.query(query, options);
+                return result as unknown as any;
+            });
+            return result;
+        }
+        catch (err) {
+            throw new Error(`Could not get Tickets. Error: ${err}`);
+        }
+    }
+
     async getTicketByID(language: string, ID: number): Promise<any> {
         try {
             const result = await sequelize.transaction(async (t) => {
