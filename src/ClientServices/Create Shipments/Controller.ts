@@ -458,18 +458,18 @@ async function insertDataIntoDatabase(
         })
       );
 
-      for (let i = 0; i < runnerData.length; i++) {
-        const res = await axios.post("http://127.0.0.1:5000/predict_runner", {
-          address: runnerData[i].streetName + ' ' + runnerData[i].cityName,
-        });
+      // for (let i = 0; i < runnerData.length; i++) {
+      //   const res = await axios.post("http://127.0.0.1:5000/predict_runner", {
+      //     address: runnerData[i].streetName + ' ' + runnerData[i].cityName,
+      //   });
 
-        await Transactions.update(
-          {
-            runnerID: res.data.predicted_runner,
-          },
-          { where: { AWB: runnerData[i].AWB }, transaction: t }
-        );
-      }
+      //   await Transactions.update(
+      //     {
+      //       runnerID: res.data.predicted_runner,
+      //     },
+      //     { where: { AWB: runnerData[i].AWB }, transaction: t }
+      //   );
+      // }
 
       const contactNumberData = ContactPersonIDs.map((ContactPersonID, index) => {
         return {
@@ -820,18 +820,18 @@ async function insertDataIntoDatabase(
         })
       );
 
-      for (let i = 0; i < DeliveryRunnerData.length; i++) {
-        const res = await axios.post("http://127.0.0.1:5000/predict_runner", {
-          address: DeliveryRunnerData[i].streetName + ' ' + DeliveryRunnerData[i].cityName,
-        });
+      // for (let i = 0; i < DeliveryRunnerData.length; i++) {
+      //   const res = await axios.post("http://127.0.0.1:5000/predict_runner", {
+      //     address: DeliveryRunnerData[i].streetName + ' ' + DeliveryRunnerData[i].cityName,
+      //   });
 
-        await Transactions.update(
-          {
-            runnerID: res.data.predicted_runner,
-          },
-          { where: { AWB: DeliveryRunnerData[i].AWB }, transaction: t }
-        );
-      }
+      //   await Transactions.update(
+      //     {
+      //       runnerID: res.data.predicted_runner,
+      //     },
+      //     { where: { AWB: DeliveryRunnerData[i].AWB }, transaction: t }
+      //   );
+      // }
 
       const ReturnAddressData = await Promise.all(
         ReturnAWBs.map(async (AWB, index) => {
@@ -860,18 +860,18 @@ async function insertDataIntoDatabase(
         })
       );
 
-      for (let i = 0; i < ReturnRunnerDate.length; i++) {
-        const res = await axios.post("http://127.0.0.1:5000/predict_runner", {
-          address: ReturnRunnerDate[i].streetName + ' ' + ReturnRunnerDate[i].cityName,
-        });
+      // for (let i = 0; i < ReturnRunnerDate.length; i++) {
+      //   const res = await axios.post("http://127.0.0.1:5000/predict_runner", {
+      //     address: ReturnRunnerDate[i].streetName + ' ' + ReturnRunnerDate[i].cityName,
+      //   });
 
-        await Transactions.update(
-          {
-            runnerID: res.data.predicted_runner,
-          },
-          { where: { AWB: ReturnRunnerDate[i].AWB }, transaction: t }
-        );
-      }
+      //   await Transactions.update(
+      //     {
+      //       runnerID: res.data.predicted_runner,
+      //     },
+      //     { where: { AWB: ReturnRunnerDate[i].AWB }, transaction: t }
+      //   );
+      // }
 
       const DeliveryContactNumberData = DeliveryContactPersonIDs.map((ContactPersonID, index) => {
         return {
@@ -1057,16 +1057,16 @@ export class CreateShipmentsController {
             transaction: t,
           })
 
-          const res = await axios.post("http://127.0.0.1:5000/predict_runner", {
-            address: addresses.streetName + ' ' + city?.arCityName,
-          });
+          // const res = await axios.post("http://127.0.0.1:5000/predict_runner", {
+          //   address: addresses.streetName + ' ' + city?.arCityName,
+          // });
 
-          await Transactions.update(
-            {
-              runnerID: res.data.predicted_runner,
-            },
-            { where: { AWB: newTransaction.AWB }, transaction: t }
-          );
+          // await Transactions.update(
+          //   {
+          //     runnerID: res.data.predicted_runner,
+          //   },
+          //   { where: { AWB: newTransaction.AWB }, transaction: t }
+          // );
 
           await Addresses.create(
             {
@@ -1346,23 +1346,23 @@ export class CreateShipmentsController {
             transaction: t,
           })
 
-          const res = await axios.post("http://127.0.0.1:5000/predict_runner", {
-            address: addresses.streetName + ' ' + city?.arCityName,
-          });
+          // const res = await axios.post("http://127.0.0.1:5000/predict_runner", {
+          //   address: addresses.streetName + ' ' + city?.arCityName,
+          // });
 
-          await Transactions.update(
-            {
-              runnerID: res.data.predicted_runner,
-            },
-            { where: { AWB: newDeliveryTransaction.AWB }, transaction: t }
-          );
+          // await Transactions.update(
+          //   {
+          //     runnerID: res.data.predicted_runner,
+          //   },
+          //   { where: { AWB: newDeliveryTransaction.AWB }, transaction: t }
+          // );
 
-          await Transactions.update(
-            {
-              runnerID: res.data.predicted_runner,
-            },
-            { where: { AWB: newReturnTransaction.AWB }, transaction: t }
-          );
+          // await Transactions.update(
+          //   {
+          //     runnerID: res.data.predicted_runner,
+          //   },
+          //   { where: { AWB: newReturnTransaction.AWB }, transaction: t }
+          // );
 
 
 
