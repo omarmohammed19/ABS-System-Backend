@@ -22,7 +22,7 @@ const checkShipments = async (req: Request, res: Response) => {
 
 const UpdateShipmentsRouter = (app: express.Application) => {
     app.post('/check-shipments', checkShipments);
-    
+
 };
 
 export default UpdateShipmentsRouter;
